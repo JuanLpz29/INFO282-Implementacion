@@ -101,6 +101,14 @@ def put_info_adicional_factura(idProducto):
 
     return product_schema.jsonify(producto)
 
+# DELETE, quizás no deberiamos borrar (Eso dijo Mirko asi que no sé que pasa)
+@app.route("/productos/<idProducto>/", methods = ['DELETE'])
+def delete_producto(idProducto):
+    producto = Producto.query.get(idProducto)
+    db.session.delete(producto)
+    db.session.commit()
+    return product_schema.jsonify(producto)
+
 
 if __name__ == "__main__": 
-    app.run(debug=True)
+    app.run(debug=False)
