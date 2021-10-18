@@ -10,10 +10,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 let mainWindow
-let newProductWindow
 
-app.on('ready', () => {
+function createWindow(){
+
+    console.log("app is ready")
     mainWindow = new BrowserWindow({});
+    mainWindow.maximize()
 
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'views/index.html'),
@@ -21,36 +23,24 @@ app.on('ready', () => {
         slashes: true
     }));
 
-    const mainMenu = Menu.buildFromTemplate(templateMenu);
-    Menu.setApplicationMenu(mainMenu)
-
     mainWindow.on('closed', () => {
         app.quit();
     })
 
-});
+    const mainMenu = Menu.buildFromTemplate(templateMenu);
+    Menu.setApplicationMenu(mainMenu)
 
-
-function createNewProduct(){
-    newProductWindow = new BrowserWindow({
-        width: 400,
-        height: 400,
-        title: "New product"
-
-    });
-    newProductWindow.setMenu(null)
-    newProductWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'views/second-window.html'),
-        protocol: 'file',
-        slashes: true
-    }));
-
-    newProductWindow.on('closed', () => {
-        newProductWindow = null;
-    })
 }
 
+app.on('ready', createWindow)
 
+app.on('activate', function () {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) {
+      createWindow()
+    }
+  })
 
 const templateMenu = [
     {

@@ -1,0 +1,64 @@
+<head>
+    <link rel="stylesheet" href="https://bootswatch.com/5/cosmo/bootstrap.min.css">
+    <link rel="stylesheet" href="../styles/mystyles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script type=module src="../header.js"></script>
+
+</head>
+
+<body>
+    <main-header></main-header>
+    <div class="section-container">
+        <h1>Gestión de inventario</h1>
+    </div>
+
+    <div>
+        <h1>Subir documento</h1>
+        <form class="form" id="upload-form">
+
+            <div class="form-container">
+                <label>Selecione archivo</label>
+                <input type="file" accept=".xml" id="input_file">
+            </div>
+
+            <button type="submit"> Subir archivo</button>
+        </form>
+        
+    </div>
+
+    </div>
+
+    <script>
+
+        const insertData = (formData) => {
+            const endpoint = "http://127.0.0.1:5000/documento"
+            fetch(endpoint, {
+                method:"POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+
+            }).catch(console.error);
+        }
+
+        const upload_form = document.getElementById("upload-form");
+        const input_file = document.getElementById("input_file");
+
+
+
+        upload_form.addEventListener("submit", e => {
+            e.preventDefault();
+            console.log(input_file.files);
+            const formData = new formData();
+            formData.append
+
+            insertData(formData)
+        });
+
+    </script>
+
+</body>

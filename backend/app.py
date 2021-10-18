@@ -54,6 +54,7 @@ def get_all_productos():
   result = products_schema.dump(all_productos)
   return jsonify(result)
 
+
 #Retornamos solo un producto de la base de datos
 @app.route("/productos/<idProducto>/", methods = ['GET'])
 def get_producto(idProducto):
@@ -97,6 +98,8 @@ def put_info_adicional_factura(idProducto):
     producto.cantidadRiesgo = cantidadRiesgo
     producto.precioVenta = precioVenta
 
+    ##
+
     db.session.commit()
 
     return product_schema.jsonify(producto)
@@ -108,6 +111,17 @@ def delete_producto(idProducto):
     db.session.delete(producto)
     db.session.commit()
     return product_schema.jsonify(producto)
+
+
+
+## DOCUMENTO
+
+
+@app.route("/documento", methods = ['POST'])
+def post_documento():
+    req = request.get_json()
+    print(req)
+    return
 
 
 if __name__ == "__main__": 
