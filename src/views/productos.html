@@ -21,11 +21,11 @@
     <p id="dynamic">
     <div class="container">
         <table id="table_id" class="display">
-            <thead>
+            <thead id= "thead_id"> 
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripcion</th>
+                    <th id="ID"></th>
+                    <th id= "Nombre"></th>
+                    <th id="Descripcion"></th>
                 </tr>
             </thead>
             <tbody id="data">
@@ -39,6 +39,7 @@
 <script>
 
     function load() {
+        
         fetch('http://127.0.0.1:5000/productos').then(
             res => {
                 res.json().then(
@@ -52,7 +53,15 @@
                             temp += "<td>" + itemData.nombre + "</td>";
                             temp += "<td>" + itemData.descripcion + "</td></tr>";
                         });
+                        
+                        
+                        
+
                         document.getElementById('data').innerHTML = temp;
+                        document.getElementById('ID').innerHTML = "Id";
+                        document.getElementById('Nombre').innerHTML = "Nombre";
+                        document.getElementById('Descripcion').innerHTML = "Descripción";
+
                         $(document).ready(function () {
                             $('#table_id').DataTable();
                         });
