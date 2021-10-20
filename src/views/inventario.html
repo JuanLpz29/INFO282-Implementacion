@@ -31,9 +31,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripcion</th>
+                    <th id = "ID"></th>
+                    <th id = "Nombre"></th>
+                    <th id = "Descripcion"></th>
                 </tr>
             </thead>
             <tbody id="data">
@@ -87,7 +87,13 @@
                     temp += "<td>" + itemData.nombre + "</td>";
                     temp += "<td>" + itemData.descripcion + "</td></tr>";
                 });
+
+
                 document.getElementById('data').innerHTML = temp
+                document.getElementById('ID').innerHTML = "Id";
+                document.getElementById('Nombre').innerHTML = "Nombre";
+                document.getElementById('Descripcion').innerHTML = "Descripción";
+
             }
         )
     }
