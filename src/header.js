@@ -1,12 +1,10 @@
-
 class MainHeader extends HTMLElement {
-
-    connectedCallback() {
-        this.innerHTML = `
+  connectedCallback() {
+    this.innerHTML = `
             <header class="header">
                 <div class="inner-header">
                     <div class="logo-container">
-                        <h1>La Tentación</h1>
+                        <h1><a href ="index.html" > La Tentación</a></h1>
                     </div>
                         <ul class="navigation">
                             <a href="index.html"><li>Inicio</li></a>
@@ -18,8 +16,8 @@ class MainHeader extends HTMLElement {
                 </div>
         </header>
         
-      `
-    }
+      `;
+  }
 }
 
-customElements.define('main-header', MainHeader)
+customElements.define("main-header", MainHeader);
