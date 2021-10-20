@@ -3,15 +3,15 @@ const url = require('url');
 const path = require('path');
 
 if (process.env.NODE_ENV !== 'production') {
-    require('electron-reload')(__dirname, {})
     require('electron-reload')(__dirname, {
-        electron: path.join(__dirname, '../node_modules', '.bin', 'electron')
+        electron: path.join(__dirname, '../node_modules', '.bin', 'electron',)
     });
+
 }
 
 let mainWindow
 
-function createWindow(){
+function createWindow() {
 
     console.log("app is ready")
     mainWindow = new BrowserWindow({});
@@ -38,9 +38,9 @@ app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-      createWindow()
+        createWindow()
     }
-  })
+})
 
 const templateMenu = [
     {
@@ -64,12 +64,12 @@ const templateMenu = [
         ]
     },
     {
-        label:'Exit',
+        label: 'Exit',
         submenu: [
             {
                 label: 'Exit',
-                acceleratior:'Ctrl+Q',
-                click(){
+                acceleratior: 'Ctrl+Q',
+                click() {
                     app.quit();
                 }
             }
@@ -79,15 +79,15 @@ const templateMenu = [
 
 if (process.env.NODE_ENV !== 'production') {
     templateMenu.push({
-        label:'DevTools',
+        label: 'DevTools',
         submenu: [{
-            label:'Show, Hide',
-            click(item, focusedWindow){
+            label: 'Show, Hide',
+            click(item, focusedWindow) {
                 focusedWindow.toggleDevTools();
             },
         }]
 
-        
+
     })
 }
 

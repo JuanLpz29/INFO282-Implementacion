@@ -16,49 +16,78 @@
     </div>
 
     <div>
-        <h1>Subir documento</h1>
-        <form class="form" id="upload-form">
-
-            <div class="form-container">
-                <label>Selecione archivo</label>
-                <input type="file" accept=".xml" id="input_file">
-            </div>
-
-            <button type="submit"> Subir archivo</button>
+        <!doctype html>
+        <title>Upload new File</title>
+        <h1>Upload new File</h1>
+        <form method=post enctype=multipart/form-data>
+            <input type=file name=file>
+            <button onclick="getCompras(event)">Suir archivo</button>
         </form>
-        
     </div>
+    <p id="dynamic"></p>
 
-    </div>
+    <div id="myData"></div>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                </tr>
+            </thead>
+            <tbody id="data">
 
-    <script>
-
-        const insertData = (formData) => {
-            const endpoint = "http://127.0.0.1:5000/documento"
-            fetch(endpoint, {
-                method:"POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-
-            }).catch(console.error);
-        }
-
-        const upload_form = document.getElementById("upload-form");
-        const input_file = document.getElementById("input_file");
-
-
-
-        upload_form.addEventListener("submit", e => {
-            e.preventDefault();
-            console.log(input_file.files);
-            const formData = new formData();
-            formData.append
-
-            insertData(formData)
-        });
-
-    </script>
-
+            </tbody>
+        </table>
+    </div </p>
 </body>
+
+<script>
+
+    async function Upload() {
+        const formData = new FormData();
+        const fileField = document.querySelector('input[type="file"]');
+        formData.append('file', fileField.files[0]);
+        const response = await fetch('http://127.0.0.1:5000/documento', {
+            method: 'POST',
+            body: formData
+        })
+        const contentType = response.headers.get("content-type");
+        console.log(contentType)
+        const compras = await response.json()
+        console.log(compras);
+        return compras;
+    }
+
+    async function getCompras(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        Upload().then(
+            data => {
+                var mainContainer = document.getElementById("myData");
+                var temp = "";
+                const info = JSON.parse(JSON.parse(data.info));
+                // const prods = JSON.parse(JSON.parse(data.productos));
+                for (key in info) {
+                    if (info.hasOwnProperty(key)) {
+                        var div = document.createElement("div");
+                        div.innerHTML = key + " : " + info[key];
+                        mainContainer.appendChild(div);
+                    }
+                }
+                //const prods = JSON.parse(data.producto); //array
+                console.log(data.productos);
+                const prods = JSON.parse(data.productos);
+                var temp = "";
+                prods.forEach((itemData) => {
+                    temp += "<tr>";
+                    temp += "<td>" + itemData.idProducto + "</td>";
+                    temp += "<td>" + itemData.nombre + "</td>";
+                    temp += "<td>" + itemData.descripcion + "</td></tr>";
+                });
+                document.getElementById('data').innerHTML = temp
+            }
+        )
+    }
+</script>

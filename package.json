@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^15.1.1"
+    "electron": "^15.2.0"
   },
   "dependencies": {
+    "datatables.net": "^1.11.3",
+    "datatables.net-dt": "^1.11.3",
     "electron-reload": "^2.0.0-alpha.1"
   }
 }

@@ -1,5 +1,5 @@
 
-class  MainHeader extends HTMLElement{
+class MainHeader extends HTMLElement {
 
     connectedCallback() {
         this.innerHTML = `
@@ -11,14 +11,14 @@ class  MainHeader extends HTMLElement{
                         <ul class="navigation">
                             <a href="index.html"><li>Inicio</li></a>
                             <a href="inventario.html"><li>Inventario</li></a>
-                            <a href=""><li>Ventas</li></a>
+                            <a href="productos.html"><li>Productos</li></a>
                             <a href=""><li>Usuarios</li></a>
                             <a href=""><li>Configuración</li></a>
                         </ul>
                 </div>
         </header>
         
-      `  
+      `
     }
 }
 
