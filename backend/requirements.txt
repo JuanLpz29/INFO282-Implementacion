@@ -1,0 +1,9 @@
+numpy==1.20.1
+pdf417==0.8.1
+Flask==2.0.2
+pandas==1.2.2
+WeasyPrint==52.2
+num2words==0.5.10
+Jinja2==2.11.3
+flask_marshmallow==0.14.0
+flask_sqlalchemy==2.5.1

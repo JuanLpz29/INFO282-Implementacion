@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SetDTE><DTE version="1.0" xmlns="http://www.sii.cl/SiiDte">
+<Documento ID="E000000001T033F0010694282">
+<Encabezado>
+<IdDoc>
+<TipoDTE>33</TipoDTE>
+<Folio>10694282</Folio>
+<FchEmis>2021-10-05</FchEmis>
+<FmaPago>2</FmaPago>
+</IdDoc>
+<Emisor>
+<RUTEmisor>88502900-0</RUTEmisor>
+<RznSoc>BAT Chile S.A</RznSoc>
+<GiroEmis>VENTA AL POR MAYOR DE TABACO</GiroEmis>
+<Acteco>463030</Acteco>
+<DirOrigen>Err?zuriz / 2254</DirOrigen>
+<CmnaOrigen>Valdivia</CmnaOrigen>
+<CiudadOrigen>Valdivia</CiudadOrigen>
+<CdgVendedor>0</CdgVendedor>
+</Emisor>
+<Receptor>
+<RUTRecep>17517320-K</RUTRecep>
+<RznSocRecep>CURIPAN GONZALEZ HECTOR JAVIER</RznSocRecep>
+<GiroRecep>BOTILLERIA</GiroRecep>
+<DirRecep>LAUTARO 691</DirRecep>
+<CmnaRecep>PAILLACO</CmnaRecep>
+<CiudadRecep>14</CiudadRecep>
+</Receptor>
+<Totales>
+<MntNeto>1068554</MntNeto>
+<MntExe>0</MntExe>
+<TasaIVA>19</TasaIVA>
+<IVA>203025</IVA>
+<ImptoReten>
+<TipoImp>14</TipoImp>
+<TasaImp>19</TasaImp>
+<MontoImp>13159</MontoImp>
+</ImptoReten>
+<MntTotal>1284738</MntTotal>
+</Totales>
+</Encabezado>
+<Detalle>
+<NroLinDet>1</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10070892</VlrCodigo>
+</CdgItem>
+<NmbItem>1020 Kent Belmont - RC10</NmbItem>
+<PrcRef>2000</PrcRef>
+<QtyItem>3</QtyItem>
+<PrcItem>31454</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>94362</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>2</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10070700</VlrCodigo>
+</CdgItem>
+<NmbItem>0627 Kent Belmont - HL20</NmbItem>
+<PrcRef>4000</PrcRef>
+<QtyItem>6</QtyItem>
+<PrcItem>31454</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>188724</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>3</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10107101</VlrCodigo>
+</CdgItem>
+<NmbItem>Kent Neo Ikon Mix DS90</NmbItem>
+<PrcRef>3500</PrcRef>
+<QtyItem>1</QtyItem>
+<PrcItem>27522</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>27522</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>4</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10111410</VlrCodigo>
+</CdgItem>
+<NmbItem>Pall Mall Azul HL20s</NmbItem>
+<PrcRef>3200</PrcRef>
+<QtyItem>2</QtyItem>
+<PrcItem>25291</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>50582</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>5</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10102304</VlrCodigo>
+</CdgItem>
+<NmbItem>9065 Pall Mall Boost - HL10</NmbItem>
+<PrcRef>2000</PrcRef>
+<QtyItem>2</QtyItem>
+<PrcItem>31614</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>63228</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>6</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10091121</VlrCodigo>
+</CdgItem>
+<NmbItem>5059 Pall Mall Boost XL - HL20</NmbItem>
+<PrcRef>3500</PrcRef>
+<QtyItem>4</QtyItem>
+<PrcItem>27662</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>110648</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>7</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10119670</VlrCodigo>
+</CdgItem>
+<NmbItem>9041 PALL CLONB 10/200 KRE SQ CHI F&amp;S</NmbItem>
+<PrcRef>2000</PrcRef>
+<QtyItem>2</QtyItem>
+<PrcItem>31614</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>63228</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>8</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10119688</VlrCodigo>
+</CdgItem>
+<NmbItem>8884 PALL CLONB 20/200 KRE SQ CHI F&amp;S</NmbItem>
+<PrcRef>3500</PrcRef>
+<QtyItem>5</QtyItem>
+<PrcItem>27662</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>138310</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>9</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10111132</VlrCodigo>
+</CdgItem>
+<NmbItem>Pall Mall Azul SC20s</NmbItem>
+<PrcRef>2800</PrcRef>
+<QtyItem>12</QtyItem>
+<PrcItem>22130</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>265560</MontoItem>
+</Detalle>
+<Detalle>
+<NroLinDet>10</NroLinDet>
+<CdgItem>
+<TpoCodigo>INT1</TpoCodigo>
+<VlrCodigo>10111094</VlrCodigo>
+</CdgItem>
+<NmbItem>Pall Mall Rojo - SC20</NmbItem>
+<PrcRef>2800</PrcRef>
+<QtyItem>3</QtyItem>
+<PrcItem>22130</PrcItem>
+<CodImpAdic>14</CodImpAdic>
+<MontoItem>66390</MontoItem>
+</Detalle>
+<Referencia>
+<NroLinRef>1</NroLinRef>
+<TpoDocRef>801</TpoDocRef>
+<FolioRef>1127100421151851</FolioRef>
+<FchRef>2021-10-04</FchRef>
+</Referencia>
+<TED version="1.0"><DD><RE>88502900-0</RE><TD>33</TD><F>10694282</F><FE>2021-10-05</FE><RR>17517320-K</RR><RSR>CURIPAN GONZALEZ HECTOR JAVIER</RSR><MNT>1284738</MNT><IT1>1020 Kent Belmont - RC10</IT1><CAF version="1.0"><DA><RE>88502900-0</RE><RS>BAT CHILE S.A.</RS><TD>33</TD><RNG><D>10571211</D><H>10821210</H></RNG><FA>2021-09-30</FA><RSAPK><M>81mlb1WwRGSG5VkFmPtlh5wh4BR7s91P61I/04WBsXpq0Ocm7TnhSwO5prB9cebFl1XLCkMxTxasRl9W4PnhgQ==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">c/2FuX1dz+emX/4B432aIsxNI0vQFVxikGUxXV/p+7Mq0UbD3peWzsEPrId9C+ZWY3acQgTZXiRhPgSrr0EJ+w==</FRMA></CAF><TSTED>2021-10-04T17:20:10</TSTED></DD><FRMT algoritmo="SHA1withRSA">h0xpanaDg0NRFBWz39lAYOmMcyql8BacUqhIrtiPLyCiAFJ/qnZfQFXQARzVHy796vLiQKuX6pe5v3+t3Y6u+A==</FRMT></TED><TmstFirma>2021-10-04T17:22:38</TmstFirma>
+</Documento>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<Reference URI="#E000000001T033F0010694282">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<DigestValue>bwU/PSAvt2t5NKGT9Pa530pP6Aw=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>E6oFgxa5h41cFrnt+LDjMeOqqJucnvRCzvVehSBYl8McBYe8FI7DiDmtXG4Xm6DpXRXXKM8OqLEDWwfXQ1hpWazbKCB3D8zwKqc8ZGCOYhHEJIZ2I5KgkYxrTQPkEA6xHyvD3N2ms1j6mzVD9OjisXeFfDBWGcPsu+487vQihuemhlFlcvKjndvh9uaP6/o3JXLq/xQ1+J3D613UaeG1s43M5r8PAsz19xLnx9uPDd99thfk2aZG5fTisuhmjQYJlBsSuarqUaCG+z8x2wF7G5DBtwyGDXhwNVojI2flnLbTHdpD99yTf/I09RCKLvPJkyQYbNovrZbw4xRXMPJQrA==</SignatureValue>
+<KeyInfo>
+<KeyValue>
+<RSAKeyValue>
+<Modulus>
+phQyWk259UKbaejgRaID5GU6bHl4gHUj46SSaqWmV467zcD8jV8aPFomJnmpneUm
+vVGMwo8dAp1Eq/qf+fmtgMvuvSPy82g0LUfsWNeltkEFz0ZOzmz634dNrH/pDvl0
+AOEn695qnXKni1oXknPqfVpquPSznnYvrfruvABhbV6skDO/rGw0zP03bnreevIA
+cD4kOiBhYLMUTN8FHvubeXN8CTglaxvwFJ7KrzjLGcRdFHZ5eqhXZ3BF3AaPfe9I
+qFYJMzqYA01vK8CFE4GCc/4Et95epcj9W8AWGd7itWaXexRSyf1dTq8eEZBd4heh
+YDSI6F9bjlOqEYKcE7xahw==
+</Modulus>
+<Exponent>
+AQAB
+</Exponent>
+</RSAKeyValue>
+</KeyValue>
+<X509Data>
+<X509Certificate>
+MIIGjTCCBXWgAwIBAgIDANjxMA0GCSqGSIb3DQEBCwUAMIGmMQswCQYDVQQGEwJD
+TDEYMBYGA1UEChMPQWNlcHRhLmNvbSBTLkEuMUgwRgYDVQQDEz9BY2VwdGEuY29t
+IEF1dG9yaWRhZCBDZXJ0aWZpY2Fkb3JhIENsYXNlIDMgUGVyc29uYSBOYXR1cmFs
+IC0gRzQxHjAcBgkqhkiG9w0BCQEWD2luZm9AYWNlcHRhLmNvbTETMBEGA1UEBRMK
+OTY5MTkwNTAtODAeFw0yMTA0MjMxMzI3NDdaFw0yNDA0MjMxMzI3NDdaMIGWMQsw
+CQYDVQQGEwJDTDEYMBYGA1UEDBMPUEVSU09OQSBOQVRVUkFMMSowKAYDVQQDEyFQ
+QU1FTEEgQkFSQkFSQSBIT0ZGTUFOTiBHVVRJRVJSRVoxLDAqBgkqhkiG9w0BCQEW
+HURJRUdPLkdBTEFaLjE0QFNBTlNBTk8uVVNNLkNMMRMwEQYDVQQFEwoxMDA4MjAy
+NC0yMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAphQyWk259UKbaejg
+RaID5GU6bHl4gHUj46SSaqWmV467zcD8jV8aPFomJnmpneUmvVGMwo8dAp1Eq/qf
++fmtgMvuvSPy82g0LUfsWNeltkEFz0ZOzmz634dNrH/pDvl0AOEn695qnXKni1oX
+knPqfVpquPSznnYvrfruvABhbV6skDO/rGw0zP03bnreevIAcD4kOiBhYLMUTN8F
+HvubeXN8CTglaxvwFJ7KrzjLGcRdFHZ5eqhXZ3BF3AaPfe9IqFYJMzqYA01vK8CF
+E4GCc/4Et95epcj9W8AWGd7itWaXexRSyf1dTq8eEZBd4hehYDSI6F9bjlOqEYKc
+E7xahwIDAQABo4IC0DCCAswwHwYDVR0jBBgwFoAUqv29xek3TfaZTVeOwXEa+evD
+BuMwHQYDVR0OBBYEFPPhNKLquZMJ36F4/7zHG6nd2s6yMAsGA1UdDwQEAwIE8DAd
+BgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYJYIZIAYb4QgEBBAQDAgWg
+MIH6BgNVHSAEgfIwge8wgewGCCsGAQQBtWsCMIHfMDEGCCsGAQUFBwIBFiVodHRw
+czovL2FjZzQuYWNlcHRhLmNvbS9DUFMtQWNlcHRhY29tMIGpBggrBgEFBQcCAjCB
+nDAWFg9BY2VwdGEuY29tIFMuQS4wAwIBAhqBgUVsIHRpdHVsYXIgaGEgc2lkbyB2
+YWxpZGFkbyBlbiBmb3JtYSBwcmVzZW5jaWFsLCBxdWVkYW5kbyBoYWJpbGl0YWRv
+IGVsIENlcnRpZmljYWRvIHBhcmEgdXNvIHRyaWJ1dGFyaW8sIHBhZ29zLCBjb21l
+cmNpbyB5IG90cm9zLjBaBgNVHRIEUzBRoBgGCCsGAQQBwQECoAwWCjk2OTE5MDUw
+LTigJAYIKwYBBQUHCAOgGDAWDAo5NjkxOTA1MC04BggrBgEEAcEBAoEPaW5mb0Bh
+Y2VwdGEuY29tMGgGA1UdEQRhMF+gGAYIKwYBBAHBAQGgDBYKMTAwODIwMjQtMqAk
+BggrBgEFBQcIA6AYMBYMCjEwMDgyMDI0LTIGCCsGAQQBwQECgR1ESUVHTy5HQUxB
+Wi4xNEBTQU5TQU5PLlVTTS5DTDBHBggrBgEFBQcBAQQ7MDkwNwYIKwYBBQUHMAGG
+K2h0dHBzOi8vYWNnNC5hY2VwdGEuY29tL2FjZzQvb2NzcC9DbGFzZTMtRzQwPwYD
+VR0fBDgwNjA0oDKgMIYuaHR0cHM6Ly9hY2c0LmFjZXB0YS5jb20vYWNnNC9jcmwv
+Q2xhc2UzLUc0LmNybDANBgkqhkiG9w0BAQsFAAOCAQEAiewKd/trBh/vdQwoJAps
+8QhZVQsKk4CxqiHnvEm5Lpd0CUeXX+cmEczAxjaQ6tiXZPDt/GbJ2L5sB7zJHXDx
+R6FdDcpG0TuYJfgpfS9vCkp6whNYy4i6MnrMlHzRa+K4reOMbUNO/SOxaN2n5oYh
+Kpht/gYSbYijn3C74lrPWaCsovKytkmE/GGOwGSpcRppJFnMXpeGP1Tmn1rAftny
+pNrg1zUKYXNqiwprat3bJAx93a9wnistx2+tSLJpU7cEfuyol+ksCALrIggYKDJR
+xCKDjKVfOyRyEUXH+iJTNEHF1lPTB7RAOCWsIJiO8Ppf0kdx5Y48rtwbsK1UHwhL
+cw==
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature></DTE>
+</SetDTE>

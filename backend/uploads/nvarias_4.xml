@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SetDTE><DTE version="1.0" xmlns="http://www.sii.cl/SiiDte">
+      <Documento ID="F13453533T33">
+        <Encabezado>
+          <IdDoc>
+            <TipoDTE>33</TipoDTE>
+            <Folio>13453533</Folio>
+            <FchEmis>2021-10-06</FchEmis>
+            <TipoDespacho>2</TipoDespacho>
+            <IndServicio>1</IndServicio>
+            <FmaPago>2</FmaPago>
+            <PeriodoDesde>2021-10-06</PeriodoDesde>
+            <PeriodoHasta>2021-10-06</PeriodoHasta>
+            <FchVenc>2021-10-06</FchVenc>
+          </IdDoc>
+          <Emisor>
+            <RUTEmisor>93178000-K</RUTEmisor>
+            <RznSoc>IMPORTADORA CAFE DO BRASIL S A</RznSoc>
+            <GiroEmis>Venta al por mayor de huevos, l?cteos, abarrotes y de otros alimentos</GiroEmis>
+            <Acteco>462010</Acteco>
+            <Sucursal>casa matriz</Sucursal>
+            <DirOrigen>Caupolic?n 9401</DirOrigen>
+            <CmnaOrigen>Quilicura</CmnaOrigen>
+            <CiudadOrigen>Santiago</CiudadOrigen>
+            <CdgVendedor>903</CdgVendedor>
+          </Emisor>
+          <Receptor>
+            <RUTRecep>17517320-K</RUTRecep>
+            <CdgIntRecep>93178000-K</CdgIntRecep>
+            <RznSocRecep>HECTOR JAVIER CURIPAN GONZALEZ</RznSocRecep>
+            <GiroRecep>VENTAS AL POR MENOR</GiroRecep>
+            <CorreoRecep />
+            <DirRecep>LAUTARO 691, PAILLACO, XIV - Los Rios</DirRecep>
+            <CmnaRecep>PAILLACO</CmnaRecep>
+            <CiudadRecep>PAILLACO</CiudadRecep>
+          </Receptor>
+          <Totales>
+            <MntNeto>62597</MntNeto>
+            <TasaIVA>19</TasaIVA>
+            <IVA>11892</IVA>
+            <MntTotal>74489</MntTotal>
+            <MontoPeriodo>74489</MontoPeriodo>
+            <VlrPagar>74489</VlrPagar>
+          </Totales>
+        </Encabezado>
+        <Detalle>
+          <NroLinDet>1</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802420003493</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201221990 SALSA AJO DJ18 uds. 100 G</NmbItem>
+          <DscItem>SALSA AJO DJ18 uds. 100 G</DscItem>
+          <QtyItem>1</QtyItem>
+          <UnmdItem>D18</UnmdItem>
+          <PrcItem>6734</PrcItem>
+          <MontoItem>6734</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>2</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802351121204</VlrCodigo>
+          </CdgItem>
+          <NmbItem>235002090 ACEITUNA HUASCO DJ 6x200G</NmbItem>
+          <DscItem>ACEITUNA HUASCO DJ 6x200G</DscItem>
+          <QtyItem>6</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>860</PrcItem>
+          <MontoItem>5160</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>3</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7891962056746</VlrCodigo>
+          </CdgItem>
+          <NmbItem>105100053 PAN TRADICIONAL BAUDUCCO 40</NmbItem>
+          <DscItem>PAN TRADICIONAL BAUDUCCO 40</DscItem>
+          <QtyItem>8</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>856</PrcItem>
+          <MontoItem>6848</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>4</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802351534707</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201230120 SUCEDANEO JUGO LIMON 500 ml</NmbItem>
+          <DscItem>SUCEDANEO JUGO LIMON 500 ml</DscItem>
+          <QtyItem>12</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>319</PrcItem>
+          <MontoItem>3828</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>5</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802351534509</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201230470 JUGO DE LIMON DJ250 cc</NmbItem>
+          <DscItem>JUGO DE LIMON DJ250 cc</DscItem>
+          <QtyItem>15</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>231</PrcItem>
+          <MontoItem>3465</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>6</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802351002046</VlrCodigo>
+          </CdgItem>
+          <NmbItem>101310121 MANI JAPONES INFERNO 100G</NmbItem>
+          <DscItem>MANI JAPONES INFERNO 100G</DscItem>
+          <QtyItem>8</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>464</PrcItem>
+          <MontoItem>3712</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>7</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802420125423</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201700142 MANI SALADO  MP 160GR</NmbItem>
+          <DscItem>MANI SALADO  MP 160GR</DscItem>
+          <QtyItem>6</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>611</PrcItem>
+          <MontoItem>3666</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>8</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802420125492</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201700041 MANI JAPONES MP 100G</NmbItem>
+          <DscItem>MANI JAPONES MP 100G</DscItem>
+          <QtyItem>10</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>544</PrcItem>
+          <MontoItem>5440</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>9</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802420127694</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201700199 RAMITA QUESO MP 250G.</NmbItem>
+          <DscItem>RAMITA QUESO MP 250G.</DscItem>
+          <QtyItem>10</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>638</PrcItem>
+          <MontoItem>6380</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>10</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802351451400</VlrCodigo>
+          </CdgItem>
+          <NmbItem>235002121 Pepino Dill Extra DJ 6x180G</NmbItem>
+          <DscItem>Pepino Dill Extra DJ 6x180G</DscItem>
+          <QtyItem>6</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>843</PrcItem>
+          <MontoItem>5058</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>11</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802351461201</VlrCodigo>
+          </CdgItem>
+          <NmbItem>235002155 Pickle Surtido DJ 6x180G</NmbItem>
+          <DscItem>Pickle Surtido DJ 6x180G</DscItem>
+          <QtyItem>6</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>646</PrcItem>
+          <MontoItem>3876</MontoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>12</NroLinDet>
+          <CdgItem>
+            <TpoCodigo>EAN13</TpoCodigo>
+            <VlrCodigo>7802420003912</VlrCodigo>
+          </CdgItem>
+          <NmbItem>201700210 PF C/AMERI MARCO POLO 250g</NmbItem>
+          <DscItem>PF C/AMERI MARCO POLO 250g</DscItem>
+          <QtyItem>10</QtyItem>
+          <UnmdItem>UN</UnmdItem>
+          <PrcItem>843</PrcItem>
+          <MontoItem>8430</MontoItem>
+        </Detalle>
+        <TED version="1.0">
+          <DD>
+            <RE>93178000-K</RE>
+            <TD>33</TD>
+            <F>13453533</F>
+            <FE>2021-10-06</FE>
+            <RR>17517320-K</RR>
+            <RSR>HECTOR JAVIER CURIPAN GONZALEZ</RSR>
+            <MNT>74489</MNT>
+            <IT1>201221990 SALSA AJO DJ18 uds. 100 G</IT1>
+            <CAF version="1.0">
+              <DA>
+                <RE>93178000-K</RE>
+                <RS>IMPORTADORA CAFE DO BRASIL S A</RS>
+                <TD>33</TD>
+                <RNG>
+                  <D>13351710</D>
+                  <H>13551709</H>
+                </RNG>
+                <FA>2021-08-20</FA>
+                <RSAPK>
+                  <M>yBh4wf7hdVXXE12UYqWYvu4ziheT3rUv3JNG/g0nhI6E3CdNlMLcChAN6A3EdqSda5eaWbQdKxCt06DDkffrdQ==</M>
+                  <E>Aw==</E>
+                </RSAPK>
+                <IDK>300</IDK>
+              </DA>
+              <FRMA algoritmo="SHA1withRSA">THHESU0p/uz4/16hkq0NoGmv7NTUYgHpLpawumyKoxFJATTsVoVYdXx9zhy86Jq4HF2zKQpCnJzXqeSnmz2IJQ==</FRMA>
+            </CAF>
+            <TSTED>2021-10-06T12:50:37</TSTED>
+          </DD>
+          <FRMT algoritmo="SHA1withRSA">JRVygHOtJy0G1Pdqy4Tr1fwN474HS5R/WdaZ8bUHDmRa8NiQD0+De0iadbMNkHuM3Z69vEs5eWPP9pWdFB6KRQ==</FRMT>
+        </TED>
+        <TmstFirma>2021-10-06T12:50:37</TmstFirma>
+      </Documento><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI="#F13453533T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>zIMRBLMuNK6m5q6/eUfr0UKtiJY=</DigestValue></Reference></SignedInfo><SignatureValue>
+IUr+M/PM4aaPPp9SaQz/62Eia3vBr+SYzR/fX5MdcQukTtQ9qX7iMDLxJYWf+rdl
+akmDLZEmu4OLmBWYPZBP+dy0Hz4mx8W6ZdbhMFQG/0f7nHxw607anNdAYABaaCgw
++raeCm+Zcg1zsik3CMcWzpmzAmz1tvU5JUnA6m/bkKBu7YzPpn68BnksiTVZWIMR
+5YTZNkgk5y+9cP/imjChVyxgeK2SX6Cq7aHE2CpKJpc2vcgWei8zyPtKggFCgGeQ
+ObKQljAq9wE2YbnySJEGJQPbFxQnqrnZqFej7fEm0gQqyWzCZ0mt1toW6/Oj0QB6
+kLsddThh+f5jOuoYGk3/xQ==
+</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>
+gt/tCi2q0QBqapmqqo9OlSJ2y5nq+sg90gvl8G8yicddQsG2W9P1J9TTVDLdS0R1
+oPOfvirrCjNKAMWdFNci3mchIoUSiesj4TLkROUYnh91/f4Dlj9y2XJ5ee/JOMXo
+QAWUHKzUMCVqQ6zWJCC4PW5vqHu/WoFSuE+0EK/oMq1tAgnm3BRLyTQCN8Ysgxi0
+KDCy8mN8DJ4gv/Zqk8nPd/d7KrWqMebYqnTzgpyjTC+Br3QU12hp6aAjPFtZDsuy
++JVEBe/G5ToRYX5ZqIusFxUJk7TRjXhLgNnFg5fhAHR3J6bJr64fzCimAWzKYECd
+R824kBcKHW6McGmcmNP27w==
+</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGRTCCBS2gAwIBAgIIZhoiqxYNx4AwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIwMDMyMzEyMzM0NFoXDTIzMDMy
+MzEyMjcwMFowgaQxCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMRswGQYDVQQDDBJKYW5ldHQgTGFyYSBDZWlqYXMxJzAlBgkqhkiG
+9w0BCQEWGGphbmV0dC5sYXJhQGdvc29ja2V0Lm5ldDCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBAILf7QotqtEAamqZqqqPTpUidsuZ6vrIPdIL5fBvMonH
+XULBtlvT9SfU01Qy3UtEdaDzn74q6wozSgDFnRTXIt5nISKFEonrI+Ey5ETlGJ4f
+df3+A5Y/ctlyeXnvyTjF6EAFlBys1DAlakOs1iQguD1ub6h7v1qBUrhPtBCv6DKt
+bQIJ5twUS8k0AjfGLIMYtCgwsvJjfAyeIL/2apPJz3f3eyq1qjHm2Kp084Kco0wv
+ga90FNdoaemgIzxbWQ7LsviVRAXvxuU6EWF+WaiLrBcVCZO00Y14S4DZxYOX4QB0
+dyemya+uH8wopgFsymBAnUfNuJAXCh1ujHBpnJjT9u8CAwEAAaOCAmwwggJoMIGA
+BggrBgEFBQcBAQR0MHIwSgYIKwYBBQUHMAKGPmh0dHA6Ly9wa2kuZXNpZ24tbGEu
+Y29tL2NhY2VydHMvcGtpQ2xhc3MyRmlybWFUcmlidXRhcmlhQ0EuY3J0MCQGCCsG
+AQUFBzABhhhodHRwOi8vb2NzcC5lc2lnbi1sYS5jb20wHQYDVR0OBBYEFElCrgm9
+dk5XboMcxz1rAvo0wnqdMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAU+Ur6wsdu
+wucSnFdFNYQabSjpSqQwgcgGA1UdIASBwDCBvTCBugYMKwYBBAGCymoBBAECMIGp
+MH4GCCsGAQUFBwICMHIecABDAGUAcgB0AGkAZgBpAGMAYQBkAG8AIABwAGEAcgBh
+ACAAdQBzAG8AIABUAHIAaQBiAHUAdABhAHIAaQBvACwAIABDAG8AbQBlAHIAYwBp
+AG8ALAAgAFAAYQBnAG8AcwAgAHkAIABPAHQAcgBvAHMwJwYIKwYBBQUHAgEWG2h0
+dHA6Ly93d3cuZXNpZ24tbGEuY29tL2NwczBRBgNVHR8ESjBIMEagRKBChkBodHRw
+Oi8vcGtpLmVzaWduLWxhLmNvbS9jcmwvcGtpQ2xhc3MyRmlybWFUcmlidXRhcmlh
+L2VuZHVzZXIuY3JsMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcD
+AgYIKwYBBQUHAwQwIwYDVR0RBBwwGqAYBggrBgEEAcEBAaAMFgoyMzM5NDQyMS0x
+MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzANBgkqhkiG9w0B
+AQsFAAOCAQEAF9TXjeu12qvrLOK8/U9zLaLd2mQYSWy9Mx1lxjn95WUiXSYNCw83
+y2mlQgqkpCzBIDuXeT69OGhT1UyH0ORIGI8x54A/mI78a8Tbs+4Rj1vkayGB2pMk
+BdV43WMQSxO99bwROzxV2Rf/QA2sxmir9UdnPGwGyJDACU2bD6KAau4ktVI4jZn1
+UqnIVpaNvZWYBdsqPuD7z5kbJtFqHofBlmIjMGLxBPO55uWiSns0zm0SLiRCKas2
+DEQUdTAQ7NgU8sgP4VL69hglgOr4klCvbB6U2n//KeNRVV7J36QvLk31F/R9D1lB
+P5tKQp0kEEWxoXlN4pkhN55mNlc1MM6RpQ==
+</X509Certificate></X509Data></KeyInfo></Signature>
+    </DTE>
+</SetDTE>
