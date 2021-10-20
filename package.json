@@ -15,5 +15,13 @@
     "datatables.net": "^1.11.3",
     "datatables.net-dt": "^1.11.3",
     "electron-reload": "^2.0.0-alpha.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiasbarram/info282-implementacion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matiasbarram/info282-implementacion/issues"
+  },
+  "homepage": "https://github.com/matiasbarram/info282-implementacion#readme"
 }

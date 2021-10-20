@@ -69,6 +69,7 @@
                 var temp = "";
                 const info = JSON.parse(JSON.parse(data.info));
                 // const prods = JSON.parse(JSON.parse(data.productos));
+                console.log(info);
                 for (key in info) {
                     if (info.hasOwnProperty(key)) {
                         var div = document.createElement("div");
@@ -77,8 +78,8 @@
                     }
                 }
                 //const prods = JSON.parse(data.producto); //array
-                console.log(data.productos);
                 const prods = JSON.parse(data.productos);
+                console.log(prods);
                 var temp = "";
                 prods.forEach((itemData) => {
                     temp += "<tr>";

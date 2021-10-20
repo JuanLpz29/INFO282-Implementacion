@@ -83,7 +83,6 @@ products_schema = ProductSchema(many=True)
 
 class Compra:
     def __init__(self, xml_file):
-        self.productos = []
         self.get_info_compra(xml_file)
         self.toJSON()
         self.get_info_productos(xml_file)
@@ -107,6 +106,7 @@ class Compra:
     def get_info_productos(self, xml_file):
         df_productos = sii_doc_XMLtoPDF(
             xml_file)[['descripcion', 'qty', 'Valor Item']]
+        self.productos = []
         for i in range(len(df_productos)):
             self.productos.append(Producto.from_df(df_productos.iloc[i]))
             # self.products[i].print_info()
