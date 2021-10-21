@@ -217,34 +217,29 @@ def upload_file():
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
+            print("NINGUN ARCHIVO SELECCIONADO")
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print(join(UPLOAD_FOLDER, file.filename))
             xml_compras = Path(UPLOAD_FOLDER + file.filename).read_text()
             # si es un archivo ya preprocesado se cae con esto
             # xml_compras = preprocess_xml(xml_str, n_compras=1)
             cmp = Compra(xml_compras)
             # compra_data = [cmp.toJSON()]
-            resp1 = jsonify(cmp.json_compra)
-            resp2 = product_schema.jsonify(cmp.productos, many=True)
-            # print(resp1.data)
-            # print('*'*60)
-            #print(resp2.data + resp1.data)
-            # print(resp2.json.append(resp1))
-        # return Response(resp2)
-        # return jsonify([resp1.data, resp2.data])
-        # return jsonify(resp1.data + resp2.data)
-            resp = {"info": resp1.data.decode('utf-8'),
-                    "productos": resp2.data.decode('utf-8')}
-            print(resp)
-        return jsonify(resp)
+            resp1 = jsonify(info=cmp.json_compra,
+                            productos=products_schema.dumps(cmp.productos))
+            # resp2 = products_schema.jsonify(cmp.productos)
+            # resp = {"info": resp1.data.decode('utf-8'),
+            #        "productos": resp2.data.decode('utf-8')}
+            print(resp1)
+        return resp1
+        # return jsonify(resp)
         # return Response(resp,  mimetype='application/json')
         # return Response(resp2.data,  mimetype='application/json')
     return
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

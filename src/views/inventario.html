@@ -31,16 +31,16 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th id = "ID"></th>
-                    <th id = "Nombre"></th>
-                    <th id = "Descripcion"></th>
+                    <th id="ID"></th>
+                    <th id="Nombre"></th>
+                    <th id="Descripcion"></th>
                 </tr>
             </thead>
             <tbody id="data">
 
             </tbody>
         </table>
-    </div >
+    </div>
 </body>
 
 <script>
@@ -66,8 +66,9 @@
         Upload().then(
             data => {
                 var mainContainer = document.getElementById("myData");
+                mainContainer.innerHTML = '';
                 var temp = "";
-                const info = JSON.parse(JSON.parse(data.info));
+                const info = JSON.parse(data.info);
                 // const prods = JSON.parse(JSON.parse(data.productos));
                 console.log(info);
                 for (key in info) {
@@ -81,19 +82,17 @@
                 const prods = JSON.parse(data.productos);
                 console.log(prods);
                 var temp = "";
+                document.getElementById('data').innerHTML = temp
                 prods.forEach((itemData) => {
                     temp += "<tr>";
                     temp += "<td>" + itemData.idProducto + "</td>";
                     temp += "<td>" + itemData.nombre + "</td>";
                     temp += "<td>" + itemData.descripcion + "</td></tr>";
                 });
-
-
                 document.getElementById('data').innerHTML = temp
                 document.getElementById('ID').innerHTML = "Id";
                 document.getElementById('Nombre').innerHTML = "Nombre";
                 document.getElementById('Descripcion').innerHTML = "Descripción";
-
             }
         )
     }
