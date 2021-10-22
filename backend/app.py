@@ -9,7 +9,7 @@ from flask import flash, redirect, url_for
 from werkzeug.utils import secure_filename
 import json
 from xml_to_pdf_functions import sii_doc_XMLtoPDF, datos_xml_to_df
-from clases_cool import TPDV, preprocess_xml, get_final_df
+from my_funcs import TPDV, preprocess_xml, get_final_df
 from pathlib import Path
 from os.path import join
 
@@ -160,8 +160,8 @@ def post_info_factura():
 
     return product_schema.jsonify(new_product)
 
-# Actualizamos la info de un producto SOLO FUNCIONA CON debug=False, no sé por qué xd
 
+# Actualizamos la info de un producto SOLO FUNCIONA CON debug=False, no sé por qué xd
 
 @app.route("/productos/<idProducto>/", methods=['PUT'])
 def put_info_adicional_factura(idProducto):
@@ -225,18 +225,9 @@ def upload_file():
             # si es un archivo ya preprocesado se cae con esto
             # xml_compras = preprocess_xml(xml_str, n_compras=1)
             cmp = Compra(xml_compras)
-            # compra_data = [cmp.toJSON()]
-            print(products_schema.dumps(cmp.productos))
             resp1 = jsonify(info=cmp.json_compra,
                             productos=products_schema.dumps(cmp.productos))
-            # resp2 = products_schema.jsonify(cmp.productos)
-            # resp = {"info": resp1.data.decode('utf-8'),
-            #        "productos": resp2.data.decode('utf-8')}
-            print(resp1)
         return resp1
-        # return jsonify(resp)
-        # return Response(resp,  mimetype='application/json')
-        # return Response(resp2.data,  mimetype='application/json')
     return
 
 

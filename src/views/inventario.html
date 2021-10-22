@@ -5,9 +5,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet" />
     <script type=module src="../header.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+
 
 </head>
+<style>
+    h1 {
+        text-align: left;
+    }
+
+    div.fact_info {
+        text-align: center;
+        padding-bottom: 50px;
+        padding-top: 25px;
+    }
+</style>
 
 <body>
     <main-header></main-header>
@@ -24,23 +40,24 @@
             <button onclick="getCompras(event)">Suir archivo</button>
         </form>
     </div>
-    <p id="dynamic"></p>
-
-    <div id="myData"></div>
+    <p id="dynamic">
+    <div class="fact_info" id="myData"></div>
     <div class="container">
-        <table class="table">
-            <thead>
+        <table id="table_id" class="display">
+            <thead id="thead_id">
                 <tr>
-                    <th id = "ID"></th>
-                    <th id = "Nombre"></th>
-                    <th id = "Descripcion"></th>
+                    <th id="ID"></th>
+                    <th id="nombre"></th>
+                    <th id="descripcion"></th>
+                    <th id="stock"></th>
+                    <th id="precioUnitario"></th>
                 </tr>
             </thead>
             <tbody id="data">
-
             </tbody>
         </table>
-    </div >
+    </div>
+    </p>
 </body>
 
 <script>
@@ -71,6 +88,10 @@
                 const info = JSON.parse(data.info);
                 // const prods = JSON.parse(JSON.parse(data.productos));
                 console.log(info);
+
+                //var jsonPretty = JSON.stringify(info, null, 2);
+                //mainContainer.innerHTML = "<pre>" + jsonPretty + "</pre>"
+                mainContainer.innerHTML = '';
                 for (key in info) {
                     if (info.hasOwnProperty(key)) {
                         var div = document.createElement("div");
@@ -78,23 +99,43 @@
                         mainContainer.appendChild(div);
                     }
                 }
+
+
                 //const prods = JSON.parse(data.producto); //array
                 const prods = JSON.parse(data.productos);
                 console.log(prods);
-                var temp = "";
-                prods.forEach((itemData) => {
-                    temp += "<tr>";
-                    temp += "<td>" + itemData.idProducto + "</td>";
-                    temp += "<td>" + itemData.nombre + "</td>";
-                    temp += "<td>" + itemData.descripcion + "</td></tr>";
-                });
-
-
-                document.getElementById('data').innerHTML = temp
                 document.getElementById('ID').innerHTML = "Id";
-                document.getElementById('Nombre').innerHTML = "Nombre";
-                document.getElementById('Descripcion').innerHTML = "Descripción";
-
+                document.getElementById('nombre').innerHTML = "Nombre";
+                document.getElementById('descripcion').innerHTML = "Descripción";
+                document.getElementById('stock').innerHTML = "Stock";
+                document.getElementById('precioUnitario').innerHTML = "Precio Unitario";
+                if ($.fn.dataTable.isDataTable('#table_id')) {
+                    var datatable = $('#table_id').DataTable();
+                    datatable.clear();
+                    datatable.rows.add(data);
+                    datatable.draw();
+                }
+                else {
+                    table = $('#table_id').DataTable({
+                        "paging": false,
+                        "ordering": false,
+                        "info": false,
+                        "searching": false,
+                        retrieve: true,
+                        data: prods,
+                        columns: [
+                            { data: 'idProducto' },
+                            { data: 'nombre' },
+                            { editField: 'descripcion' },
+                            { data: 'stock' },
+                            { data: 'precioUnitario' },
+                        ],
+                        targets: [1, 2, 3]
+                    });
+                    $('#table_id').on('click', 'tbody td', function (e) {
+                        editor.inline(this);
+                    });
+                }
             }
         )
     }
