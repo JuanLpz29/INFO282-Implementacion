@@ -43,7 +43,7 @@
     <p id="dynamic">
     <div class="fact_info" id="myData"></div>
     <div class="container">
-        <table id="table_id" class="display">
+        <table id="table_compra" class="display">
             <thead id="thead_id">
                 <tr>
                     <th id="ID"></th>
@@ -109,14 +109,14 @@
                 document.getElementById('descripcion').innerHTML = "Descripción";
                 document.getElementById('stock').innerHTML = "Stock";
                 document.getElementById('precioUnitario').innerHTML = "Precio Unitario";
-                if ($.fn.dataTable.isDataTable('#table_id')) {
-                    var datatable = $('#table_id').DataTable();
+                if ($.fn.dataTable.isDataTable('#table_compra')) {
+                    var datatable = $('#table_compra').DataTable();
                     datatable.clear();
-                    datatable.rows.add(data);
+                    datatable.rows.add(prods);
                     datatable.draw();
                 }
                 else {
-                    table = $('#table_id').DataTable({
+                    table = $('#table_compra').DataTable({
                         "paging": false,
                         "ordering": false,
                         "info": false,
@@ -126,14 +126,11 @@
                         columns: [
                             { data: 'idProducto' },
                             { data: 'nombre' },
-                            { editField: 'descripcion' },
+                            { data: 'descripcion' },
                             { data: 'stock' },
                             { data: 'precioUnitario' },
                         ],
                         targets: [1, 2, 3]
-                    });
-                    $('#table_id').on('click', 'tbody td', function (e) {
-                        editor.inline(this);
                     });
                 }
             }
