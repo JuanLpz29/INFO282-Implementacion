@@ -9,7 +9,7 @@ from flask import flash, redirect, url_for
 from werkzeug.utils import secure_filename
 import json
 from xml_to_pdf_functions import sii_doc_XMLtoPDF, datos_xml_to_df
-from clases_cool import TPDV, preprocess_xml
+from clases_cool import TPDV, preprocess_xml, get_final_df
 from pathlib import Path
 from os.path import join
 
@@ -29,7 +29,6 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 
-# Clase que hace la relacion entre la TABLA PRODUCTO de la db con Flask, no tienen que estar definidos todos los campos
 class Producto(db.Model):
     __tablename__ = 'Producto'  # No sé si es necesario, pero creo que si
     idProducto = db.Column(db.Integer, primary_key=True)
@@ -47,8 +46,9 @@ class Producto(db.Model):
     valorItem = db.Column(db.Integer)
 
     # Campos minimos para hacer POST
-    def __init__(self, nombre, stock, precioUnitario, valorItem):
+    def __init__(self, nombre, descripcion, stock, precioUnitario, valorItem):
         self.nombre = nombre
+        self.descripcion = descripcion
         self.stock = stock
         self.precioUnitario = precioUnitario
         self.valorItem = valorItem
@@ -59,15 +59,14 @@ class Producto(db.Model):
             price = int(df_row['Valor Item'].replace('.', ''))
         except AttributeError:
             price = 0
-        return cls(df_row['descripcion'],
+        return cls(df_row['nombre'],
+                   df_row['descripcion'],
                    int(df_row['qty']),
                    price,
                    price)
 
     def print_info(self):
         print(f"{self.nombre:<43} {self.cantidad:<15} {self.precioUnitario:}")
-
-# Define el esquema de la base de datos
 
 
 class ProductSchema(ma.Schema):
@@ -104,8 +103,9 @@ class Compra:
         """
 
     def get_info_productos(self, xml_file):
-        df_productos = sii_doc_XMLtoPDF(
-            xml_file)[['descripcion', 'qty', 'Valor Item']]
+        df_productos = sii_doc_XMLtoPDF(xml_file)
+        df_productos = get_final_df(df_productos)
+        print(df_productos)
         self.productos = []
         for i in range(len(df_productos)):
             self.productos.append(Producto.from_df(df_productos.iloc[i]))
@@ -130,8 +130,6 @@ class Compra:
 
 
 # Retornamos todos los productos de la base de datos
-
-
 @app.route('/productos', methods=['GET'])
 def get_all_productos():
     all_productos = Producto.query.all()
@@ -228,6 +226,7 @@ def upload_file():
             # xml_compras = preprocess_xml(xml_str, n_compras=1)
             cmp = Compra(xml_compras)
             # compra_data = [cmp.toJSON()]
+            print(products_schema.dumps(cmp.productos))
             resp1 = jsonify(info=cmp.json_compra,
                             productos=products_schema.dumps(cmp.productos))
             # resp2 = products_schema.jsonify(cmp.productos)

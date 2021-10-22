@@ -137,14 +137,17 @@ class DTE:
             desc = i.find("{http://www.sii.cl/SiiDte}DescuentoPct")
             imp_text = valores_impuestos[imp_code.text] if imp_code is not None else str(
                 0)
-            #print("valor impuentos ", imp_text)
+            ea_code = i.findall("{http://www.sii.cl/SiiDte}CdgItem")
+            prod_code = None
+            if ea_code is not None:
+                for cd in ea_code:
+                    if cd.find("{http://www.sii.cl/SiiDte}TpoCodigo").text == 'EAN13':
+                        prod_code = cd.find(
+                            "{http://www.sii.cl/SiiDte}VlrCodigo").text
             desc_text = desc.text if desc is not None else str(0)
             qtytext = qty.text if qty is not None else str(1)
             ratetext = rate.text if rate is not None else total
 
-            # print(qty.text)
-            # print(imp_text)
-            # print(desc_text)
             # print (
             #    "qty = " + qtytext + ", rate = " + ratetext + ", description = " + description + ", total = " + total)
 
@@ -158,7 +161,8 @@ class DTE:
                  "item_code": "Item Generico",
                  "project": "Oficina",
                  "cost_center": "Oficina - T",
-                 "descripcion": description}
+                 "descripcion": description,
+                 "ean13": prod_code}
             )
 
     def parse_referencias(self):

@@ -43,10 +43,10 @@ def sii_doc_XMLtoPDF(path):
         ".")
     df = df[["Nro.", "Código", "descripcion",
              "descuento", "imp_adicional",
-             "qty", "P.U.", "Valor Item"]]
-    if len(df) >= 13:
-        df = df.reindex(df.index.tolist() + list(range(len(df), 25))
-                        ).replace(np.nan, 0, regex=True)
+             "qty", "P.U.", "Valor Item", "ean13"]]
+    # if len(df) >= 13:
+    #     df = df.reindex(df.index.tolist() + list(range(len(df), 25))
+    #                     ).replace(np.nan, 0, regex=True)
     # df.style.format("{:.2%}")
 
     # TABLA REFERENCIAS
@@ -129,10 +129,10 @@ def datos_xml_to_df(path):
         "montoTotal": dte_parsed.monto_total,
         "montoNeto": dte_parsed.monto_neto,
         "montoIVA": dte_parsed.monto_iva,
-        #"referencias_oc": obtieneRefOc(dte_parsed.referencias),
+        # "referencias_oc": obtieneRefOc(dte_parsed.referencias),
         "tipoDoc": dte_parsed.tipo_dte_palabras,
-        #"items": dte_parsed.items,
-        #"comuna": dte_parsed.comuna_proveedor,
+        # "items": dte_parsed.items,
+        # "comuna": dte_parsed.comuna_proveedor,
         "proveedor": dte_parsed.razon_social,
     },
         ignore_index=True, )
