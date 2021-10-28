@@ -1,7 +1,4 @@
 node_modules/
 __pycache__/
-backend/uploads
-backend/__pycache__/
-backend/DTE/__pycache__/
 pycache/
 *.pyc

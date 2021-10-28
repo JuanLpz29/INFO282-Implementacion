@@ -2,6 +2,63 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
 import json
+import pandas as pd
+import re
+
+# por mientras se asume que el archivo tiene una sola factura y este
+# no presenta la pifia esa
+regexes = {'PET': r'^(.*PET)(?:\s)?(\d+)(?:CC)?(?:X)?(\d+)?.*',
+           'CCX': r'^(.*?)(\d+)(?:CC)(?:X)(\d+).*',
+           'LAT': r'^(.*?)(?: |_)(\d+)(?:.*?)(?:LAT|LATA)(\d+)(?:CC)?.*'}
+
+nombres = pd.read_csv('./app/data/codes_desc.csv')
+nombres_dict = nombres.set_index('Original Code').to_dict()['description']
+nombres_dict = {str(k): v for k, v in nombres_dict.items()}
+
+
+def name_parser(key, desc):
+    name = desc
+    qty = None
+    try:
+        if key in ['PET', 'CCX']:
+            _name, size, qty = re.match(regexes[key], desc).groups()
+        elif key == 'LAT':
+            _name, qty, size = re.match(regexes[key], desc).groups()
+        name = f"{_name.title()} {size}CC"
+    except AttributeError:
+        # print(f'ERROR EN    "{desc}" ')
+        pass
+    except ValueError:
+        # print('//////', desc)
+        pass
+    if qty is None:
+        qty = 1
+    return (name, int(qty))
+
+
+def get_final_df(df):
+    df['nombre'] = ""
+    df.reset_index(inplace=True)
+    for i, line in enumerate(df.iterrows()):
+        desc = line[1].descripcion
+        if 'PET' in desc:
+            name, qty = name_parser('PET', desc)
+        elif 'CCX' in desc:
+            name, qty = name_parser('CCX', desc)
+        elif 'LAT' in desc:
+            name, qty = name_parser('LAT', desc)
+        else:
+            [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
+            name, qty = name.title(), 1
+
+        if nombres_dict.get(line[1].ean13) is not None:
+            name = nombres_dict.get(line[1].ean13)
+        df.at[i, 'nombre'] = name
+        df.at[i, 'qty'] = qty * float(df.iloc[i].qty)
+        #df = df.apply(lambda row: row['P.U.'].replace('.', ''))
+        #df['P.U.'] = df['P.U.'].astype(int)
+    return df.rename(columns={"qty": "Stock",
+                              "P.U.": "precioUnitario"})
 
 
 class DTE:
@@ -11,14 +68,15 @@ class DTE:
         try:
             self.tree_path = tree_path
             self.tree = ET.ElementTree(ET.fromstring(tree_path))
-            #self.tree = ET.parse(tree_path)
             self.es_respuesta()
             self.parse_encabezado()
             self.asignar_tipo_dte_palabras()
             self.asignar_forma_pago_palabras()
             self.parse_items()
-            self.parse_referencias()
+            # self.parse_referencias()
             self.parse_impuestos()
+            self.set_df_datos()
+            self.set_df_productos()
             self.bien_formado = 1
         except:
             print("ERROR AL LEER EL XML")
@@ -141,6 +199,7 @@ class DTE:
             prod_code = None
             if ea_code is not None:
                 for cd in ea_code:
+                    # cambiar para guardar ambos
                     if cd.find("{http://www.sii.cl/SiiDte}TpoCodigo").text == 'EAN13':
                         prod_code = cd.find(
                             "{http://www.sii.cl/SiiDte}VlrCodigo").text
@@ -303,3 +362,51 @@ class DTE:
 
     def es_respuesta(self):
         return not self.tree.find('.//{http://www.sii.cl/SiiDte}NmbEnvio') is None
+
+    def set_df_datos(self):
+        self.df_datos = pd.DataFrame()
+        self.df_datos = self.df_datos.append({
+            "rut": self.rut_proveedor,
+            "fecha": self.fecha_emision,
+            "folio": self.numero_factura,
+            "montoTotal": self.monto_total,
+            "montoNeto": self.monto_neto,
+            "montoIVA": self.monto_iva,
+            # "referencias_oc": obtieneRefOc(self.referencias),
+            "tipoDoc": self.tipo_dte_palabras,
+            # "items": self.items,
+            # "comuna": self.comuna_proveedor,
+            "proveedor": self.razon_social,
+        },
+            ignore_index=True, )
+
+    def set_df_productos(self):
+        df = pd.json_normalize(self.items)
+        df["qty"] = df["qty"].astype(float)
+        df["imp_adicional"] = df["imp_adicional"].astype(float)
+        df["descuento"] = df["descuento"].astype(float)
+        df["P.U."] = df["rate"].astype(float).astype(int).map('{:,}'.format).str.replace(
+            ",",
+            ".")
+        df["Valor Item"] = (df["qty"].astype(float) * df["rate"].astype(float)).astype(int).map('{:,}'.format).str.replace(
+            ",",
+            ".")
+        df = df[["descripcion",
+                "descuento", "imp_adicional",
+                 "qty", "P.U.", "Valor Item", "ean13"]]
+        # if len(df) >= 13:
+        #     df = df.reindex(df.index.tolist() + list(range(len(df), 25))
+        #                     ).replace(np.nan, 0, regex=True)
+        # df.style.format("{:.2%}")
+        # TABLA IMPUESTOS
+        # df_impuestos = pd.json_normalize(self.impuestos)
+        # # print((df_impuestos['monto']))
+        # monto_impuesto_y_retenciones = df_impuestos["monto"].astype(
+        #     int).to_numpy().sum() if len(df_impuestos) > 0 else 0
+        self.df_productos = get_final_df(df)
+
+    def get_df_datos(self):
+        return self.df_datos
+
+    def get_df_productos(self):
+        return self.df_productos

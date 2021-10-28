@@ -62,7 +62,7 @@
 
 <script>
 
-    async function Upload() {
+    async function upload() {
         const formData = new FormData();
         const fileField = document.querySelector('input[type="file"]');
         formData.append('file', fileField.files[0]);
@@ -71,23 +71,19 @@
             body: formData
         })
         const contentType = response.headers.get("content-type");
-        console.log(contentType)
         const compras = await response.json()
-        console.log(compras);
         return compras;
     }
 
     async function getCompras(e) {
         e.preventDefault();
         e.stopPropagation();
-        Upload().then(
+        upload().then(
             data => {
-                console.log(data)
                 var mainContainer = document.getElementById("myData");
                 var temp = "";
-                const info = JSON.parse(data.info);
+                const info = JSON.parse(data.info)['0']; // EL [0] ES UN FIX TEMPORAL OJO
                 // const prods = JSON.parse(JSON.parse(data.productos));
-                console.log(info);
 
                 //var jsonPretty = JSON.stringify(info, null, 2);
                 //mainContainer.innerHTML = "<pre>" + jsonPretty + "</pre>"
@@ -102,7 +98,7 @@
 
 
                 //const prods = JSON.parse(data.producto); //array
-                const prods = JSON.parse(data.productos);
+                const prods = JSON.parse(data.productos).data;
                 console.log(prods);
                 document.getElementById('ID').innerHTML = "Id";
                 document.getElementById('nombre').innerHTML = "Nombre";
@@ -124,11 +120,15 @@
                         retrieve: true,
                         data: prods,
                         columns: [
-                            { data: 'idProducto' },
+                            { data: 'ean13' },
                             { data: 'nombre' },
                             { data: 'descripcion' },
-                            { data: 'stock' },
-                            { data: 'precioUnitario' },
+                            { data: 'Stock' },
+                            {
+                                data: 'precioUnitario', render: function (data, type, row) {
+                                    return '$' + data;
+                                }
+                            },
                         ],
                         targets: [1, 2, 3]
                     });
