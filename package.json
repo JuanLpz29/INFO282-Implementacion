@@ -2,7 +2,7 @@
     "name": "my-electron-app",
     "version": "1.0.0",
     "description": "Test electron",
-    "main": "src/front/index.js",
+    "main": "front/index.js",
     "scripts": {
         "start": "electron ."
     },
