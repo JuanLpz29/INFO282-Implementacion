@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import json
 import pandas as pd
 import re
+import numpy as np
 
 # por mientras se asume que el archivo tiene una sola factura y este
 # no presenta la pifia esa
@@ -14,6 +15,7 @@ regexes = {'PET': r'^(.*PET)(?:\s)?(\d+)(?:CC)?(?:X)?(\d+)?.*',
 nombres = pd.read_csv('./app/data/codes_desc.csv')
 nombres_dict = nombres.set_index('Original Code').to_dict()['description']
 nombres_dict = {str(k): v for k, v in nombres_dict.items()}
+NAN = np.nan
 
 
 def name_parser(key, desc):
@@ -50,13 +52,12 @@ def get_final_df(df):
         else:
             [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
             name, qty = name.title(), 1
-
-        if nombres_dict.get(line[1].ean13) is not None:
-            name = nombres_dict.get(line[1].ean13)
+        if nombres_dict.get(line[1].item_code) is not None:
+            name = nombres_dict.get(line[1].item_code)
         df.at[i, 'nombre'] = name
         df.at[i, 'qty'] = qty * float(df.iloc[i].qty)
-        #df = df.apply(lambda row: row['P.U.'].replace('.', ''))
-        #df['P.U.'] = df['P.U.'].astype(int)
+        # df = df.apply(lambda row: row['P.U.'].replace('.', ''))
+        # df['P.U.'] = df['P.U.'].astype(int)
     return df.rename(columns={"qty": "Stock",
                               "P.U.": "precioUnitario"})
 
@@ -77,6 +78,7 @@ class DTE:
             self.parse_impuestos()
             self.set_df_datos()
             self.set_df_productos()
+            self.set_df_proveedor()
             self.bien_formado = 1
         except:
             print("ERROR AL LEER EL XML")
@@ -196,13 +198,16 @@ class DTE:
             imp_text = valores_impuestos[imp_code.text] if imp_code is not None else str(
                 0)
             ea_code = i.findall("{http://www.sii.cl/SiiDte}CdgItem")
-            prod_code = None
+            prod_code = NAN
+            _codes = dict()
             if ea_code is not None:
                 for cd in ea_code:
-                    # cambiar para guardar ambos
-                    if cd.find("{http://www.sii.cl/SiiDte}TpoCodigo").text == 'EAN13':
-                        prod_code = cd.find(
-                            "{http://www.sii.cl/SiiDte}VlrCodigo").text
+                    _type = cd.find("{http://www.sii.cl/SiiDte}TpoCodigo").text
+                    _code = cd.find("{http://www.sii.cl/SiiDte}VlrCodigo").text
+                    _codes[_type] = _code
+            if len(_codes.items()) > 0:
+                prod_code = sorted(_codes.items(),
+                                   key=lambda x: len(x[1]), reverse=True)[0][1]
             desc_text = desc.text if desc is not None else str(0)
             qtytext = qty.text if qty is not None else str(1)
             ratetext = rate.text if rate is not None else total
@@ -217,11 +222,8 @@ class DTE:
                  "rate": ratetext,
                  "imp_adicional": imp_text,
                  "descuento": desc_text,
-                 "item_code": "Item Generico",
-                 "project": "Oficina",
-                 "cost_center": "Oficina - T",
                  "descripcion": description,
-                 "ean13": prod_code}
+                 "item_code": prod_code}
             )
 
     def parse_referencias(self):
@@ -363,10 +365,17 @@ class DTE:
     def es_respuesta(self):
         return not self.tree.find('.//{http://www.sii.cl/SiiDte}NmbEnvio') is None
 
+    def set_df_proveedor(self):
+        self.df_proveedor = pd.DataFrame()
+        self.df_proveedor = self.df_proveedor.append({
+            "rut": self.rut_proveedor,
+            "proveedor": self.razon_social,
+            "comuna": self.comuna_proveedor,
+        }, ignore_index=True, )
+
     def set_df_datos(self):
         self.df_datos = pd.DataFrame()
         self.df_datos = self.df_datos.append({
-            "rut": self.rut_proveedor,
             "fecha": self.fecha_emision,
             "folio": self.numero_factura,
             "montoTotal": self.monto_total,
@@ -375,8 +384,6 @@ class DTE:
             # "referencias_oc": obtieneRefOc(self.referencias),
             "tipoDoc": self.tipo_dte_palabras,
             # "items": self.items,
-            # "comuna": self.comuna_proveedor,
-            "proveedor": self.razon_social,
         },
             ignore_index=True, )
 
@@ -392,8 +399,8 @@ class DTE:
             ",",
             ".")
         df = df[["descripcion",
-                "descuento", "imp_adicional",
-                 "qty", "P.U.", "Valor Item", "ean13"]]
+                 "descuento", "imp_adicional",
+                "qty", "P.U.", "Valor Item", "item_code"]]
         # if len(df) >= 13:
         #     df = df.reindex(df.index.tolist() + list(range(len(df), 25))
         #                     ).replace(np.nan, 0, regex=True)
@@ -410,3 +417,6 @@ class DTE:
 
     def get_df_productos(self):
         return self.df_productos
+
+    def get_df_proveedor(self):
+        return self.df_proveedor
