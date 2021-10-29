@@ -8,8 +8,9 @@ products_schema = ProductSchema(many=True)
 
 
 def index():
-    all_productos = Producto.query.all()
-    result = products_schema.dump(all_productos)
+    all_productos = Producto.query.paginate(page=1, per_page=30)
+    result = products_schema.dump(all_productos.items)
+    print(all_productos.pages)
     return jsonify(result)
 
 

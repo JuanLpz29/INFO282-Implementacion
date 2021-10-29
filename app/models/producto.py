@@ -25,12 +25,13 @@ class Producto(db.Model):
     valorItem = db.Column(db.Integer)
 
     # Campos minimos para hacer POST
-    def __init__(self, nombre, descripcion, stock, precioUnitario, valorItem):
+    def __init__(self, nombre, descripcion, stock, precioUnitario, valorItem, barcode):
         self.nombre = nombre
         self.descripcion = descripcion
         self.stock = stock
         self.precioUnitario = precioUnitario
         self.valorItem = valorItem
+        self.codigoBarra = barcode
 
     @classmethod
     def from_df(cls, df_row):
@@ -42,7 +43,8 @@ class Producto(db.Model):
                    df_row['descripcion'],
                    int(df_row['qty']),
                    price,
-                   price)
+                   price,
+                   df_row['int_code'])
 
     def print_info(self):
         print(f"{self.nombre:<43} {self.cantidad:<15} {self.precioUnitario:}")
