@@ -1,13 +1,14 @@
-from flask import render_template, redirect, url_for, request, abort, jsonify
+from flask import render_template, redirect, url_for, request, abort, jsonify, wrappers
 from app.models.compra import Compra, CompraSchema
 from app.models.producto import ProductSchema
 from app.models.proveedor import Proveedor
-from app.controllers.DTE import DTE
+from app.utils.DTE import DTE
 from app import db
 from werkzeug.utils import secure_filename
 from os.path import join
 from pathlib import Path
 from flask import current_app
+from pandas import DataFrame
 
 from app.models.proveedor import Proveedor
 # from DTE import DTE
@@ -17,7 +18,13 @@ compra_schema = CompraSchema()
 compras_schema = CompraSchema(many=True)
 
 # NO SE SI HAY UNA FORMA MEJOR PARA MANEJAR LOS PRODUCTOS
-# DENTOR DE LA COMPRA... OTRA TABLA POR LA RELACION ESA?
+# DENTOR DE LA COMPRA... OTRA TABLA POR LA RELACION ESA?fal
+
+
+def index():
+    all_compras = Compra.query.paginate(page=1, per_page=30)
+    result = compras_schema.dump(all_compras.items)
+    return jsonify(result)
 
 
 def _allowed_file(filename):
@@ -25,14 +32,25 @@ def _allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ['xml']
 
 
-def _store(dfc, df_productos, df_proveedor):
-    new_compra = Compra.from_df(dfc, df_productos)
-    pro = Proveedor.query.filter_by(rut=df_proveedor.iloc[0].rut).first()
+def _store(datos_compra: dict, df_productos: DataFrame, datos_proveedor: dict):
+    cmp = Compra.query.filter_by(folio=datos_compra['folio']).first()
+    if cmp is not None:
+        print('la compra ya se encuentra registrada en el sistema!!')
+        return
+    # como no existe creamos una nueva
+    new_compra = Compra(datos_compra, df_productos)
+    # si no existe un proveedor con ese rut, lo creamos
+    pro = Proveedor.query.filter_by(rut=datos_proveedor['rut']).first()
     if pro is None:
-        pro = Proveedor.from_df(df_proveedor)
-        db.session.add(pro)
-        db.session.commit()
-        print(pro.razonSocial, '    AGREAO ALSISTEMA')
+        pro = Proveedor.from_dict(datos_proveedor)
+        print(f'Se agregara el proveedor  "{pro.razonSocial}" al sistema')
+    # una comprita pal master
+    pro.compras.append(new_compra)
+    db.session.add(pro)
+    # al parecer no es necesaroi este ADD, con el append anterior basta
+    # para que se cree la compra actual
+    # db.session.add(new_compra)
+    db.session.commit()
 
 
 def upload_documento():
@@ -50,11 +68,13 @@ def upload_documento():
             file.save(join(uf, filename))
             xml_compras = Path(join(uf, file.filename)).read_text()
             cmp = DTE(xml_compras)
-            # cmp = Compra(xml_compras)
             # print(cmp.get_df_datos())
             # print(cmp.get_df_proveedor())
-            _store(cmp.df_datos, cmp.df_productos, cmp.df_proveedor)
-            resp1 = jsonify(info=cmp.get_df_datos().to_json(orient="index"),
-                            productos=cmp.get_df_productos().to_json(orient="table"))
-        return resp1
+            _store(cmp.datos_dict, cmp.df_productos,
+                   cmp.proveedor_dict)  # guardar datos factura
+            # unir los diccionariosgt
+            info_doc = {**cmp.proveedor_dict, **cmp.datos_dict}
+            response = jsonify(info=info_doc,
+                               productos=cmp.df_productos.to_json(orient="table"))
+        return response
     return

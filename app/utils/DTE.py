@@ -76,9 +76,9 @@ class DTE:
             self.parse_items()
             # self.parse_referencias()
             self.parse_impuestos()
-            self.set_df_datos()
+            self.set_datos_documento()
             self.set_df_productos()
-            self.set_df_proveedor()
+            self.set_datos_proveedor()
             self.bien_formado = 1
         except:
             print("ERROR AL LEER EL XML")
@@ -365,27 +365,23 @@ class DTE:
     def es_respuesta(self):
         return not self.tree.find('.//{http://www.sii.cl/SiiDte}NmbEnvio') is None
 
-    def set_df_proveedor(self):
-        self.df_proveedor = pd.DataFrame()
-        self.df_proveedor = self.df_proveedor.append({
-            "rut": self.rut_proveedor,
+    def set_datos_proveedor(self):
+        self.proveedor_dict = {
             "proveedor": self.razon_social,
+            "rut": self.rut_proveedor,
             "comuna": self.comuna_proveedor,
-        }, ignore_index=True, )
+        }
 
-    def set_df_datos(self):
-        self.df_datos = pd.DataFrame()
-        self.df_datos = self.df_datos.append({
+    def set_datos_documento(self):
+        self.datos_dict = {
+            "tipoDoc": self.tipo_dte_palabras,
             "fecha": self.fecha_emision,
             "folio": self.numero_factura,
-            "montoTotal": self.monto_total,
             "montoNeto": self.monto_neto,
             "montoIVA": self.monto_iva,
-            # "referencias_oc": obtieneRefOc(self.referencias),
-            "tipoDoc": self.tipo_dte_palabras,
-            # "items": self.items,
-        },
-            ignore_index=True, )
+            "montoTotal": self.monto_total,
+            # "referencias_oc": obtieneRefOc(self.referencias),#
+        }
 
     def set_df_productos(self):
         df = pd.json_normalize(self.items)
@@ -412,11 +408,11 @@ class DTE:
         #     int).to_numpy().sum() if len(df_impuestos) > 0 else 0
         self.df_productos = get_final_df(df)
 
-    def get_df_datos(self):
-        return self.df_datos
+    def get_datos_documento(self):
+        return self.datos_dict
 
     def get_df_productos(self):
         return self.df_productos
 
-    def get_df_proveedor(self):
-        return self.df_proveedor
+    def get_datos_proveedor(self):
+        return self.proveedor_dict
