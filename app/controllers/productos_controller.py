@@ -4,20 +4,21 @@ from app import db
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
+
+
 # Retornamos todos los productos de la base de datos
-
-
 def index():
     all_productos = Producto.query.paginate(page=1, per_page=30)
     result = products_schema.dump(all_productos.items)
-    print(all_productos.pages)
     return jsonify(result)
 
 
 # Retornamos solo un producto de la base de datos
 def show(idProducto):
     producto = Producto.query.get(idProducto)
-    return product_schema.jsonify(producto)
+    if producto is not None:
+        return product_schema.jsonify(producto)
+    return f"no se encontro producto con id {idProducto}"
 
 
 def destroy(idProducto):

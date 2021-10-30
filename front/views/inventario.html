@@ -66,7 +66,7 @@
         const formData = new FormData();
         const fileField = document.querySelector('input[type="file"]');
         formData.append('file', fileField.files[0]);
-        const response = await fetch('http://127.0.0.1:5000/documento', {
+        const response = await fetch('http://127.0.0.1:5000/compras/upload', {
             method: 'POST',
             body: formData
         })

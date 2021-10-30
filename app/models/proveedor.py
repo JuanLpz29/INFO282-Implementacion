@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 class ProveedorSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'razonSocial', 'rut', 'comuna')
+        fields = ('idProveedor', 'razonSocial', 'rut', 'comuna')
 
 
 class Proveedor(db.Model):
