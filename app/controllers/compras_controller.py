@@ -27,6 +27,14 @@ def index():
     return jsonify(result)
 
 
+# Retornamos solo un producto de la base de datos
+def show(idCompra):
+    compra = Compra.query.get(idCompra)
+    if compra is not None:
+        return compra_schema.jsonify(compra)
+    return f"no se encontro Compra con id {idCompra}"
+
+
 def _allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ['xml']
@@ -54,27 +62,25 @@ def _store(datos_compra: dict, df_productos: DataFrame, datos_proveedor: dict):
 
 
 def upload_documento():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            print("NINGUN ARCHIVO SELECCIONADO")
-            return redirect(request.url)
-        if file and _allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            uf = current_app.config['UPLOAD_FOLDER']
-            file.save(join(uf, filename))
-            xml_compras = Path(join(uf, file.filename)).read_text()
-            cmp = DTE(xml_compras)
-            # print(cmp.get_df_datos())
-            # print(cmp.get_df_proveedor())
-            _store(cmp.datos_dict, cmp.df_productos,
-                   cmp.proveedor_dict)  # guardar datos factura
-            # unir los diccionariosgt
-            info_doc = {**cmp.proveedor_dict, **cmp.datos_dict}
-            response = jsonify(info=info_doc,
-                               productos=cmp.df_productos.to_json(orient="table"))
-        return response
-    return
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        return redirect(request.url)
+    file = request.files['file']
+    if file.filename == '':
+        print("NINGUN ARCHIVO SELECCIONADO")
+        return redirect(request.url)
+    if file and _allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        uf = current_app.config['UPLOAD_FOLDER']
+        file.save(join(uf, filename))
+        xml_compras = Path(join(uf, file.filename)).read_text()
+        cmp = DTE(xml_compras)
+        # print(cmp.get_df_datos())
+        # print(cmp.get_df_proveedor())
+        _store(cmp.datos_dict, cmp.df_productos,
+               cmp.proveedor_dict)  # guardar datos factura
+        # unir los diccionariosgt
+        info_doc = {**cmp.proveedor_dict, **cmp.datos_dict}
+        response = jsonify(info=info_doc,
+                           productos=cmp.df_productos.to_json(orient="table"))
+    return response
