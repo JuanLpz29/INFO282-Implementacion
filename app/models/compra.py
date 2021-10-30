@@ -2,6 +2,7 @@ from app import ma
 from app import db
 from dateutil.parser import parse
 from sqlalchemy.orm import relationship
+from pandas import DataFrame
 
 
 class CompraSchema(ma.Schema):
@@ -22,16 +23,22 @@ class Compra(db.Model):
     fecha = db.Column(db.Date)
     tipoDocumento = db.Column(db.String(20))
     folio = db.Column(db.Integer)
+    # una compra tiene UN PROVEEDOR
+    idProveedor = db.Column(db.Integer, db.ForeignKey('Proveedor.idProveedor'))
+    proveedor = relationship("Proveedor", back_populates="compras")
 
     # Campos minimos para hacer POST
-    def __init__(self, total, neto, fecha, tipo, folio):
-        self.montoTotal = total
-        self.montoNeto = neto
-        self.fecha = fecha
-        self.tipoDocumento = tipo
-        self.folio = folio
+    def __init__(self, datos: dict, productos: DataFrame):
+        self.montoTotal = datos['montoTotal']
+        self.montoNeto = datos['montoNeto']
+        self.fecha = datos['fecha']
+        self.tipoDocumento = datos['tipoDoc']
+        self.folio = datos['folio']
 
+    def get_id(self):
+        return self.idCompra
     # inicializar con los campos que estimen conveniente
+
     @classmethod
     def from_df(cls, df_datos, df_productos):
         ddf = df_datos.iloc[0].to_dict()

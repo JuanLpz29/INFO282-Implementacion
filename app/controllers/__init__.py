@@ -9,6 +9,7 @@ from app.controllers.productos_controller import update as products_update
 
 
 from app.controllers.compras_controller import upload_documento as compras_store
+from app.controllers.compras_controller import index as compras_index
 
 productos_bp = Blueprint('productos', 'api')
 productos_bp.add_url_rule('/productos', view_func=products_index,
@@ -16,6 +17,8 @@ productos_bp.add_url_rule('/productos', view_func=products_index,
 compras_bp = Blueprint('compras', 'api')
 compras_bp.add_url_rule('/documento', view_func=compras_store,
                         methods=['GET', 'POST'])
+compras_bp.add_url_rule('/compras', view_func=compras_index,
+                        methods=['GET'])
 # products_bp.add_url_rule('/', view_func=products_store,
 #                          methods=['GET'])
 
