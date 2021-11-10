@@ -13,6 +13,9 @@ pipeline {
                 }
         }   
         stage('Archive') {
+            agent {
+                label 'master'
+            }
                 steps {
                     archiveArtifacts '**'
                 }
