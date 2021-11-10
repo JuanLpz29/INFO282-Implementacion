@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'srittau/wsgi-base:latest'
+            args '-u root:root'
             }
             }
     stages {
