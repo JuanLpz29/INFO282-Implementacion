@@ -1,5 +1,6 @@
 from app import ma
 from app import db
+from numpy import isnan
 
 
 class ProductSchema(ma.Schema):
@@ -31,7 +32,9 @@ class Producto(db.Model):
         self.stock = stock
         self.precioUnitario = precioUnitario
         self.valorItem = valorItem
-        self.codigoBarra = barcode
+        if not isnan(barcode):
+            print(barcode)
+            self.codigoBarra = barcode
 
     @classmethod
     def from_dict(cls, prod_dict):
