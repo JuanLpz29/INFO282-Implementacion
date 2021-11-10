@@ -13,7 +13,7 @@ pipeline {
           }
           stage('Archive') {
             steps {
-              archiveArtifacts 'build/**'
+              archiveArtifacts '**'
             }
           }
     stage('Deploy') {
@@ -23,7 +23,7 @@ pipeline {
       steps {
         sh 'rm -rf /var/www/tent'
         sh 'mkdir /var/www/tent'
-        sh 'cp -Rp build/** /var/www/tent'
+        sh 'cp -Rp ** /var/www/tent'
         sh 'docker stop tent'
         sh 'docker run -dit --name tent -p 8008:80 -v /var/www/tent/:/var/www/tent srittau/wsgi-base:latest'
         sh 'docker exec tent a2ensite tent.conf'
