@@ -1,17 +1,17 @@
 from flask import render_template, redirect, url_for, request, abort, jsonify, wrappers
-from app.models.compra import Compra, CompraSchema
-from app.models.producto import ProductSchema
-from app.models.proveedor import Proveedor
-from app.utils.DTE import DTE
-from app import db
+from tent.models.compra import Compra, CompraSchema
+from tent.models.producto import ProductSchema
+from tent.models.proveedor import Proveedor
+from tent.utils.DTE import DTE
+from tent import db
 from werkzeug.utils import secure_filename
 from os.path import join
 from pathlib import Path
 from flask import current_app
 from pandas import DataFrame
-from app.controllers.productos_controller import productos_compra_json
-from app.models.proveedor import Proveedor
-from app.models.producto import ProductSchema
+from tent.controllers.productos_controller import productos_compra_json
+from tent.models.proveedor import Proveedor
+from tent.models.producto import ProductSchema
 # from DTE import DTE
 
 

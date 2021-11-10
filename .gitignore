@@ -1,5 +1,5 @@
 node_modules/
-app/data/uploads/*
+tent/data/uploads/*
 __pycache__/
 pycache/
 *.pyc

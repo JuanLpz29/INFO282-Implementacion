@@ -14,24 +14,27 @@ def create_app(config_filename=None):
 
 
 def initialize_extensions(application):
-    from app.models.producto import Producto
-    from app.models.compra import Compra
-    from app.models.producto import ProductSchema
-    from app.models.compra import CompraSchema
+    # probablemente imports innecesarios
+    from tent.models.producto import Producto, ProductSchema
+    from tent.models.compra import Compra, CompraSchema
     db = SQLAlchemy(application)
     ma = Marshmallow(application)
 
 
 def register_blueprints(application):
-    from app.controllers import productos_bp, compras_bp
+    from tent.controllers import productos_bp, compras_bp
     CORS(compras_bp)
     CORS(productos_bp)
     application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
 
 
+_env = os.environ.get('FLASK_ENV')
+if _env is None:
+    print('*'*25, 'DEVELOPMENT', '*'*25)
+    _env = 'development'
 config_filename = os.path.abspath(os.path.dirname(
-    __file__)) + "/../instance/development.cfg"
+    __file__)) + f"/../instance/{_env}.cfg"
 app = Flask(__name__)
 app.config.from_pyfile(config_filename)
 db = SQLAlchemy(app)

@@ -1,15 +1,15 @@
 import os
 from flask import Blueprint, current_app
 
-from app.controllers.productos_controller import index as products_index
-from app.controllers.productos_controller import show as products_show
-from app.controllers.productos_controller import destroy as products_destroy
-from app.controllers.productos_controller import store as products_store
-from app.controllers.productos_controller import update as products_update
+from tent.controllers.productos_controller import index as products_index
+from tent.controllers.productos_controller import show as products_show
+from tent.controllers.productos_controller import destroy as products_destroy
+from tent.controllers.productos_controller import store as products_store
+from tent.controllers.productos_controller import update as products_update
 
-from app.controllers.compras_controller import upload_documento as compras_store
-from app.controllers.compras_controller import index as compras_index
-from app.controllers.compras_controller import show as compras_show
+from tent.controllers.compras_controller import upload_documento as compras_store
+from tent.controllers.compras_controller import index as compras_index
+from tent.controllers.compras_controller import show as compras_show
 
 productos_bp = Blueprint('productos', 'api', url_prefix='/productos')
 compras_bp = Blueprint('compras', 'api', url_prefix='/compras')

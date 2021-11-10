@@ -1,7 +1,7 @@
 import re
 from flask import render_template, redirect, url_for, request, abort, jsonify
-from app.models.producto import Producto, ProductSchema
-from app import db
+from tent.models.producto import Producto, ProductSchema
+from tent import db
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)

@@ -1,5 +1,5 @@
-from app import ma
-from app import db
+from tent import ma
+from tent import db
 from numpy import isnan
 
 
