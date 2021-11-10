@@ -1,5 +1,7 @@
 pipeline {
-  agent docker {image 'srittau/wsgi-base:latest'}
+  agent {
+    docker {image 'srittau/wsgi-base:latest'}
+  }
   stages {
     stage('build') {
       steps {
