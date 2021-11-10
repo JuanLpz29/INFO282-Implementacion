@@ -33,5 +33,6 @@ pipeline {
                 sh 'docker exec tent a2ensite tent.conf'
                 sh 'docker exec tent service apache2 restart'
             }
-     }
+        }
+    }
 }
