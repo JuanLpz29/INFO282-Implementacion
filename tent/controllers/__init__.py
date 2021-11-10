@@ -11,8 +11,12 @@ from tent.controllers.compras_controller import upload_documento as compras_stor
 from tent.controllers.compras_controller import index as compras_index
 from tent.controllers.compras_controller import show as compras_show
 
+
+from tent.controllers.base_controller import hello
+
 productos_bp = Blueprint('productos', 'api', url_prefix='/productos')
 compras_bp = Blueprint('compras', 'api', url_prefix='/compras')
+base_bp = Blueprint('', 'api', url_prefix='')
 
 productos_url_rules = [('/', products_index, ['GET']),
                        ('/<int:idProducto>/', products_show, ['GET']),
@@ -23,7 +27,11 @@ compras_url_rules = [('/', compras_index, ['GET']),
                      ('/<int:idCompra>/', compras_show, ['GET']),
                      ]
 
+base_url_rules = [('/', hello, ['GET'])]
+
 for (rule, func, methods) in productos_url_rules:
     productos_bp.add_url_rule(rule, view_func=func, methods=methods)
 for (rule, func, methods) in compras_url_rules:
     compras_bp.add_url_rule(rule, view_func=func, methods=methods)
+for (rule, func, methods) in base_url_rules:
+    base_bp.add_url_rule(rule, view_func=func, methods=methods)

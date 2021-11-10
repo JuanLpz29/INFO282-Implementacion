@@ -3,6 +3,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
+from marshmallow import base
 
 
 def create_app(config_filename=None):
@@ -22,11 +23,13 @@ def initialize_extensions(application):
 
 
 def register_blueprints(application):
-    from tent.controllers import productos_bp, compras_bp
+    from tent.controllers import productos_bp, compras_bp, base_bp
     CORS(compras_bp)
     CORS(productos_bp)
+    CORS(base_bp)
     application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
+    application.register_blueprint(base_bp)
 
 
 _env = os.environ.get('FLASK_ENV')

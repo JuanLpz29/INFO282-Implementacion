@@ -34,8 +34,9 @@ pipeline {
                 sh 'docker stop tent || true && docker rm tent || true'
                 sh 'docker run -dit --name tent -p 8008:80 -v /var/www/tent/:/var/www/tent srittau/wsgi-base:latest'
                 sh 'docker cp /var/www/tent/tent.conf tent:/etc/apache2/sites-available/'
+                sh 'docker exec tent a2dissite 000-default.conf'
                 sh 'docker exec tent a2ensite tent.conf'
-                sh 'docker exec tent /etc/init.d/apache2 reload'
+                sh 'docker exec tent export FLASK_ENV=production && docker exec tent /etc/init.d/apache2 reload'
                 // sh 'docker exec tent service apache2 restart'
             }
         }
