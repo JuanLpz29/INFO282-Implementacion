@@ -1,3 +1,4 @@
+import re
 from flask import render_template, redirect, url_for, request, abort, jsonify
 from app.models.producto import Producto, ProductSchema
 from app import db
@@ -13,7 +14,16 @@ def index():
     return jsonify(result)
 
 
-# Retornamos solo un producto de la base de datos
+def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
+    prods = []
+    for prod in lista_productos:
+        prods.append(Producto.from_dict(prod))
+    return prods
+    # result = products_schema.dump(prods)
+    # return result
+    # Retornamos solo un producto de la base de datos
+
+
 def show(idProducto):
     producto = Producto.query.get(idProducto)
     if producto is not None:

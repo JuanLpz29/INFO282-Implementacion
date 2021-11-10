@@ -77,7 +77,8 @@ class DTE:
             # self.parse_referencias()
             self.parse_impuestos()
             self.set_datos_documento()
-            self.set_df_productos()
+            self.set_productos()
+            print(self.productos_compra)
             self.set_datos_proveedor()
             self.bien_formado = 1
         except:
@@ -383,7 +384,7 @@ class DTE:
             # "referencias_oc": obtieneRefOc(self.referencias),#
         }
 
-    def set_df_productos(self):
+    def set_productos(self):
         df = pd.json_normalize(self.items)
         df["qty"] = df["qty"].astype(float)
         df["imp_adicional"] = df["imp_adicional"].astype(float)
@@ -406,13 +407,13 @@ class DTE:
         # # print((df_impuestos['monto']))
         # monto_impuesto_y_retenciones = df_impuestos["monto"].astype(
         #     int).to_numpy().sum() if len(df_impuestos) > 0 else 0
-        self.df_productos = get_final_df(df)
+        self.productos_compra = get_final_df(df).to_dict(orient='records')
 
     def get_datos_documento(self):
         return self.datos_dict
 
-    def get_df_productos(self):
-        return self.df_productos
+    def get_productos_compra(self) -> list[dict]:
+        return self.productos_compra
 
     def get_datos_proveedor(self):
         return self.proveedor_dict

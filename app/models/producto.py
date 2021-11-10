@@ -34,17 +34,14 @@ class Producto(db.Model):
         self.codigoBarra = barcode
 
     @classmethod
-    def from_df(cls, df_row):
+    def from_dict(cls, prod_dict):
         try:
-            price = int(df_row['Valor Item'].replace('.', ''))
+            price = int(prod_dict['Valor Item'].replace('.', ''))
         except AttributeError:
             price = 0
-        return cls(df_row['nombre'],
-                   df_row['descripcion'],
-                   int(df_row['qty']),
+        return cls(prod_dict['nombre'],
+                   prod_dict['descripcion'],
+                   int(prod_dict['Stock']),
                    price,
                    price,
-                   df_row['int_code'])
-
-    def print_info(self):
-        print(f"{self.nombre:<43} {self.cantidad:<15} {self.precioUnitario:}")
+                   prod_dict['item_code'])

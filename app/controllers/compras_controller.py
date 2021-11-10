@@ -9,13 +9,15 @@ from os.path import join
 from pathlib import Path
 from flask import current_app
 from pandas import DataFrame
-
+from app.controllers.productos_controller import productos_compra_json
 from app.models.proveedor import Proveedor
+from app.models.producto import ProductSchema
 # from DTE import DTE
 
 
 compra_schema = CompraSchema()
 compras_schema = CompraSchema(many=True)
+produdctos_schema = ProductSchema(many=True)
 
 # NO SE SI HAY UNA FORMA MEJOR PARA MANEJAR LOS PRODUCTOS
 # DENTOR DE LA COMPRA... OTRA TABLA POR LA RELACION ESA?fal
@@ -27,7 +29,7 @@ def index():
     return jsonify(result)
 
 
-# Retornamos solo un producto de la base de datos
+# Retornamos solo un compra de la base de datos
 def show(idCompra):
     compra = Compra.query.get(idCompra)
     if compra is not None:
@@ -40,25 +42,30 @@ def _allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ['xml']
 
 
-def _store(datos_compra: dict, df_productos: DataFrame, datos_proveedor: dict):
+def _store(datos_compra: dict, lista_productos: list[dict], datos_proveedor: dict):
     cmp = Compra.query.filter_by(folio=datos_compra['folio']).first()
+    prods = productos_compra_json(lista_productos)
+    prods_dump = produdctos_schema.dump(prods)
     if cmp is not None:
         print('la compra ya se encuentra registrada en el sistema!!')
-        return
+        return prods_dump
     # como no existe creamos una nueva
-    new_compra = Compra(datos_compra, df_productos)
+    new_compra = Compra(datos_compra, lista_productos)
     # si no existe un proveedor con ese rut, lo creamos
-    pro = Proveedor.query.filter_by(rut=datos_proveedor['rut']).first()
-    if pro is None:
-        pro = Proveedor.from_dict(datos_proveedor)
-        print(f'Se agregara el proveedor  "{pro.razonSocial}" al sistema')
+    prov = Proveedor.query.filter_by(rut=datos_proveedor['rut']).first()
+    if prov is None:
+        prov = Proveedor.from_dict(datos_proveedor)
+        print(f'Se agregara el proveedor  "{prov.razonSocial}" al sistema')
     # una comprita pal master
-    pro.compras.append(new_compra)
-    db.session.add(pro)
+    prov.compras.append(new_compra)
+    db.session.add(prov)
+    db.session.bulk_save_objects(prods)
     # al parecer no es necesaroi este ADD, con el append anterior basta
     # para que se cree la compra actual
     # db.session.add(new_compra)
     db.session.commit()
+    return prods_dump
+    # return None
 
 
 def upload_documento():
@@ -77,10 +84,11 @@ def upload_documento():
         cmp = DTE(xml_compras)
         # print(cmp.get_df_datos())
         # print(cmp.get_df_proveedor())
-        _store(cmp.datos_dict, cmp.df_productos,
-               cmp.proveedor_dict)  # guardar datos factura
+        _prods = _store(cmp.datos_dict, cmp.productos_compra,
+                        cmp.proveedor_dict)  # guardar datos factura
         # unir los diccionariosgt
+        #prods = _prods if _prods is not None else cmp.productos_compra
         info_doc = {**cmp.proveedor_dict, **cmp.datos_dict}
         response = jsonify(info=info_doc,
-                           productos=cmp.df_productos.to_json(orient="table"))
+                           productos=_prods)
     return response
