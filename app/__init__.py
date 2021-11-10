@@ -2,6 +2,7 @@ from flask import Flask
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_cors import CORS
 
 
 def create_app(config_filename=None):
@@ -23,6 +24,8 @@ def initialize_extensions(application):
 
 def register_blueprints(application):
     from app.controllers import productos_bp, compras_bp
+    CORS(compras_bp)
+    CORS(productos_bp)
     application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
 
