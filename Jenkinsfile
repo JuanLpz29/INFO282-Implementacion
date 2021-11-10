@@ -8,7 +8,7 @@ pipeline {
     stages {
           stage('Install') {
             steps {
-                sh 'pip3 install -r --user requirements.txt'
+                sh 'pip3 install --user -r requirements.txt'
             }
           }
           stage('Archive') {
