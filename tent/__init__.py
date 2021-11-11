@@ -37,8 +37,9 @@ if _env is None:
     _env = 'development'
 # config_filename = os.path.abspath(os.path.dirname(
 #     __file__)) + f"/../instance/{_env}.cfg"
+config_filename = '../instance/production.cfg'
 tent = Flask(__name__)
-tent.config.from_pyfile('../instance/production.cfg')
+tent.config.from_pyfile(config_filename)
 # tent.config.from_pyfile(config_filename)
 db = SQLAlchemy(tent)
 ma = Marshmallow(tent)
