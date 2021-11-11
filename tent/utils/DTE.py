@@ -12,7 +12,7 @@ regexes = {'PET': r'^(.*PET)(?:\s)?(\d+)(?:CC)?(?:X)?(\d+)?.*',
            'CCX': r'^(.*?)(\d+)(?:CC)(?:X)(\d+).*',
            'LAT': r'^(.*?)(?: |_)(\d+)(?:.*?)(?:LAT|LATA)(\d+)(?:CC)?.*'}
 
-nombres = pd.read_csv('./tent/data/codes_desc.csv')
+nombres = pd.read_csv('/var/www/tent/tent/data/codes_desc.csv')
 nombres_dict = nombres.set_index('Original Code').to_dict()['description']
 nombres_dict = {str(k): v for k, v in nombres_dict.items()}
 NAN = np.nan
