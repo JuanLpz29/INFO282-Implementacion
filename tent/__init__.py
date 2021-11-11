@@ -4,22 +4,25 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from marshmallow import base
+from tent.models import db, ma
 
 
 def create_app(config_filename=None):
     application = Flask(__name__, instance_relative_config=True)
     application.config.from_pyfile(config_filename)
-    initialize_extensions(application)
+    # initialize_extensions(application)
+    # from tent.models import db, ma
+    db.init_app(application)
+    ma.init_app(application)
     register_blueprints(application)
     return application
 
 
-def initialize_extensions(application):
-    # probablemente imports innecesarios
-    from tent.models.producto import Producto, ProductSchema
-    from tent.models.compra import Compra, CompraSchema
-    db = SQLAlchemy(application)
-    ma = Marshmallow(application)
+# def initialize_extensions(application):
+#     # probablemente imports innecesarios
+#     from tent.models.producto import Producto, ProductSchema
+#     from tent.models.compra import Compra, CompraSchema
+#     from tent.models.proveedor import Proveedor, ProveedorSchema
 
 
 def register_blueprints(application):
@@ -41,5 +44,5 @@ config_filename = '../instance/production.cfg'
 tent = Flask(__name__)
 tent.config.from_pyfile(config_filename)
 # tent.config.from_pyfile(config_filename)
-db = SQLAlchemy(tent)
-ma = Marshmallow(tent)
+db.init_app(tent)
+ma.init_app(tent)

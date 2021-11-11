@@ -11,3 +11,5 @@ sudo docker exec tent ps -aux
 Vps218.2o19
 
 sudo cat /var/www/tent/error.log
+
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 3600

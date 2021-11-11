@@ -1,5 +1,5 @@
-from tent import ma
-from tent import db
+from tent.models import ma
+from tent.models import db
 from dateutil.parser import parse
 from sqlalchemy.orm import relationship
 from pandas import DataFrame
