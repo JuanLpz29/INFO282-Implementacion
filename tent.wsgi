@@ -5,6 +5,7 @@ import logging
 logging.basicConfig(stream=sys.stderr)
 project_path = "/var/www/tent"
 sys.path.insert(0, project_path)
-
+sys.path.append('/var/www/tent')
+sys.path.append('/var/www/tent/tent')
 
 application = create_app()
