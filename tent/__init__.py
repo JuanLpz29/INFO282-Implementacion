@@ -34,11 +34,10 @@ def register_blueprints(application):
 
 _env = os.environ.get('FLASK_ENV')
 if _env is None:
-    print('*'*25, 'DEVELOPMENT', '*'*25)
     _env = 'development'
 config_filename = os.path.abspath(os.path.dirname(
     __file__)) + f"/../instance/{_env}.cfg"
-app = Flask(__name__)
-app.config.from_pyfile(config_filename)
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
+tent = Flask(__name__)
+tent.config.from_pyfile(config_filename)
+db = SQLAlchemy(tent)
+ma = Marshmallow(tent)
