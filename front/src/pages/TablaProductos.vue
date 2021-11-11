@@ -96,7 +96,7 @@
 <script>
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import axios from "axios";
+import rqts from '../myUtils/myUtils'
 
 const mycolumns = [
   {
@@ -147,10 +147,13 @@ export default {
     $q.loading.show({
       message: "Esperando a Parisi",
     });
-    const apiUrl = "http://127.0.0.1:5000/productos/";
-    const items = await axios.get(apiUrl).then((r) => r.data);
-    console.log(items);
-    $q.loading.hide();
+    const items = await rqts.get('productos/').catch((e) => {
+                                                console.log(e);
+                                            });
+    $q.loading.hide()
+    if (typeof items == 'undefined'){
+        console.log('XDDDDDDD')
+    }
     // expose to template
     return {
       mycolumns,

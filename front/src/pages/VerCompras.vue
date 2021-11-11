@@ -31,12 +31,8 @@
 
 <script>
 import { ref } from "vue";
-import axios from "axios";
 import { useQuasar } from "quasar";
-//const apiUrl = 'http://127.0.0.1:5000/compras/'
-//const items = await fetch(apiUrl).then(r => r.data)
-// const items = axios.get(apiUrl).then(r => r.data)
-//   import { ref, reactive } from 'vue'
+import rqts from '../myUtils/myUtils'
 
 const columns = [
   {
@@ -86,21 +82,19 @@ const columns = [
 
 export default {
   async setup() {
-    const $q = useQuasar();
+
+    const $q = useQuasar()
     $q.loading.show({
-      message: "Quemando el arduino...",
-    });
-    const apiUrl = "http://127.0.0.1:5000/compras/";
-    const items = await axios
-      .get(apiUrl)
-      .then((r) => r.data)
-      .catch((e) => {
-        console.log(e);
-        $q.loading.hide();
-      });
+        message: 'Esperando que Naranjo termine de leer...'
+    })
+    const items = await rqts.get('compras/').catch((e) => {
+                                                console.log(e);
+                                            });
+    $q.loading.hide()
+    if (typeof items == 'undefined'){
+        console.log('XDDDDDDD')
+    }
     console.log(items);
-    $q.loading.hide();
-    // expose to template
 
     return {
       columns,
