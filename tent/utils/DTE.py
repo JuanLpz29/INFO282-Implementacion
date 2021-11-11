@@ -12,9 +12,6 @@ regexes = {'PET': r'^(.*PET)(?:\s)?(\d+)(?:CC)?(?:X)?(\d+)?.*',
            'CCX': r'^(.*?)(\d+)(?:CC)(?:X)(\d+).*',
            'LAT': r'^(.*?)(?: |_)(\d+)(?:.*?)(?:LAT|LATA)(\d+)(?:CC)?.*'}
 
-nombres = pd.read_csv('/var/www/tent/tent/data/codes_desc.csv')
-nombres_dict = nombres.set_index('Original Code').to_dict()['description']
-nombres_dict = {str(k): v for k, v in nombres_dict.items()}
 NAN = np.nan
 
 
@@ -52,8 +49,6 @@ def get_final_df(df):
         else:
             [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
             name, qty = name.title(), 1
-        if nombres_dict.get(line[1].item_code) is not None:
-            name = nombres_dict.get(line[1].item_code)
         df.at[i, 'nombre'] = name
         df.at[i, 'qty'] = qty * float(df.iloc[i].qty)
         # df = df.apply(lambda row: row['P.U.'].replace('.', ''))
