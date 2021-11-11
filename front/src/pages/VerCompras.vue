@@ -5,16 +5,31 @@
       :rows="items"
       :columns="columns"
       row-key="name"
+      :filter="filter"
       v-model:pagination="pagination"
       :rows-per-page-options="[0]"
       style="table-layout: fixed"
       wrap-cells
       class="color5"
-    />
+    >
+      <template v-slot:top-right>
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+    </q-table>
   </div>
 </template>
 
-<script >
+<script>
 import { ref } from "vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
@@ -90,6 +105,7 @@ export default {
     return {
       columns,
       items,
+      filter: ref(""),
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -97,7 +113,3 @@ export default {
   },
 };
 </script>
-
-
-
-
