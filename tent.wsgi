@@ -9,4 +9,4 @@ from tent import create_app
 import logging
 
 logging.basicConfig(stream=sys.stderr)
-application = create_app()
+application = create_app('/var/www/tent/instance/production.cfg')
