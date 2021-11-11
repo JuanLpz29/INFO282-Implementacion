@@ -60,10 +60,9 @@ def get_final_df(df):
 class DTE:
 
     def __init__(self, tree_path):
-
+        self.tree_path = tree_path
+        self.tree = ET.ElementTree(ET.fromstring(tree_path))
         try:
-            self.tree_path = tree_path
-            self.tree = ET.ElementTree(ET.fromstring(tree_path))
             self.es_respuesta()
             self.parse_encabezado()
             self.asignar_tipo_dte_palabras()
@@ -73,7 +72,6 @@ class DTE:
             self.parse_impuestos()
             self.set_datos_documento()
             self.set_productos()
-            print(self.productos_compra)
             self.set_datos_proveedor()
             self.bien_formado = 1
         except:

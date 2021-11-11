@@ -32,8 +32,7 @@ class Producto(db.Model):
         self.stock = stock
         self.precioUnitario = precioUnitario
         self.valorItem = valorItem
-        if not isnan(barcode):
-            print(barcode)
+        if isinstance(barcode, str) or not isnan(barcode):
             self.codigoBarra = barcode
 
     @classmethod
