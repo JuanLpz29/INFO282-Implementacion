@@ -1,49 +1,44 @@
 from tent.models import ma
 from tent.models import db
 from numpy import isnan
-
-
-class ProductSchema(ma.Schema):
-    class Meta:
-        fields = ('idProducto', 'nombre', 'descripcion', 'stock', 'categoria', 'formato', 'codigoBarra',
-                  'foto', 'cantidadRiesgo', 'precioCompra', 'precioVenta', 'precioUnitario', 'valorItem')
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 
 
 class Producto(db.Model):
     __tablename__ = 'Producto'  # No sé si es necesario, pero creo que si
-    idProducto = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), )
+    idProducto = db.Column(db.Integer, primary_key=True, nullable=True)
+    nombre = db.Column(db.String(50))
     descripcion = db.Column(db.String(50))
     stock = db.Column(db.Integer)
-    categoria = db.Column(db.String(50))
-    formato = db.Column(db.String(50))
+    categoria = db.Column(db.String(50), nullable=True)
+    formato = db.Column(db.String(50), nullable=True)
     codigoBarra = db.Column(db.Integer)
     # foto
-    cantidadRiesgo = db.Column(db.Integer)
-    precioCompra = db.Column(db.Integer)
-    precioVenta = db.Column(db.Integer)
-    precioUnitario = db.Column(db.Integer)
+    cantidadRiesgo = db.Column(db.Integer, nullable=True)
+    precioCompra = db.Column(db.Integer, nullable=True)
+    precioVenta = db.Column(db.Integer, nullable=True)
+    precioUnitario = db.Column(db.Integer, nullable=True)
     valorItem = db.Column(db.Integer)
 
     # Campos minimos para hacer POST
-    def __init__(self, nombre, descripcion, stock, precioUnitario, valorItem, barcode):
+    def __init__(self, nombre, descripcion, stock, precioUnitario, barcode):
         self.nombre = nombre
         self.descripcion = descripcion
         self.stock = stock
         self.precioUnitario = precioUnitario
-        self.valorItem = valorItem
+        self.valorItem = precioUnitario
         if isinstance(barcode, str) or not isnan(barcode):
             self.codigoBarra = barcode
 
     @classmethod
     def from_dict(cls, prod_dict):
-        try:
-            price = int(prod_dict['Valor Item'].replace('.', ''))
-        except AttributeError:
-            price = 0
         return cls(prod_dict['nombre'],
                    prod_dict['descripcion'],
-                   int(prod_dict['Stock']),
-                   price,
-                   price,
-                   prod_dict['item_code'])
+                   int(prod_dict['stock']),
+                   prod_dict['precioUnitario'],
+                   prod_dict["codigoBarra"])
+
+
+class ProductSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Producto

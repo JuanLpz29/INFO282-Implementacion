@@ -8,4 +8,5 @@ Flask_Cors
 pandas
 python_dateutil
 pymysql
+marshmallow-sqlalchemy
 

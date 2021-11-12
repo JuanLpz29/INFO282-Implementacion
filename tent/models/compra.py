@@ -2,7 +2,6 @@ from tent.models import ma
 from tent.models import db
 from dateutil.parser import parse
 from sqlalchemy.orm import relationship
-from pandas import DataFrame
 
 
 class CompraSchema(ma.Schema):
@@ -10,14 +9,10 @@ class CompraSchema(ma.Schema):
         fields = ('idCompra', 'idProveedor', 'montoTotal',
                   'montoNeto', 'fecha', 'tipoDocumento')
 
-# dejar los campos que correspondan
-
 
 class Compra(db.Model):
     __tablename__ = 'Compra'  # No sé si es necesario, pero creo que si
     idCompra = db.Column(db.Integer, primary_key=True)
-    # idProveedor = relationship(
-    #    "Proveedor", back_populates="compra", uselist=False)
     montoTotal = db.Column(db.Integer)
     montoNeto = db.Column(db.Integer)
     fecha = db.Column(db.Date)
@@ -28,22 +23,26 @@ class Compra(db.Model):
     proveedor = relationship("Proveedor", back_populates="compras")
 
     # Campos minimos para hacer POST
-    def __init__(self, datos: dict, productos: DataFrame):
-        self.montoTotal = datos['montoTotal']
-        self.montoNeto = datos['montoNeto']
-        self.fecha = datos['fecha']
-        self.tipoDocumento = datos['tipoDoc']
-        self.folio = datos['folio']
+    def __init__(self, montoTotal, montoNeto, fecha, tipoDocumento, folio):
+        self.montoTotal = montoTotal
+        self.montoNeto = montoNeto
+        self.fecha = fecha
+        self.tipoDocumento = tipoDocumento
+        self.folio = folio
 
     def get_id(self):
         return self.idCompra
     # inicializar con los campos que estimen conveniente
 
     @classmethod
-    def from_df(cls, df_datos, df_productos):
+    def from_dict(cls, dict_datos):
+        return cls(dict_datos['montoTotal'],
+                   dict_datos['montoNeto'],
+                   dict_datos['fecha'],
+                   dict_datos['tipoDocumento'],
+                   dict_datos['folio'],)  # etc
+
+    @classmethod
+    def from_df(cls, df_datos):
         ddf = df_datos.iloc[0].to_dict()
-        return cls(ddf['montoTotal'],
-                   ddf['montoNeto'],
-                   parse(ddf['fecha']),
-                   ddf['tipoDoc'],
-                   ddf['folio'],)  # etc
+        return cls.from_dict(ddf)

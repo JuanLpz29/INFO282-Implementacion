@@ -8,6 +8,7 @@ from tent.controllers.productos_controller import store as products_store
 from tent.controllers.productos_controller import update as products_update
 
 from tent.controllers.compras_controller import upload_documento as compras_store
+from tent.controllers.compras_controller import upload_json as compras_store_json
 from tent.controllers.compras_controller import index as compras_index
 from tent.controllers.compras_controller import show as compras_show
 
@@ -24,6 +25,7 @@ productos_url_rules = [('/', products_index, ['GET']),
 
 compras_url_rules = [('/', compras_index, ['GET']),
                      ('/upload', compras_store, ['POST']),
+                     ('/uploadjson', compras_store_json, ['POST']),
                      ('/<int:idCompra>/', compras_show, ['GET']),
                      ]
 

@@ -1,21 +1,18 @@
-from flask import render_template, redirect, url_for, request, abort, jsonify, wrappers
+from logging import DEBUG
+from flask import redirect, request, jsonify
 from tent.models.compra import Compra, CompraSchema
-from tent.models.producto import ProductSchema
-from tent.models.proveedor import Proveedor
 from tent.utils.DTE import DTE
 from tent import db
-from werkzeug.utils import secure_filename
-from os.path import join
-from pathlib import Path
-from flask import current_app
-from pandas import DataFrame
 from tent.controllers.productos_controller import productos_compra_json
-from tent.models.proveedor import Proveedor
+from tent.models.proveedor import Proveedor, ProveedorSchema
 from tent.models.producto import ProductSchema
+import json
 # from DTE import DTE
 
+DEBUGXD = True
 
 compra_schema = CompraSchema()
+proveedor_schema = ProveedorSchema()
 compras_schema = CompraSchema(many=True)
 produdctos_schema = ProductSchema(many=True)
 
@@ -42,30 +39,37 @@ def _allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ['xml']
 
 
-def _store(datos_compra: dict, lista_productos: list[dict], datos_proveedor: dict):
+def check_and_dump_products(datos_compra: dict, lista_productos: list[dict]):
     cmp = Compra.query.filter_by(folio=datos_compra['folio']).first()
     prods = productos_compra_json(lista_productos)
     prods_dump = produdctos_schema.dump(prods)
-    if cmp is not None:
+    if cmp is not None and DEBUGXD:
         print('la compra ya se encuentra registrada en el sistema!!')
-        return prods_dump
-    # como no existe creamos una nueva
-    new_compra = Compra(datos_compra, lista_productos)
-    # si no existe un proveedor con ese rut, lo creamos
+    return prods_dump, cmp
+
+
+def upload_json():
+    body = request.data.decode()
+    body_json = json.loads(body)
+    if body_json['registrada'] == True:
+        return "ya existe"  # porsiaca
+
+    datos_proveedor = body_json['proveedor']
     prov = Proveedor.query.filter_by(rut=datos_proveedor['rut']).first()
     if prov is None:
         prov = Proveedor.from_dict(datos_proveedor)
-        print(f'Se agregara el proveedor  "{prov.razonSocial}" al sistema')
+        if DEBUGXD:
+            print(f'Se agregara el proveedor  "{prov.razonSocial}" al sistema')
+
+    cmp = Compra.from_dict(body_json['info'])
     # una comprita pal master
-    prov.compras.append(new_compra)
+    prov.compras.append(cmp)
+
+    prods = productos_compra_json(body_json['productos'])
     db.session.add(prov)
     db.session.bulk_save_objects(prods)
-    # al parecer no es necesaroi este ADD, con el append anterior basta
-    # para que se cree la compra actual
-    # db.session.add(new_compra)
     db.session.commit()
-    return prods_dump
-    # return None
+    return "ok"
 
 
 def upload_documento():
@@ -79,10 +83,11 @@ def upload_documento():
     if file and _allowed_file(file.filename):
         xml_compras = (file.read().decode())
         cmp = DTE(xml_compras)
-        _prods = _store(cmp.datos_dict, cmp.productos_compra,
-                        cmp.proveedor_dict)  # guardar datos factura
-        #prods = _prods if _prods is not None else cmp.productos_compra
-        info_doc = {**cmp.proveedor_dict, **cmp.datos_dict}
-        response = jsonify(info=info_doc,
-                           productos=_prods)
+        prods, _comp = check_and_dump_products(
+            cmp.datos_dict, cmp.productos_compra)
+        registrada = True if _comp is not None else False
+        response = jsonify(info=cmp.datos_dict,
+                           proveedor=cmp.proveedor_dict,
+                           productos=prods,
+                           registrada=registrada)
     return response

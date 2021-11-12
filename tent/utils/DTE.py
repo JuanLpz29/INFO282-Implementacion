@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
-import json
 import pandas as pd
 import re
 import numpy as np
@@ -53,8 +52,9 @@ def get_final_df(df):
         df.at[i, 'qty'] = qty * float(df.iloc[i].qty)
         # df = df.apply(lambda row: row['P.U.'].replace('.', ''))
         # df['P.U.'] = df['P.U.'].astype(int)
-    return df.rename(columns={"qty": "Stock",
-                              "P.U.": "precioUnitario"})
+    return df.rename(columns={"qty": "stock",
+                              "P.U.": "precioUnitario",
+                              "imp_adicional": "impAdicional"})
 
 
 class DTE:
@@ -62,21 +62,19 @@ class DTE:
     def __init__(self, tree_path):
         self.tree_path = tree_path
         self.tree = ET.ElementTree(ET.fromstring(tree_path))
-        try:
-            self.es_respuesta()
-            self.parse_encabezado()
-            self.asignar_tipo_dte_palabras()
-            self.asignar_forma_pago_palabras()
-            self.parse_items()
-            # self.parse_referencias()
-            self.parse_impuestos()
-            self.set_datos_documento()
-            self.set_productos()
-            self.set_datos_proveedor()
-            self.bien_formado = 1
-        except:
-            print("ERROR AL LEER EL XML")
-            self.bien_formado = 0
+        self.es_respuesta()
+        self.parse_encabezado()
+        self.asignar_tipo_dte_palabras()
+        self.asignar_forma_pago_palabras()
+        self.parse_items()
+        # self.parse_referencias()
+        self.parse_impuestos()
+        self.set_datos_documento()
+        self.set_productos()
+        self.set_datos_proveedor()
+        self.bien_formado = 1
+        # print("ERROR AL LEER EL XML")
+        # self.bien_formado = 0
 
     def asignar_tipo_dte_palabras(self):
         if self.tipo_dte == 33:
@@ -217,7 +215,7 @@ class DTE:
                  "imp_adicional": imp_text,
                  "descuento": desc_text,
                  "descripcion": description,
-                 "item_code": prod_code}
+                 "codigoBarra": prod_code}
             )
 
     def parse_referencias(self):
@@ -368,7 +366,7 @@ class DTE:
 
     def set_datos_documento(self):
         self.datos_dict = {
-            "tipoDoc": self.tipo_dte_palabras,
+            "tipoDocumento": self.tipo_dte_palabras,
             "fecha": self.fecha_emision,
             "folio": self.numero_factura,
             "montoNeto": self.monto_neto,
@@ -385,12 +383,11 @@ class DTE:
         df["P.U."] = df["rate"].astype(float).astype(int).map('{:,}'.format).str.replace(
             ",",
             ".")
-        df["Valor Item"] = (df["qty"].astype(float) * df["rate"].astype(float)).astype(int).map('{:,}'.format).str.replace(
-            ",",
-            ".")
+        df["Valor Item"] = (df["qty"].astype(float) *
+                            df["rate"].astype(float)).astype(int)
         df = df[["descripcion",
                  "descuento", "imp_adicional",
-                "qty", "P.U.", "Valor Item", "item_code"]]
+                "qty", "P.U.", "Valor Item", "codigoBarra"]]
         # if len(df) >= 13:
         #     df = df.reindex(df.index.tolist() + list(range(len(df), 25))
         #                     ).replace(np.nan, 0, regex=True)
