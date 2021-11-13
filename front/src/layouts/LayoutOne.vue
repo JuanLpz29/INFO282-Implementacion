@@ -19,7 +19,6 @@
           class="text-primary"
         />
         <q-route-tab to="/app/ventas" label="Ventas" class="text-primary" />
-        <q-route-tab to="/app/poto" label="Poto" class="text-primary" />
         <q-space />
         <q-toggle
           :label="`Modo sexo is ${blueModel}`"
@@ -72,7 +71,7 @@ export default {
     const $q = useQuasar();
     //$q.dark.set(true)
     return {
-      blueModel: ref("off"),
+      blueModel: ref("ON"),
       modelUpdated(value) {
         if (value == "ON") {
           console.log("SEXOOO");

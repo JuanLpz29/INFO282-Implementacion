@@ -10,7 +10,7 @@
       <q-input
         filled
         v-model="nombre"
-        label="Nombre del producto*"
+        label="Nombre del producto"
         hint="ej: Pepsi zero 3 L"
         bg-color="orange-1"
         lazy-rules
@@ -47,7 +47,18 @@
         lazy-rules
         :rules="[(val) => (val && val >= 0) || 'Please type something']"
       />
-
+      <q-input
+        filled
+        type="text"
+        v-model="codigoBarra"
+        label="Codigo de barras"
+        hint="opcional pero no me quejo si lo pones"
+        bg-color="orange-1"
+      >
+        <template v-slot:append>
+          <q-icon name="filter_center_focus" @click.stop="oelarva" />
+        </template>
+      </q-input>
       <div>
         <q-btn label="Submit" type="submit" color="primary" />
         <q-btn
@@ -70,13 +81,15 @@ export default {
     const $q = useQuasar();
     const nombre = ref(null);
     const stock = ref(null);
-    const precioUnitario = ref(false);
+    const precioUnitario = ref(null);
     const valorItem = ref(null);
+    const codigoBarra = ref(null);
     return {
       nombre,
       stock,
       precioUnitario,
       valorItem,
+      codigoBarra,
       onSubmit(evt) {
         $q.notify({
           color: "green-4",
@@ -84,6 +97,9 @@ export default {
           icon: "cloud_done",
           message: "Submitted",
         });
+        // yo cacho que hay que hacer el submit alan tigua
+        // para mostrar lo que responda el server como resultado
+        // de la operacion
         evt.target.submit();
       },
       onReset() {
@@ -91,6 +107,15 @@ export default {
         stock.value = null;
         precioUnitario.value = null;
         valorItem.value = null;
+        codigoBarra.value = null;
+      },
+      oelarva() {
+        $q.notify({
+          color: "pink-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "pistolee mi rey",
+        });
       },
     };
   },
@@ -105,6 +130,8 @@ export default {
     color: aquamarine
 
 .q-form
-    background-color: $fondo
+    border-radius: 12px
+    // background-color: $fondo
+    background-color: $fondo-tabla
     padding: 1px 15px 15px 0px
 </style>

@@ -1,7 +1,7 @@
 // FILE (create it): src/quasar-variables.sass
 // enlayoutone se hace el cambiazo
-$primary: #31CCEC
-// $primary: #ec8bdc
+// $primary: #31CCEC
+$primary: #ec8bdc
 $secondary: #175419
 $accent: #1c8895
 $dark: #051a21
@@ -11,15 +11,30 @@ $info: #e6dfa8
 $warning: #F2C037
 // creo que solo los de arriba se pueden cambiar con setCssVar
 
+$astolfo: true
+// $astolfo: false
+
 $chido: #afd8ca
 $texto1: #bbbcb4
-$fondo1: #24331559
-$fondo-tabla: #24331559
-$fondo-tabla-odd: #1b2b1b27
 $otro: #d0a878
 
-$bg-file: 'src/assets/bg1.jpeg'
-$fondo: #121f16d2
+$bg-file-1: 'src/assets/bg1.jpeg'
+$bg-file-2: 'src/assets/bg2.png'
+$bg-file-3: 'src/assets/bg3.jpg'
+
+$fondo: #24331559
+$fondo-tabla: #24331559
+$bg-file: $bg-file-1
+$fondo-tabla-odd: #1b2b1b27
+
+// creo que se puede usar notacion de objetos para definir distintos
+//temas
+@if $astolfo
+    $bg-file: $bg-file-3
+    $fondo: #6b2a5886
+    $fondo-tabla: #13319275 //astolfo
+    $chido: #1d031c
+    $texto1: #f0d3e2
 
 #app
     font-family: Avenir, Helvetica, Arial, sans-serif
@@ -31,14 +46,17 @@ $fondo: #121f16d2
 .xdd
     content: ""
     height: 98vh
-    background-position: center
     background-repeat: no-repeat
     background-size: cover
     filter: saturate(150%) drop-shadow()
     opacity: 0.85
     filter: blur(5px)
-    background-image: url($bg-file)
     background-color: $fondo
+    background-image: url($bg-file)
+    @if $astolfo
+        background-position: 85% 50%
+    @else
+        background-position: center
 
 .content
     position: absolute
