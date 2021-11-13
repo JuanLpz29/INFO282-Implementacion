@@ -1,12 +1,73 @@
 // FILE (create it): src/quasar-variables.sass
+// enlayoutone se hace el cambiazo
+$primary: #31CCEC
+// $primary: #ec8bdc
+$secondary: #175419
+$accent: #1c8895
+$dark: #051a21
+$positive: #21BA45
+$negative: #C10015
+$info: #e6dfa8
+$warning: #F2C037
+// creo que solo los de arriba se pueden cambiar con setCssVar
 
-$primary   : #1976D2
-$secondary : #26A69A
-$accent    : #9C27B0
+$chido: #afd8ca
+$texto1: #bbbcb4
+$fondo1: #24331559
+$fondo-tabla: #24331559
+$fondo-tabla-odd: #1b2b1b27
+$otro: #d0a878
 
-$dark      : #1D1D1D
+$bg-file: 'src/assets/bg1.jpeg'
+$fondo: #121f16d2
 
-$positive  : #21BA45
-$negative  : #C10015
-$info      : #31CCEC
-$warning   : #F2C037
+#app
+    font-family: Avenir, Helvetica, Arial, sans-serif
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    text-align: center
+    margin-top: 10px
+
+.xdd
+    content: ""
+    height: 98vh
+    background-position: center
+    background-repeat: no-repeat
+    background-size: cover
+    filter: saturate(150%) drop-shadow()
+    opacity: 0.85
+    filter: blur(5px)
+    background-image: url($bg-file)
+    background-color: $fondo
+
+.content
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+
+.q-page
+    min-height: 0px
+
+.chido
+    color: $chido
+
+.q-drawer
+    background-color: $fondo-tabla
+    color: $texto1
+    border-radius: 12px
+
+.q-table__card
+    background-color: $fondo-tabla
+    border-radius: 12px
+
+.q-table,
+.q-table__top,
+.q-table__bottom
+    background-color: $fondo-tabla
+    border-radius: 12px
+    font-weight: 500
+
+tr:nth-child(even)
+    background-color: $fondo-tabla-odd !important

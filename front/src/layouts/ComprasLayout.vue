@@ -14,13 +14,12 @@
         :mini="miniState"
         @mouseover="miniState = false"
         @mouseout="miniState = true"
-        :width="220"
+        :width="250"
         :breakpoint="400"
         bordered
-        class="color5"
       >
         <!-- <q-scroll-area class="fit"> -->
-        <q-list padding class="orange-1">
+        <q-list padding>
           <q-item clickable v-ripple to="/app/compras/ver">
             <q-item-section avatar>
               <q-icon name="receipt_long" />
@@ -72,6 +71,7 @@
 
 <script>
 import { ref } from "vue";
+
 export default {
   setup() {
     return {

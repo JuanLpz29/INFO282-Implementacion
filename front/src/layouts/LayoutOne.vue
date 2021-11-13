@@ -1,8 +1,8 @@
 <template>
   <q-layout view="hHh LpR fFf" style="min-height: 0px">
-    <q-header bordered class="color3 texto" height-hint="98">
+    <q-header bordered class="bg-dark texto" height-hint="98">
       <q-toolbar>
-        <q-toolbar-title>
+        <q-toolbar-title class="text-primary">
           <q-avatar>
             <img src=" https://i.redd.it/okazwxmx2aw31.png" />
           </q-avatar>
@@ -11,13 +11,24 @@
       </q-toolbar>
 
       <q-tabs align="left">
-        <q-route-tab to="/" label="Home" />
-        <q-route-tab to="/app/compras" label="Compras" />
-        <q-route-tab to="/app/productos" label="Productos" />
-        <q-route-tab to="/app/ventas" label="Ventas" />
-        <q-route-tab to="/app/poto" label="Poto" />
-
+        <q-route-tab to="/" label="Home" class="text-primary" />
+        <q-route-tab to="/app/compras" label="Compras" class="text-primary" />
+        <q-route-tab
+          to="/app/productos"
+          label="Productos"
+          class="text-primary"
+        />
+        <q-route-tab to="/app/ventas" label="Ventas" class="text-primary" />
+        <q-route-tab to="/app/poto" label="Poto" class="text-primary" />
         <q-space />
+        <q-toggle
+          :label="`Modo sexo is ${blueModel}`"
+          v-model="blueModel"
+          color="purple-12"
+          false-value="off"
+          true-value="ON"
+          @update:model-value="modelUpdated"
+        />
         <q-btn round flat icon="manage_accounts" class="right">
           <q-menu auto-close :offset="[110, 0]">
             <q-list style="min-width: 150px">
@@ -54,11 +65,27 @@
 
 
 <script>
-import { useQuasar } from "quasar";
+import { ref } from "vue";
+import { useQuasar, setCssVar } from "quasar";
 export default {
   setup() {
     const $q = useQuasar();
     //$q.dark.set(true)
+    return {
+      blueModel: ref("off"),
+      modelUpdated(value) {
+        if (value == "ON") {
+          console.log("SEXOOO");
+          setCssVar("primary", "#ec8bdc");
+          //   setCssVar("dark", "#ffffff");
+          //   setCssVar("bg-file", "src/assets/bg2.png");
+        } else {
+          console.log("off");
+          setCssVar("primary", "#31CCEC");
+          setCssVar("dark", "#051a21");
+        }
+      },
+    };
   },
 };
 </script>

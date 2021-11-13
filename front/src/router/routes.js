@@ -7,8 +7,8 @@ import VerCompras from '../pages/VerCompras.vue'
 import SubirCompra from '../pages/SubirCompra.vue'
 import Ventas from '../pages/Ventas.vue'
 import VerProductos from '../pages/VerProductos.vue'
+import NuevoProducto from '../pages/NuevoProducto.vue'
 import TestProductos from '../pages/TestProductos.vue'
-import TablaProductos from '../pages/TablaProductos.vue'
 import LandingNanachi from '../pages/LandingNanachi.vue'
 
 const routes = [
@@ -35,12 +35,12 @@ const routes = [
                 path: 'productos',
                 component: ProductosLayout,
                 children: [{
-                    path: 'ver',
-                    component: VerProductos
+                    path: 'new',
+                    component: NuevoProducto
                 },
                 {
-                    path: 'tabla',
-                    component: TablaProductos
+                    path: 'ver',
+                    component: VerProductos
                 },
                 {
                     path: 'testing',

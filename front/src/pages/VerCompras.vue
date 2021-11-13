@@ -10,7 +10,7 @@
       :rows-per-page-options="[0]"
       style="table-layout: fixed"
       wrap-cells
-      class="color5"
+      class="text-primary"
     >
       <template v-slot:top-right>
         <q-input
@@ -32,7 +32,7 @@
 <script>
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import rqts from '../myUtils/myUtils'
+import rqts from "../myUtils/myUtils";
 
 const columns = [
   {
@@ -82,17 +82,16 @@ const columns = [
 
 export default {
   async setup() {
-
-    const $q = useQuasar()
+    const $q = useQuasar();
     $q.loading.show({
-        message: 'Esperando que Naranjo termine de leer...'
-    })
-    const items = await rqts.get('compras/').catch((e) => {
-                                                console.log(e);
-                                            });
-    $q.loading.hide()
-    if (typeof items == 'undefined'){
-        console.log('XDDDDDDD')
+      message: "Esperando que Naranjo termine de leer...",
+    });
+    const items = await rqts.get("compras/").catch((e) => {
+      console.log(e);
+    });
+    $q.loading.hide();
+    if (typeof items == "undefined") {
+      console.log("XDDDDDDD");
     }
     console.log(items);
 

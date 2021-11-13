@@ -1,26 +1,6 @@
 <template>
   <div class="q-pa-md column" style="height: 85vh">
     <div class="q-gutter-md" style="max-width: 300px">
-      <!-- <q-file
-       filled
-        bottom-slots
-        v-model="model"
-        label="DTE XML"
-        accept=".xml"
-        @rejected="onRejected"
-        >
-        <template v-slot:prepend>
-          <q-icon name="cloud_upload" @click.stop />
-        </template>
-        <template v-slot:append>
-          <q-icon name="close" @click.stop="model = null" class="cursor-pointer" />
-        </template>
-
-        <template v-slot:hint>
-          Documento.xml
-        </template>
-      </q-file> -->
-
       <q-file
         outlined
         bottom-slots
@@ -101,23 +81,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.container {
-  display: grid;
-  grid-template-columns: 0.7fr 1.3fr;
-  grid-template-rows: 1fr;
-  grid-auto-columns: 1fr;
-  gap: 0px 0px;
-  grid-auto-flow: row;
-  grid-template-areas: "zurdo facho";
-}
-
-.zurdo {
-  grid-area: zurdo;
-}
-
-.facho {
-  grid-area: facho;
-}
-</style>
