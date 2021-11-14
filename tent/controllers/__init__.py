@@ -21,6 +21,7 @@ base_bp = Blueprint('', 'api', url_prefix='')
 
 productos_url_rules = [('/', products_index, ['GET']),
                        ('/<int:idProducto>/', products_show, ['GET']),
+                       ('/nuevo/', products_store, ['POST'])
                        ]
 
 compras_url_rules = [('/', compras_index, ['GET']),

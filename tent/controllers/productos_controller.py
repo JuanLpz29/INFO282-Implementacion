@@ -2,6 +2,8 @@ import re
 from flask import render_template, redirect, url_for, request, abort, jsonify
 from tent.models.producto import Producto, ProductSchema
 from tent import db
+from sqlalchemy.dialects.mysql import insert
+import json
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
@@ -39,17 +41,19 @@ def destroy(idProducto):
 
 
 def store():
-    nombre = request.json['nombre']
-    stock = request.json['stock']
-    precioUnitario = request.json['precioUnitario']
-    valorItem = request.json['valorItem']
-
-    new_product = Producto(nombre, stock, precioUnitario, valorItem)
-
+    body = request.data.decode()
+    body_json = json.loads(body)
+    # if barcode is not None:
+    #     if (prov := Producto.query.filter_by(codigoBarra=barcode).first() is not None):
+    #         # update??
+    #         return "el producto ya existe en la BD"
+    new_product = Producto.from_dict(body_json)
+    print(new_product)
+    # ver lo de INSERT ... ON DUPLICATE KEY UPDATE Statement
     db.session.add(new_product)
     db.session.commit()
-
-    return product_schema.jsonify(new_product)
+    return "OK MI REY"
+    # return product_schema.dumps(new_product)
 
 
 # Actualizamos la info de un producto SOLO FUNCIONA CON debug=False, no sé por qué xd

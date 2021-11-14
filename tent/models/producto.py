@@ -1,6 +1,6 @@
 from tent.models import ma
 from tent.models import db
-from numpy import isnan
+from numpy import isnan, nan
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 
 
@@ -21,7 +21,7 @@ class Producto(db.Model):
     valorItem = db.Column(db.Integer)
 
     # Campos minimos para hacer POST
-    def __init__(self, nombre, descripcion, stock, precioUnitario, barcode):
+    def __init__(self, nombre, descripcion, stock, precioUnitario, barcode=nan):
         self.nombre = nombre
         self.descripcion = descripcion
         self.stock = stock
