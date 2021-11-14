@@ -3,23 +3,47 @@
 import axios from 'axios';
 
 const apiUrl = 'http://146.83.216.218:8008/'
+const localUrl = 'http://127.0.0.1:5000/'
+var xd = {
+    getUrl(isDebug) {
+        let url
+        if (isDebug) {
+            url = localUrl
+        }
+        else {
+            url = apiUrl
+        }
+        return url
+    }
+}
 
 var rqts = {
-    async get(endpoint) {
+    async get(endpoint, timeout = 3000, debug = false) {
         let items
-        items = await axios.get(apiUrl + endpoint, { timeout: 3000 })
+        const url = xd.getUrl(debug)
+        items = await axios.get(url + endpoint, { timeout: timeout })
             .then(r => r.data)
             .catch(e => console.log(e))
         console.log('UTILSXD', items)
         return items
     },
-    async post(endpoint, formdata) {
+    async post(endpoint, formdata, timeout = 3000, debug = false) {
         let items
-        items = await axios.post(apiUrl + endpoint, formdata, { timeout: 3000 })
+        const url = xd.getUrl(debug)
+        items = await axios.post(url + endpoint, formdata, { timeout: timeout })
             .then(r => r.data)
             .catch(e => console.log(e))
         console.log('UTILSXD', items)
         return items
+    },
+    async postjson(endpoint, jsondata, timeout = 3000, debug = false) {
+        let response
+        const url = xd.getUrl(debug)
+        response = await axios.post(url + endpoint, jsondata, { timeout: timeout })
+            .then(r => r.data)
+            .catch(e => console.log(e))
+        console.log('postjson', response)
+        return response
     },
 }
 export default rqts
