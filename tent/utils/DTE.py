@@ -380,9 +380,10 @@ class DTE:
         df["qty"] = df["qty"].astype(float)
         df["imp_adicional"] = df["imp_adicional"].astype(float)
         df["descuento"] = df["descuento"].astype(float)
-        df["P.U."] = df["rate"].astype(float).astype(int).map('{:,}'.format).str.replace(
-            ",",
-            ".")
+        # df["P.U."] = df["rate"].astype(float).astype(int).map('{:,}'.format).str.replace(
+        #     ",",
+        #         #     ".")
+        df["P.U."] = df["rate"].astype(float).astype(int)
         df["Valor Item"] = (df["qty"].astype(float) *
                             df["rate"].astype(float)).astype(int)
         df = df[["descripcion",
