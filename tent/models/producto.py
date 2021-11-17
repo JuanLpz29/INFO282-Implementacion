@@ -12,7 +12,7 @@ class Producto(db.Model):
     stock = db.Column(db.Integer)
     categoria = db.Column(db.String(50), nullable=True)
     formato = db.Column(db.String(50), nullable=True)
-    codigoBarra = db.Column(db.Integer)
+    codigoBarra = db.Column(db.String(16))
     # foto
     cantidadRiesgo = db.Column(db.Integer, nullable=True)
     precioCompra = db.Column(db.Integer, nullable=True)
@@ -27,8 +27,9 @@ class Producto(db.Model):
         self.stock = stock
         self.precioUnitario = precioUnitario
         self.valorItem = precioUnitario
-        if isinstance(barcode, str) or not isnan(barcode):
-            self.codigoBarra = barcode
+        if barcode is not None:
+            if isinstance(barcode, str) or not isnan(barcode):
+                self.codigoBarra = barcode
 
     @classmethod
     def from_dict(cls, prod_dict):

@@ -25,8 +25,8 @@ productos_url_rules = [('/', products_index, ['GET']),
                        ]
 
 compras_url_rules = [('/', compras_index, ['GET']),
-                     ('/upload', compras_store, ['POST']),
-                     ('/uploadjson', compras_store_json, ['POST']),
+                     ('/documento', compras_store, ['POST']),
+                     ('/upload', compras_store_json, ['POST']),
                      ('/<int:idCompra>/', compras_show, ['GET']),
                      ]
 
