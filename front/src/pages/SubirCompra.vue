@@ -129,7 +129,7 @@ export default {
         };
         // modificar para notificar dependiendo si la creacion fue exitosa ofallo
         const response = await rqts
-          .postjson("compras/upload", compra, 0, true)
+          .postjson("compras/upload", compra)
           .then((response) =>
             $q.notify({
               color: "green-4",
