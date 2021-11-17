@@ -102,7 +102,7 @@ export default {
         const formData = new FormData();
         formData.append("file", model);
         const response = await rqts
-          .post("compras/documento", formData, 0, true)
+          .post("compras/documento", formData)
           .catch((e) => {
             console.log(e);
           });
