@@ -21,7 +21,7 @@
         <q-route-tab to="/app/ventas" label="Ventas" class="text-primary" />
         <q-space />
         <q-toggle
-          :label="`Modo sexo is ${blueModel}`"
+          :label="`switch ${blueModel}`"
           v-model="blueModel"
           color="purple-12"
           false-value="off"
@@ -76,12 +76,12 @@ export default {
         if (value == "ON") {
           console.log("SEXOOO");
           setCssVar("primary", "#ec8bdc");
-          //   setCssVar("dark", "#ffffff");
+          setCssVar("dark", "#051a21");
           //   setCssVar("bg-file", "src/assets/bg2.png");
         } else {
           console.log("off");
-          setCssVar("primary", "#31CCEC");
-          setCssVar("dark", "#051a21");
+          setCssVar("primary", "#ffffff");
+          setCssVar("dark", "#301c68");
         }
       },
     };

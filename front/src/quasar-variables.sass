@@ -4,7 +4,9 @@
 $primary: #ec8bdc
 $secondary: #175419
 $accent: #1c8895
-$dark: #051a21
+
+$dark: #301c68
+// $dark: #2a085575
 $positive: #21BA45
 $negative: #C10015
 $info: #e6dfa8
@@ -50,7 +52,7 @@ $fondo-tabla-odd: #1b2b1b27
     background-size: cover
     filter: saturate(150%) drop-shadow()
     opacity: 0.85
-    filter: blur(5px)
+    filter: blur(95px)
     background-color: $fondo
     background-image: url($bg-file)
     @if $astolfo
@@ -79,13 +81,17 @@ $fondo-tabla-odd: #1b2b1b27
     color: $texto1
     border-radius: 12px
 
-.q-table__card
+.q-table__container
     background-color: $fondo-tabla
+
+.q-table__card
+    background-color: #b2d8d800
     border-radius: 12px
 
 .q-table,
 .q-table__top,
 .q-table__bottom
+    color: $texto1
     background-color: $fondo-tabla
     border-radius: 12px
     font-weight: 500

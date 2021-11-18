@@ -1,18 +1,19 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      title="los producctosss"
-      :rows="myrows"
+      title="Productos"
+      :rows="rows"
       :columns="mycolumns"
-      :filter="filter"
       row-key="name"
+      :filter="filter"
+      v-model:pagination="pagination"
       binary-state-sort
       separator="horizontal"
-      v-model:pagination="pagination"
-      :rows-per-page-options="[0]"
       style="table-layout: fixed"
       wrap-cells
-      class="text-primary"
+      @request="onRequest"
+      :rows-per-page-options="[0]"
+      :loading="loading"
     >
       <template v-slot:top-right>
         <q-input
@@ -93,7 +94,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 
@@ -139,29 +140,76 @@ const mycolumns = [
     align: "left",
   },
 ];
-
+// QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
   async setup() {
-    const $q = useQuasar();
-    $q.loading.show({
-      message: "Esperando a Parisi",
+    const loading = ref(false);
+    const rows = ref([]);
+    const filter = ref("");
+    const pagination = ref({
+      sortBy: "",
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      rowsNumber: 10,
     });
-    const items = await rqts.get("productos/").catch((e) => {
-      console.log(e);
-    });
-    $q.loading.hide();
-    if (typeof items == "undefined") {
-      console.log("XDDDDDDD");
+
+    async function fetchFromServer(page, filter, rowsPerPage, sortBy, order) {
+      // buscar una forma mejor
+      const reqUrl = `?page=${page}&filter=${filter}&per_page=${rowsPerPage}&sortby=${sortBy}&order=${order}`;
+      const items = await rqts.get(`productos/${reqUrl}`).catch((e) => {
+        console.log(e);
+      });
+
+      if (typeof items == "undefined") {
+        console.log("XDDDDDDD");
+      }
+      return items;
     }
+
+    async function onRequest(props) {
+      loading.value = true;
+      const { page, rowsPerPage, descending, sortBy } = props.pagination;
+      const filter = props.filter ? props.filter : "";
+      const order = descending ? "DESC" : "ASC";
+      console.log(sortBy);
+      const response = await fetchFromServer(
+        page,
+        filter,
+        rowsPerPage,
+        sortBy,
+        order
+      );
+      const items = response.items;
+      // clear out existing data and add new
+      rows.value.splice(0, rows.value.length, ...items);
+      pagination.value.rowsNumber = response.rowsNumber;
+      // don't forget to update local pagination object
+      pagination.value.page = page;
+      pagination.value.rowsPerPage = rowsPerPage;
+      pagination.value.sortBy = sortBy;
+      pagination.value.descending = descending;
+      loading.value = false;
+    }
+
+    onMounted(() => {
+      // get initial data from server (1st page)
+      onRequest({
+        pagination: pagination.value,
+        filter: undefined,
+      });
+    });
+
     // expose to template
     return {
       mycolumns,
-      myrows: ref(items),
+      rows,
       separator: ref("vertical"),
-      filter: ref(""),
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      filter,
+      pagination,
+      loading,
+
+      onRequest,
     };
   },
 };
