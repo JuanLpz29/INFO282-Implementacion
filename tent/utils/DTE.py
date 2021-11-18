@@ -17,7 +17,7 @@ def get_name(dict_nombres, barcode, desc):
 
 def get_final_df(df):
     # perdoname por lo que voy a hacer...
-    df_nombres = pd.read_csv('/var/www/tent/tent/data/')
+    df_nombres = pd.read_csv('/var/www/tent/tent/data/4kprods.csv')
     codes = df.codigoBarra.to_list()
     sub_df = df_nombres[df_nombres.barcode.isin(codes)]
     dict_nombres = pd.Series(sub_df.nombre.values,
