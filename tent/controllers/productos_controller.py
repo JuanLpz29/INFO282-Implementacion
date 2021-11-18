@@ -1,8 +1,10 @@
 import re
 from flask import redirect, url_for, request, jsonify
+from sqlalchemy.sql.expression import text
 from tent.models.producto import Producto, ProductSchema
 from tent import db
 from sqlalchemy.dialects.mysql import insert
+from sqlalchemy import func
 import json
 
 product_schema = ProductSchema()
@@ -11,9 +13,22 @@ products_schema = ProductSchema(many=True)
 
 # Retornamos todos los productos de la base de datos
 def index():
-    all_productos = Producto.query.paginate(page=1, per_page=30)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    _filter = request.args.get('filter', '', type=str)
+    sort_by = request.args.get('sortby', '', type=str)
+    order = request.args.get('order', '', type=str)
+    if sort_by:
+        _order_by = f"{sort_by} {order}"
+    else:
+        _order_by = ""
+    filtered_query = Producto.query.filter(func.lower(Producto.nombre).contains(
+        _filter.lower())).order_by(text(_order_by))
+    rowsNumber = filtered_query.count()
+    all_productos = filtered_query.paginate(page=page, per_page=per_page)
     result = products_schema.dump(all_productos.items)
-    return jsonify(result)
+    return jsonify(items=result,
+                   rowsNumber=rowsNumber)
 
 
 def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
@@ -23,8 +38,8 @@ def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
     return prods
     # result = products_schema.dump(prods)
     # return result
-    
-    
+
+
 # ProductoRetornamos solo un producto de la base de datos
 def show(idProducto):
     producto = Producto.query.get(idProducto)
