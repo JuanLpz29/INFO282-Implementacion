@@ -7,6 +7,9 @@ sys.path.append('/var/www/tent/tent')
 
 from tent import create_app
 import logging
+import os
 
 logging.basicConfig(stream=sys.stderr)
+p = os.getcwd()
+logging.warning('Pathxd %s', extra=p)
 application = create_app('/var/www/tent/instance/production.cfg')
