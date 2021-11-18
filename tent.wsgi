@@ -10,6 +10,5 @@ import logging
 import os
 
 logging.basicConfig(stream=sys.stderr)
-p = os.getcwd()
-logging.warning('Pathxd %s', extra=p)
+logging.warning(os.getcwd())
 application = create_app('/var/www/tent/instance/production.cfg')
