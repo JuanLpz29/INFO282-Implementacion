@@ -5,53 +5,28 @@ import pandas as pd
 import re
 import numpy as np
 
-# por mientras se asume que el archivo tiene una sola factura y este
-# no presenta la pifia esa
-regexes = {'PET': r'^(.*PET)(?:\s)?(\d+)(?:CC)?(?:X)?(\d+)?.*',
-           'CCX': r'^(.*?)(\d+)(?:CC)(?:X)(\d+).*',
-           'LAT': r'^(.*?)(?: |_)(\d+)(?:.*?)(?:LAT|LATA)(\d+)(?:CC)?.*'}
-
 NAN = np.nan
 
 
-def name_parser(key, desc):
-    name = desc
-    qty = None
-    try:
-        if key in ['PET', 'CCX']:
-            _name, size, qty = re.match(regexes[key], desc).groups()
-        elif key == 'LAT':
-            _name, qty, size = re.match(regexes[key], desc).groups()
-        name = f"{_name.title()} {size}CC"
-    except AttributeError:
-        # print(f'ERROR EN    "{desc}" ')
-        pass
-    except ValueError:
-        # print('//////', desc)
-        pass
-    if qty is None:
-        qty = 1
-    return (name, int(qty))
+def get_name(dict_nombres, barcode, desc):
+    name = dict_nombres.get(barcode)
+    if name is None:
+        [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
+    return name
 
 
 def get_final_df(df):
+    from os import listdir
+    df_nombres = pd.read_csv('tent/data/4kprods.csv')
+    codes = df.codigoBarra.to_list()
+    sub_df = df_nombres[df_nombres.barcode.isin(codes)]
+    dict_nombres = pd.Series(sub_df.nombre.values,
+                             index=sub_df.barcode).to_dict()
     df['nombre'] = ""
     df.reset_index(inplace=True)
     for i, line in enumerate(df.iterrows()):
-        desc = line[1].descripcion
-        if 'PET' in desc:
-            name, qty = name_parser('PET', desc)
-        elif 'CCX' in desc:
-            name, qty = name_parser('CCX', desc)
-        elif 'LAT' in desc:
-            name, qty = name_parser('LAT', desc)
-        else:
-            [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
-            name, qty = name.title(), 1
+        name = get_name(dict_nombres, line[1].codigoBarra, line[1].descripcion)
         df.at[i, 'nombre'] = name
-        df.at[i, 'qty'] = qty * float(df.iloc[i].qty)
-        # df = df.apply(lambda row: row['P.U.'].replace('.', ''))
-        # df['P.U.'] = df['P.U.'].astype(int)
     return df.rename(columns={"qty": "stock",
                               "P.U.": "precioUnitario",
                               "imp_adicional": "impAdicional"})
