@@ -1,9 +1,14 @@
 <template>
-    <q-page padding>
-
-        <h1 class="chido">
-            VEntas
-            </h1> 
-
-    </q-page>
+  <q-page padding class="constru">
+    <h1 class="chido">VEntas (pronto)</h1>
+  </q-page>
 </template>
+
+<style>
+.constru {
+  background-image: url("src/assets/enconstru.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+</style>
