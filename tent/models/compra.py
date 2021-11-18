@@ -1,7 +1,7 @@
 from tent.models import ma
 from tent.models import db
-from dateutil.parser import parse
 from sqlalchemy.orm import relationship
+from tent.models import productos_compra
 
 
 class CompraSchema(ma.Schema):
@@ -22,7 +22,12 @@ class Compra(db.Model):
     idProveedor = db.Column(db.Integer, db.ForeignKey('Proveedor.idProveedor'))
     proveedor = relationship("Proveedor", back_populates="compras")
 
+    productosCompra = db.relationship(
+        "Producto", secondary=productos_compra
+        # , back_populates="comprasProducto"
+    )
     # Campos minimos para hacer POST
+
     def __init__(self, montoTotal, montoNeto, fecha, tipoDocumento, folio):
         self.montoTotal = montoTotal
         self.montoNeto = montoNeto

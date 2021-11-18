@@ -14,7 +14,7 @@ DEBUGXD = True
 compra_schema = CompraSchema()
 proveedor_schema = ProveedorSchema()
 compras_schema = CompraSchema(many=True)
-produdctos_schema = ProductSchema(many=True)
+productos_schema = ProductSchema(many=True)
 
 # NO SE SI HAY UNA FORMA MEJOR PARA MANEJAR LOS PRODUCTOS
 # DENTOR DE LA COMPRA... OTRA TABLA POR LA RELACION ESA?fal
@@ -42,7 +42,7 @@ def _allowed_file(filename):
 def check_and_dump_products(datos_compra: dict, lista_productos: list[dict]):
     cmp = Compra.query.filter_by(folio=datos_compra['folio']).first()
     prods = productos_compra_json(lista_productos)
-    prods_dump = produdctos_schema.dump(prods)
+    prods_dump = productos_schema.dump(prods)
     if cmp is not None and DEBUGXD:
         print('la compra ya se encuentra registrada en el sistema!!')
     return prods_dump, cmp
@@ -64,10 +64,10 @@ def upload_json():
     cmp = Compra.from_dict(body_json['info'])
     # una comprita pal master
     prov.compras.append(cmp)
-
     prods = productos_compra_json(body_json['productos'])
+    cmp.productosCompra = prods
     db.session.add(prov)
-    db.session.bulk_save_objects(prods)
+    # db.session.bulk_save_objects(prods)
     db.session.commit()
     return "ok"
 

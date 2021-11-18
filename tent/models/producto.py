@@ -1,7 +1,7 @@
-from tent.models import ma
-from tent.models import db
+from tent.models import ma, db
 from numpy import isnan, nan
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
+# from tent.models import productos_compra
 
 
 class Producto(db.Model):
@@ -15,10 +15,12 @@ class Producto(db.Model):
     codigoBarra = db.Column(db.String(16))
     # foto
     cantidadRiesgo = db.Column(db.Integer, nullable=True)
-    precioCompra = db.Column(db.Integer, nullable=True)
     precioVenta = db.Column(db.Integer, nullable=True)
     precioUnitario = db.Column(db.Integer, nullable=True)
     valorItem = db.Column(db.Integer)
+
+    # comprasProducto = db.relationship(
+    # "Compra", secondary=association_table, back_populates="productosCompra")
 
     # Campos minimos para hacer POST
     def __init__(self, nombre, descripcion, stock, precioUnitario, barcode=nan):

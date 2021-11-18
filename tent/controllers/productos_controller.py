@@ -1,5 +1,5 @@
 import re
-from flask import render_template, redirect, url_for, request, abort, jsonify
+from flask import redirect, url_for, request, jsonify
 from tent.models.producto import Producto, ProductSchema
 from tent import db
 from sqlalchemy.dialects.mysql import insert
@@ -23,13 +23,13 @@ def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
     return prods
     # result = products_schema.dump(prods)
     # return result
-    # Retornamos solo un producto de la base de datos
-
-
+    
+    
+# ProductoRetornamos solo un producto de la base de datos
 def show(idProducto):
     producto = Producto.query.get(idProducto)
     if producto is not None:
-        return product_schema.jsonify(producto)
+        return product_schema.dump(producto)
     return f"no se encontro producto con id {idProducto}"
 
 
@@ -48,7 +48,6 @@ def store():
     #         # update??
     #         return "el producto ya existe en la BD"
     new_product = Producto.from_dict(body_json)
-    print(new_product)
     # ver lo de INSERT ... ON DUPLICATE KEY UPDATE Statement
     db.session.add(new_product)
     db.session.commit()
