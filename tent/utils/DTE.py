@@ -12,7 +12,7 @@ def get_name(dict_nombres, barcode, desc):
     name = dict_nombres.get(barcode)
     if name is None:
         [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
-    return name
+    return name.title()
 
 
 def get_final_df(df):
