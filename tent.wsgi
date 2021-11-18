@@ -10,5 +10,6 @@ import logging
 import os
 
 logging.basicConfig(stream=sys.stderr)
-logging.warning(os.getcwd())
+logging.warning('cwd', os.getcwd())
+logging.warning('listdir', os.listdir())
 application = create_app('/var/www/tent/instance/production.cfg')
