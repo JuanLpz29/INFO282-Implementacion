@@ -20,7 +20,7 @@ export default {
   async setup(props) {
     const $q = useQuasar();
     $q.loading.show({
-      message: "Esperando las notas de redes...",
+      message: "Esperando...",
     });
     const formData = new FormData();
     formData.append("file", props.archivo);

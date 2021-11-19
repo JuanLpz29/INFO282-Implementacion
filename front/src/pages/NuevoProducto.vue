@@ -1,23 +1,24 @@
 <template>
-  <div class="q-pa-md bruh fondo-blur1" style="max-width: 400px">
+  <div class="q-pa-md bruh fondo-blur1" style="max-width: auto">
+    <h2 class="title"> Agregar producto</h2>
     <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md">
       <q-input
         filled
         v-model="nombre"
         label="Nombre del producto"
         hint="ej: Pepsi zero 3 L"
-        bg-color="orange-1"
+        bg-color=#363A4D
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        :rules="[(val) => (val && val.length > 0) || 'Este campo es obligarorio']"
       />
       <q-input
         filled
         v-model="descripcion"
         label="Descripcion del producto"
         hint="ej: Bebida gaseosa envase desechable"
-        bg-color="orange-1"
+        bg-color=#363A4D
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        :rules="[(val) => (val && val.length > 0) || 'Este campo es obligarorio']"
       />
       <q-input
         filled
@@ -25,9 +26,9 @@
         type="number"
         label="Stock"
         hint="1, 6, 12, etc"
-        bg-color="orange-1"
+        bg-color=#363A4D
         lazy-rules
-        :rules="[(val) => (val && val > 0) || 'Please type something']"
+        :rules="[(val) => (val && val > 0) || 'Este campo es obligarorio']"
       />
       <q-input
         filled
@@ -35,9 +36,9 @@
         v-model="precioUnitario"
         label="Precio unitario"
         hint="precio de compra"
-        bg-color="orange-1"
+        bg-color=#363A4D
         lazy-rules
-        :rules="[(val) => (val && val >= 0) || 'Please type something']"
+        :rules="[(val) => (val && val >= 0) || 'Este campo es obligarorio']"
       />
       <q-input
         filled
@@ -46,28 +47,28 @@
         label="Valtor item"
         hint="precio de
       venta"
-        bg-color="orange-1"
+        bg-color=#363A4D
         lazy-rules
-        :rules="[(val) => (val && val >= 0) || 'Please type something']"
+        :rules="[(val) => (val && val >= 0) || 'Este campo es obligarorio']"
       />
       <q-input
         filled
         type="text"
         v-model="codigoBarra"
         label="Codigo de barras"
-        hint="opcional pero no me quejo si lo pones"
-        bg-color="orange-1"
+        hint="Opcional"
+        bg-color=#363A4D
       >
         <template v-slot:append>
           <q-icon name="filter_center_focus" @click.stop="oelarva" />
         </template>
       </q-input>
-      <div>
-        <q-btn label="Submit" type="submit" color="primary" />
+      <div class="btn-container">
+        <q-btn label="Agregar" type="submit" color="secondary" />
         <q-btn
-          label="Reset"
+          label="Reiniciar"
           type="reset"
-          color="primary"
+          color="secondary"
           flat
           class="q-ml-sm"
         />
@@ -99,7 +100,7 @@ export default {
       codigoBarra,
       async onSubmit(evt) {
         $q.loading.show({
-          message: "Esperando que pirateen Sao progressive...",
+          message: "Esperando...",
         });
         const producto = {
           nombre: nombre.value,
@@ -151,11 +152,19 @@ export default {
 @import '../quasar-variables.sass'
 .q-field__messages,
 .q-field__bottom_row
-    color: aquamarine
+    color: #1d2237
+    font-weight: 500
 
 .q-form
     border-radius: 12px
     // background-color: $fondo
     background-color: $fondo-tabla
     padding: 1px 15px 15px 0px
+
+.btn-container
+  text-align: left
+  margin-top: 20px
+
+title
+  width: 100%
 </style>

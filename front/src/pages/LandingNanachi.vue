@@ -3,8 +3,8 @@
     <q-page padding>
 
         <div >
-            <h1 class="chido">NAAeieAeA</h1>
-        </div>
+            <h1 class="chido">La Tentación</h1>
+        </div> 
 
     </q-page>
 

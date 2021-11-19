@@ -97,7 +97,7 @@ export default {
       },
       async getInfo(model) {
         $q.loading.show({
-          message: "Esperando las notas de redes...",
+          message: "Esperando...",
         });
         const formData = new FormData();
         formData.append("file", model);

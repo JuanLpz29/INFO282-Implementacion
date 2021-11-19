@@ -84,7 +84,7 @@ export default {
   async setup() {
     const $q = useQuasar();
     $q.loading.show({
-      message: "Esperando que Naranjo termine de leer...",
+      message: "Esperando...",
     });
     const items = await rqts.get("compras/").catch((e) => {
       console.log(e);

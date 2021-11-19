@@ -40,14 +40,6 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/">
-            <q-item-section avatar>
-              <q-icon name="favorite" />
-            </q-item-section>
-
-            <q-item-section> NaNaChi </q-item-section>
-          </q-item>
-
           <q-separator />
         </q-list>
         <!-- </q-scroll-area> -->

@@ -3,10 +3,7 @@
     <q-header bordered class="bg-dark texto" height-hint="120">
       <q-toolbar>
         <q-toolbar-title class="text-primary">
-          <q-avatar>
-            <img src=" https://i.redd.it/okazwxmx2aw31.png" />
-          </q-avatar>
-          Miselio
+          La Tentación
         </q-toolbar-title>
       </q-toolbar>
 
@@ -36,12 +33,6 @@
               </q-item>
               <q-item clickable>
                 <q-item-section>Cerrar sesion</q-item-section>
-              </q-item>
-              <q-item clickable>
-                <q-item-section
-                  >es el perro jorge, el perro que no ladra, el perro que
-                  habla</q-item-section
-                >
               </q-item>
             </q-list>
           </q-menu>
