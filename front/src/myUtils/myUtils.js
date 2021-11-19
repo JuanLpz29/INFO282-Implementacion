@@ -4,7 +4,7 @@ import axios from 'axios';
 const apiUrl = 'http://146.83.216.218:8008/'
 const localUrl = 'http://127.0.0.1:5000/'
 const testing = false
-const TIMEOUT = 5000;
+const TIMEOUT = 10000;
 var xd = {
     getUrl(isDebug) {
         let url

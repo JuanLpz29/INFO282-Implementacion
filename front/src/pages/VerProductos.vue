@@ -16,17 +16,20 @@
       :loading="loading"
     >
       <template v-slot:top-right>
-        <q-input
-          borderless
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <div class="bg-white rounded-borders">
+          <q-input
+            borderless
+            dense
+            debounce="300"
+            v-model="filter"
+            placeholder="Search"
+            style="margin-left: 8px"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -59,7 +62,6 @@
               v-model="props.row.stock"
               title="Update stock"
               buttons
-              persistent
             >
               <q-input
                 type="number"
@@ -82,11 +84,6 @@
               />
             </q-popup-edit>
           </q-td>
-
-          <!-- <q-td key="protein" :props="props">{{ props.row.protein }}</q-td>
-          <q-td key="sodium" :props="props">{{ props.row.sodium }}</q-td>
-          <q-td key="calcium" :props="props">{{ props.row.calcium }}</q-td>
-          <q-td key="iron" :props="props">{{ props.row.iron }}</q-td> -->
         </q-tr>
       </template>
     </q-table>

@@ -18,39 +18,46 @@
         @update:model-value="modelUpdated"
       >
         <template v-slot:top-right>
-          <q-input
-            borderless
-            dense
-            debounce="300"
-            v-model="filter"
-            placeholder="Search"
-          >
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
+          <div class="bg-white rounded-borders">
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              placeholder="Filtrar"
+              style="margin-left: 8px"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
         </template>
+
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="nombre" :props="props">
               {{ props.row.nombre }}
               <q-popup-edit v-model="props.row.nombre">
-                <q-input v-model="props.row.nombre" dense autofocus counter />
+                <q-input
+                  v-model="props.row.nombre"
+                  dense
+                  type="textarea"
+                  autofocus
+                  counter
+                />
               </q-popup-edit>
             </q-td>
 
             <q-td key="categoria" :props="props">
               {{ props.row.categoria }}
-              <q-popup-edit
-                v-model="props.row.categoria"
-                title="Update categoria"
-                buttons
-              >
+              <q-popup-edit v-model="props.row.categoria">
                 <q-input
-                  type="textarea"
                   v-model="props.row.categoria"
                   dense
                   autofocus
+                  counter
+                  hint="Categoria"
                 />
               </q-popup-edit>
             </q-td>
@@ -59,17 +66,46 @@
               {{ props.row.stock }}
               <q-popup-edit
                 v-model="props.row.stock"
-                title="Update stock"
-                buttons
-                persistent
+                :validate="(val) => val > 0"
+                :cover="false"
+                :offset="[-10, -10]"
               >
-                <q-input
-                  type="number"
-                  v-model="props.row.stock"
-                  dense
-                  autofocus
-                  hint="Use buttons to close"
-                />
+                <template v-slot="scope">
+                  <q-input
+                    autofocus
+                    dense
+                    v-model="scope.value"
+                    :model-value="scope.value"
+                    hint="Cantidad a ingresar"
+                    :rules="[
+                      (val) =>
+                        scope.validate(scope.value) ||
+                        'Debe ingresar una cantidad mayor que cero',
+                    ]"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        flat
+                        dense
+                        color="negative"
+                        icon="cancel"
+                        @click.stop="scope.cancel"
+                      />
+
+                      <q-btn
+                        flat
+                        dense
+                        color="positive"
+                        icon="check_circle"
+                        @click.stop="scope.set"
+                        :disable="
+                          scope.validate(scope.value) === false ||
+                          scope.initialValue === scope.value
+                        "
+                      />
+                    </template>
+                  </q-input>
+                </template>
               </q-popup-edit>
             </q-td>
 
@@ -84,11 +120,6 @@
                 />
               </q-popup-edit>
             </q-td>
-
-            <!-- <q-td key="protein" :props="props">{{ props.row.protein }}</q-td>
-          <q-td key="sodium" :props="props">{{ props.row.sodium }}</q-td>
-          <q-td key="calcium" :props="props">{{ props.row.calcium }}</q-td>
-          <q-td key="iron" :props="props">{{ props.row.iron }}</q-td> -->
           </q-tr>
         </template>
       </q-table>

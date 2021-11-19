@@ -48,18 +48,14 @@
       </q-page-container>
       <div v-if="productos !== null" class="row justify-end">
         <q-btn
-          :disabled="productos == null"
+          :disabled="productos == null || registrada"
           class="q-mt-md"
-          color="light-green-7"
-          label="Subir compra"
+          :color="clrRegistrada"
+          :label="lblRegistrada"
           v-on:click="postJson(productos)"
         >
         </q-btn>
       </div>
-    </div>
-
-    <div v-if="productos">
-      <q-btn class="right" />
     </div>
   </div>
 </template>
@@ -80,6 +76,8 @@ export default {
       info: ref(null),
       productos: ref(null),
       registrada: ref(false),
+      lblRegistrada: ref("Subir Compra"),
+      clrRegistrada: ref("light-green-7"),
       proveedor: ref(null),
       fileReady: ref(false),
       model: ref(null),
@@ -114,12 +112,19 @@ export default {
           this.proveedor = response.proveedor;
           this.registrada = response.registrada;
         }
+        if (this.registrada) {
+          this.lblRegistrada = "Ya Existe";
+          this.clrRegistrada = "amber-14";
+        } else {
+          this.lblRegistrada = "Subir Compra";
+          this.clrRegistrada = "light-green-7";
+        }
         // this.fileReady = false;
-        this.model = null;
+        // this.model = null;
       },
       async postJson() {
         $q.loading.show({
-          message: "xd...",
+          message: "subiend2...",
         });
         const compra = {
           info: this.info,
@@ -130,13 +135,15 @@ export default {
         // modificar para notificar dependiendo si la creacion fue exitosa ofallo
         const response = await rqts
           .postjson("compras/upload", compra)
-          .then((response) =>
-            $q.notify({
-              color: "green-4",
-              textColor: "white",
-              icon: "cloud_done",
-              message: response,
-            })
+          .then(
+            (response) =>
+              $q.notify({
+                color: "green-4",
+                textColor: "white",
+                icon: "cloud_done",
+                message: response,
+              }),
+            (this.registrada = true)
           )
           .catch((e) => {
             console.log(e);
