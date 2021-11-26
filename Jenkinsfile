@@ -28,9 +28,9 @@ pipeline {
                 sh 'docker exec tent a2ensite tent.conf'
                 sh 'docker exec tent /etc/init.d/apache2 reload'
                 sh 'docker exec tent apt-get -y install software-properties-common'
-                sh 'docker exec ten add-apt-repository -y ppa:certbot/certbot'
-                sh 'docker exec ten apt-get -y update'
-                sh 'docker exec ten apt-get -y install certbot'
+                sh 'docker exec tent add-apt-repository -y ppa:certbot/certbot'
+                sh 'docker exec tent apt-get -y update'
+                sh 'docker exec tent apt-get -y install certbot'
                 sh 'certbot --apache'
                 //sh 'docker exec tent service apache2 restart'
             }
