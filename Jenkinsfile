@@ -27,7 +27,12 @@ pipeline {
                 sh 'docker exec tent a2dissite 000-default.conf'
                 sh 'docker exec tent a2ensite tent.conf'
                 sh 'docker exec tent /etc/init.d/apache2 reload'
-                // sh 'docker exec tent service apache2 restart'
+                sh 'docker exec tent apt-get install software-properties-common'
+                sh 'docker exec ten add-apt-repository ppa:certbot/certbot'
+                sh 'docker exec ten apt-get update'
+                sh 'docker exec ten apt-get install certbot'
+                sh 'certbot --apache'
+                //sh 'docker exec tent service apache2 restart'
             }
         }
     }
