@@ -15,7 +15,6 @@ class Proveedor(db.Model):
     rut = db.Column(db.String(15))
     razonSocial = db.Column(db.String(50))
     comuna = db.Column(db.String(50))
-    # = relationship("Parent", back_populates="child")
     # un proveedor tiene N COMPRAS
     compras = relationship("Compra", back_populates="proveedor")
 

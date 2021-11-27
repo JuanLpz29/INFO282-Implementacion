@@ -1,12 +1,17 @@
 from logging import DEBUG
+from operator import add
 from flask import redirect, request, jsonify
+from tent.models import producto
 from tent.models.compra import Compra, CompraSchema
 from tent.utils.DTE import DTE
 from tent import db
 from tent.controllers.productos_controller import productos_compra_json
+from tent.controllers.productos_controller import add_or_update
 from tent.models.proveedor import Proveedor, ProveedorSchema
 from tent.models.producto import ProductSchema
+from tent.models.productoscompra import ProductosCompra
 import json
+from sqlalchemy.dialects.mysql import insert
 # from DTE import DTE
 
 DEBUGXD = True
@@ -58,16 +63,23 @@ def upload_json():
     prov = Proveedor.query.filter_by(rut=datos_proveedor['rut']).first()
     if prov is None:
         prov = Proveedor.from_dict(datos_proveedor)
-        if DEBUGXD:
-            print(f'Se agregara el proveedor  "{prov.razonSocial}" al sistema')
 
     cmp = Compra.from_dict(body_json['info'])
     # una comprita pal master
     prov.compras.append(cmp)
-    prods = productos_compra_json(body_json['productos'])
-    cmp.productosCompra = prods
+    _prods = productos_compra_json(body_json['productos'])
+    prods = add_or_update(_prods)
+    # cmp.productosCompra = []
+    # manejar cambios en el precio
+    for i, prod in enumerate(prods):
+        if prod.idProducto is not None:
+            qty = _prods[i].stock
+        else:
+            qty = prod.stock
+        a = ProductosCompra(cantidad=qty)
+        a.producto = prod
+        a.compra = cmp
     db.session.add(prov)
-    # db.session.bulk_save_objects(prods)
     db.session.commit()
     return "ok"
 

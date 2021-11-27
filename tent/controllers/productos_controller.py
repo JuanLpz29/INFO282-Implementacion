@@ -2,6 +2,7 @@ import re
 from flask import redirect, url_for, request, jsonify
 from sqlalchemy.sql.expression import text
 from tent.models.producto import Producto, ProductSchema
+# from tent.models.producto_compra import ProductosCompra
 from tent import db
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import func
@@ -46,6 +47,24 @@ def show(idProducto):
     if producto is not None:
         return product_schema.dump(producto)
     return f"no se encontro producto con id {idProducto}"
+
+
+def add_or_update(prod_list):
+    barcodes = [prod.codigoBarra for prod in prod_list]
+    existing_prods = Producto.query.filter(Producto.codigoBarra
+                                           .in_(barcodes)).all()
+
+    i = 0
+    print(len(prod_list), len(existing_prods))
+    n_existing = len(existing_prods)
+    for prod in prod_list:
+        # manejar cambios en el precio
+        if i < n_existing and prod.codigoBarra == existing_prods[i].codigoBarra:
+            existing_prods[i].stock += prod.stock
+            i += 1
+        else:
+            existing_prods.append(prod)
+    return existing_prods
 
 
 def destroy(idProducto):

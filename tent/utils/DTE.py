@@ -4,20 +4,25 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import re
 import numpy as np
+import os
 
 NAN = np.nan
 
 
-def get_name(dict_nombres, barcode, desc):
+def get_name(dict_nombres, barcode, desc) -> str:
     name = dict_nombres.get(barcode)
     if name is None:
         [name] = re.match(r'(?:\d{3,} )?(.*)', desc).groups()
     return name.title()
 
 
-def get_final_df(df):
+def get_final_df(df: pd.DataFrame) -> pd.DataFrame:
     # perdoname por lo que voy a hacer...
-    df_nombres = pd.read_csv('/var/www/tent/tent/data/4kprods.csv')
+    cwd = os.getcwd()
+    if 'home' in cwd:
+        df_nombres = pd.read_csv('tent/data/4kprods.csv')
+    else:
+        df_nombres = pd.read_csv('/var/www/tent/tent/data/4kprods.csv')
     codes = df.codigoBarra.to_list()
     sub_df = df_nombres[df_nombres.barcode.isin(codes)]
     dict_nombres = pd.Series(sub_df.nombre.values,

@@ -1,7 +1,10 @@
 from tent.models import ma
 from tent.models import db
 from sqlalchemy.orm import relationship
-from tent.models import productos_compra
+from tent.models.proveedor import Proveedor
+# from tent.models import productos_compra
+# from tent.models.producto_compra import ProductosCompra
+# from tent.models import ProductosCompra
 
 
 class CompraSchema(ma.Schema):
@@ -21,11 +24,11 @@ class Compra(db.Model):
     # una compra tiene UN PROVEEDOR
     idProveedor = db.Column(db.Integer, db.ForeignKey('Proveedor.idProveedor'))
     proveedor = relationship("Proveedor", back_populates="compras")
-
-    productosCompra = db.relationship(
-        "Producto", secondary=productos_compra
-        # , back_populates="comprasProducto"
-    )
+    productos = relationship("ProductosCompra", back_populates="compra")
+    # productosCompra = db.relationship(
+    #     "Producto", secondary=productos_compra
+    #     # , back_populates="comprasProducto"
+    # )
     # Campos minimos para hacer POST
 
     def __init__(self, montoTotal, montoNeto, fecha, tipoDocumento, folio):
