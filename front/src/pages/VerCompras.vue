@@ -142,7 +142,7 @@ const columns = [
   {
     name: "detalles",
     align: "center",
-    label: "detalles",
+    label: "Ver detalles",
     // field: "",
   },
 ];
