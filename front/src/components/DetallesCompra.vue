@@ -4,7 +4,7 @@
 
     {{ proveedor }}
 
-    <q-page-container v-if="productos" style="padding-top: 40px">
+    <q-page-container style="padding-top: 40px">
       <tabla-productos-simple :items="productos" />
     </q-page-container>
   </q-page>

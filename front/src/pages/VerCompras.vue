@@ -119,6 +119,13 @@ const columns = [
     sortable: true,
   },
   {
+    name: "montoNeto",
+    align: "center",
+    label: "monto Neto de la compra",
+    field: "montoNeto",
+    sortable: true,
+  },
+  {
     name: "montoTotal",
     align: "center",
     label: "Monto Total de la compra",
@@ -132,17 +139,12 @@ const columns = [
     field: "fecha",
     sortable: true,
   },
-  {
-    name: "montoNeto",
-    align: "center",
-    label: "monto Neto de la compra",
-    field: "montoNeto",
-    sortable: true,
-  },
+
   {
     name: "detalles",
     align: "center",
     label: "Ver detalles",
+    headerStyle: "font-weight: 600",
     // field: "",
   },
 ];
