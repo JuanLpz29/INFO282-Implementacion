@@ -20,6 +20,7 @@ var xd = {
 
 var rqts = {
     async get(endpoint, timeout = TIMEOUT, debug = false) {
+        console.log(endpoint)
         let items
         const url = xd.getUrl(debug)
         items = await axios.get(url + endpoint, { timeout: timeout })

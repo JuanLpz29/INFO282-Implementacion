@@ -65,7 +65,7 @@
 import { ref } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
-import ProductosCompra from "./ProductosCompra.vue";
+import ProductosCompra from "../components/ProductosCompra.vue";
 
 export default {
   components: { ProductosCompra },
@@ -95,7 +95,7 @@ export default {
       },
       async getInfo(model) {
         $q.loading.show({
-          message: "Esperando...",
+          message: "Cargandoo...",
         });
         const formData = new FormData();
         formData.append("file", model);

@@ -31,59 +31,11 @@
           </q-input>
         </div>
       </template>
-      <template v-slot:body="props">
+      <template v-slot:header="props">
         <q-tr :props="props">
-          <q-td key="nombre" :props="props">
-            {{ props.row.nombre }}
-            <q-popup-edit v-model="props.row.nombre">
-              <q-input v-model="props.row.nombre" dense autofocus counter />
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="categoria" :props="props">
-            {{ props.row.categoria }}
-            <q-popup-edit
-              v-model="props.row.categoria"
-              title="Update categoria"
-              buttons
-            >
-              <q-input
-                type="textarea"
-                v-model="props.row.categoria"
-                dense
-                autofocus
-              />
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="stock" :props="props">
-            {{ props.row.stock }}
-            <q-popup-edit
-              v-model="props.row.stock"
-              title="Update stock"
-              buttons
-            >
-              <q-input
-                type="number"
-                v-model="props.row.stock"
-                dense
-                autofocus
-                hint="Use buttons to close"
-              />
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="descripcion" :props="props">
-            <div class="text-pre-wrap">{{ props.row.descripcion }}</div>
-            <q-popup-edit v-model="props.row.descripcion">
-              <q-input
-                type="textarea"
-                v-model="props.row.descripcion"
-                dense
-                autofocus
-              />
-            </q-popup-edit>
-          </q-td>
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.label }}
+          </q-th>
         </q-tr>
       </template>
     </q-table>

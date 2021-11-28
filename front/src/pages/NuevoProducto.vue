@@ -1,24 +1,28 @@
 <template>
   <div class="q-pa-md bruh fondo-blur1" style="max-width: auto">
-    <h2 class="title"> Agregar producto</h2>
+    <h2 class="title">Agregar producto</h2>
     <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md">
       <q-input
         filled
         v-model="nombre"
         label="Nombre del producto"
         hint="ej: Pepsi zero 3 L"
-        bg-color=#363A4D
+        bg-color="#363A4D"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Este campo es obligarorio']"
+        :rules="[
+          (val) => (val && val.length > 0) || 'Este campo es obligarorio',
+        ]"
       />
       <q-input
         filled
         v-model="descripcion"
         label="Descripcion del producto"
         hint="ej: Bebida gaseosa envase desechable"
-        bg-color=#363A4D
+        bg-color="#363A4D"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Este campo es obligarorio']"
+        :rules="[
+          (val) => (val && val.length > 0) || 'Este campo es obligarorio',
+        ]"
       />
       <q-input
         filled
@@ -26,7 +30,7 @@
         type="number"
         label="Stock"
         hint="1, 6, 12, etc"
-        bg-color=#363A4D
+        bg-color="#363A4D"
         lazy-rules
         :rules="[(val) => (val && val > 0) || 'Este campo es obligarorio']"
       />
@@ -36,7 +40,7 @@
         v-model="precioUnitario"
         label="Precio unitario"
         hint="precio de compra"
-        bg-color=#363A4D
+        bg-color="#363A4D"
         lazy-rules
         :rules="[(val) => (val && val >= 0) || 'Este campo es obligarorio']"
       />
@@ -47,7 +51,7 @@
         label="Valtor item"
         hint="precio de
       venta"
-        bg-color=#363A4D
+        bg-color="#363A4D"
         lazy-rules
         :rules="[(val) => (val && val >= 0) || 'Este campo es obligarorio']"
       />
@@ -57,7 +61,7 @@
         v-model="codigoBarra"
         label="Codigo de barras"
         hint="Opcional"
-        bg-color=#363A4D
+        bg-color="#363A4D"
       >
         <template v-slot:append>
           <q-icon name="filter_center_focus" @click.stop="oelarva" />
@@ -100,7 +104,7 @@ export default {
       codigoBarra,
       async onSubmit(evt) {
         $q.loading.show({
-          message: "Esperando...",
+          message: "Cargandoo...",
         });
         const producto = {
           nombre: nombre.value,
@@ -162,9 +166,9 @@ export default {
     padding: 1px 15px 15px 0px
 
 .btn-container
-  text-align: left
-  margin-top: 20px
+    text-align: left
+    margin-top: 20px
 
 title
-  width: 100%
+    width: 100%
 </style>

@@ -53,23 +53,35 @@
       </template>
     </q-table>
 
-    <q-dialog v-model="fixed">
+    <q-dialog v-model="fixed" full-width>
       <q-card>
         <q-card-section>
-          <div class="text-h6">Terms of Agreement</div>
+          <div class="text-h6">Detalles de la compra</div>
         </q-card-section>
 
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
-          idCompra a buscar: {{ msg }}
+        <q-card-section style="max-height: 70vh" class="scroll">
+          <suspense>
+            <template #default>
+              <detalles-compra :idCompra="idCompra" />
+            </template>
+            <template #fallback>
+              <div>Loading...</div>
+            </template>
+          </suspense>
         </q-card-section>
 
         <q-separator />
 
         <q-card-actions align="right">
-          <q-btn flat label="Decline" color="dakr" v-close-popup />
-          <q-btn flat label="Accept" color="dark" v-close-popup />
+          <q-btn
+            flat
+            label="Cerrar"
+            color="dark"
+            v-close-popup
+            :v-model="(details = !details)"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -80,15 +92,17 @@
 import { ref } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
+import DetallesCompra from "../components/DetallesCompra.vue";
 
 const columns = [
   {
     name: "idCompra",
     required: true,
     label: "Id de la Compra",
-    align: "left",
+    align: "center",
     field: "idCompra",
     sortable: true,
+    headerStyle: "width: 10vh",
   },
   {
     name: "idProveedor",
@@ -129,15 +143,16 @@ const columns = [
     name: "detalles",
     align: "center",
     label: "detalles",
-    field: "",
+    // field: "",
   },
 ];
 
 export default {
+  components: { DetallesCompra },
   async setup() {
     const $q = useQuasar();
     $q.loading.show({
-      message: "Esperando...",
+      message: "Cargandoo...",
     });
     const items = await rqts.get("compras/").catch((e) => {
       console.log(e);
@@ -149,9 +164,10 @@ export default {
     console.log(items);
 
     function showDetails(row) {
-      console.log(row);
       this.fixed = true;
-      this.msg = row.idCompra;
+      this.idCompra = row.idCompra;
+      this.details = true;
+      console.log(this.idCompra);
     }
 
     return {
@@ -164,6 +180,8 @@ export default {
       showDetails,
       fixed: ref(false),
       msg: ref(""),
+      details: ref(false),
+      idCompra: ref(null),
     };
   },
 };
