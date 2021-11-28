@@ -11,6 +11,7 @@ from tent.controllers.compras_controller import upload_documento as compras_stor
 from tent.controllers.compras_controller import upload_json as compras_store_json
 from tent.controllers.compras_controller import index as compras_index
 from tent.controllers.compras_controller import show as compras_show
+from tent.controllers.compras_controller import details as compras_details
 
 
 from tent.controllers.base_controller import hello
@@ -28,6 +29,7 @@ compras_url_rules = [('/', compras_index, ['GET']),
                      ('/documento', compras_store, ['POST']),
                      ('/upload', compras_store_json, ['POST']),
                      ('/<int:idCompra>/', compras_show, ['GET']),
+                     ('/details/<int:idCompra>/', compras_details, ['GET']),
                      ]
 
 base_url_rules = [('/', hello, ['GET'])]

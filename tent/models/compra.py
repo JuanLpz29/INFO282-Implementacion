@@ -3,8 +3,8 @@ from tent.models import db
 from sqlalchemy.orm import relationship
 from tent.models.proveedor import Proveedor
 # from tent.models import productos_compra
-# from tent.models.producto_compra import ProductosCompra
-# from tent.models import ProductosCompra
+# from tent.models.producto_compra import ProductoCompra
+# from tent.models import ProductoCompra
 
 
 class CompraSchema(ma.Schema):
@@ -24,7 +24,7 @@ class Compra(db.Model):
     # una compra tiene UN PROVEEDOR
     idProveedor = db.Column(db.Integer, db.ForeignKey('Proveedor.idProveedor'))
     proveedor = relationship("Proveedor", back_populates="compras")
-    productos = relationship("ProductosCompra", back_populates="compra")
+    productos = relationship("ProductoCompra", back_populates="compra")
     # productosCompra = db.relationship(
     #     "Producto", secondary=productos_compra
     #     # , back_populates="comprasProducto"

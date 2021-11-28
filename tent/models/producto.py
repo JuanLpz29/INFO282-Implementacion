@@ -2,10 +2,10 @@ from tent.models import ma, db
 from numpy import isnan, nan
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from sqlalchemy.orm import relationship
-from tent.models.productoscompra import ProductosCompra
+from tent.models.productoscompra import ProductoCompra
 from tent.models.compra import Compra
-# from tent.models.producto_compra import ProductosCompra
-# from tent.models import ProductosCompra
+# from tent.models.producto_compra import ProductoCompra
+# from tent.models import ProductoCompra
 
 
 class Producto(db.Model):
@@ -22,7 +22,7 @@ class Producto(db.Model):
     precioVenta = db.Column(db.Integer, nullable=True)
     precioUnitario = db.Column(db.Integer, nullable=True)
     valorItem = db.Column(db.Integer)
-    compras = relationship("ProductosCompra", back_populates="producto")
+    compras = relationship("ProductoCompra", back_populates="producto")
 
     # comprasProducto = db.relationship(
     # "Compra", secondary=association_table, back_populates="productosCompra")
@@ -36,7 +36,7 @@ class Producto(db.Model):
         self.valorItem = precioUnitario
         if barcode is not None:
             if isinstance(barcode, str) or not isnan(barcode):
-                self.codigoBarra = barcode
+                self.codigoBarra = str(barcode)
 
     @classmethod
     def from_dict(cls, prod_dict):

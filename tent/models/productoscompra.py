@@ -5,8 +5,8 @@ from tent.models import ma, db
 # from tent.models.producto import Producto
 
 
-class ProductosCompra(db.Model):
-    __tablename__ = 'ProductosCompra'
+class ProductoCompra(db.Model):
+    __tablename__ = 'ProductoCompra'
     idProducto = Column(ForeignKey('Producto.idProducto'),
                         primary_key=True)
     idCompra = Column(ForeignKey('Compra.idCompra'),

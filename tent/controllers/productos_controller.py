@@ -2,7 +2,7 @@ import re
 from flask import redirect, url_for, request, jsonify
 from sqlalchemy.sql.expression import text
 from tent.models.producto import Producto, ProductSchema
-# from tent.models.producto_compra import ProductosCompra
+# from tent.models.producto_compra import ProductoCompra
 from tent import db
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import func
@@ -49,13 +49,17 @@ def show(idProducto):
     return f"no se encontro producto con id {idProducto}"
 
 
+def get_many(ids: list):
+    prods = Producto.query.filter(Producto.idProducto
+                                  .in_(ids)).all()
+    return products_schema.dump(prods)
+
+
 def add_or_update(prod_list):
     barcodes = [prod.codigoBarra for prod in prod_list]
     existing_prods = Producto.query.filter(Producto.codigoBarra
                                            .in_(barcodes)).all()
-
     i = 0
-    print(len(prod_list), len(existing_prods))
     n_existing = len(existing_prods)
     for prod in prod_list:
         # manejar cambios en el precio
@@ -77,13 +81,10 @@ def destroy(idProducto):
 def store():
     body = request.data.decode()
     body_json = json.loads(body)
-    # if barcode is not None:
-    #     if (prov := Producto.query.filter_by(codigoBarra=barcode).first() is not None):
-    #         # update??
-    #         return "el producto ya existe en la BD"
     new_product = Producto.from_dict(body_json)
+    [prod] = add_or_update([new_product])
     # ver lo de INSERT ... ON DUPLICATE KEY UPDATE Statement
-    db.session.add(new_product)
+    db.session.add(prod)
     db.session.commit()
     return "OK MI REY"
     # return product_schema.dumps(new_product)

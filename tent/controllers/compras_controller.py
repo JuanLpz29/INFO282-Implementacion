@@ -2,14 +2,16 @@ from logging import DEBUG
 from operator import add
 from flask import redirect, request, jsonify
 from tent.models import producto
+from tent.models import proveedor
 from tent.models.compra import Compra, CompraSchema
 from tent.utils.DTE import DTE
 from tent import db
 from tent.controllers.productos_controller import productos_compra_json
 from tent.controllers.productos_controller import add_or_update
+from tent.controllers.productos_controller import get_many as get_many_prods
 from tent.models.proveedor import Proveedor, ProveedorSchema
 from tent.models.producto import ProductSchema
-from tent.models.productoscompra import ProductosCompra
+from tent.models.productoscompra import ProductoCompra
 import json
 from sqlalchemy.dialects.mysql import insert
 # from DTE import DTE
@@ -37,6 +39,33 @@ def show(idCompra):
     if compra is not None:
         return compra_schema.jsonify(compra)
     return f"no se encontro Compra con id {idCompra}"
+
+
+def details(idCompra):
+    compra = Compra.query.get(idCompra)
+    if compra is None:
+        return f"no se encontro Compra con id {idCompra}"
+    compra_info = compra_schema.dump(compra)
+    pcs = ProductoCompra.query.filter(
+        ProductoCompra.idCompra == idCompra)
+    productos_id = [pc.idProducto for pc in pcs]
+    prods = get_many_prods(productos_id)
+    print(compra_info['idProveedor'])
+    _prov = Proveedor.query.filter(Proveedor
+                                   .idProveedor == compra_info['idProveedor']).first()
+    prov = proveedor_schema.dump(_prov)
+    # print(prods)
+    for (pc, prod) in zip(pcs, prods):
+        if pc.idProducto != prod['idProducto']:
+            print('f')
+        else:
+            prod['stock'] = pc.cantidad
+    response = jsonify(info=compra_info,
+                       proveedor=prov,
+                       productos=prods,
+                       )
+
+    return response
 
 
 def _allowed_file(filename):
@@ -76,7 +105,7 @@ def upload_json():
             qty = _prods[i].stock
         else:
             qty = prod.stock
-        a = ProductosCompra(cantidad=qty)
+        a = ProductoCompra(cantidad=qty)
         a.producto = prod
         a.compra = cmp
     db.session.add(prov)
