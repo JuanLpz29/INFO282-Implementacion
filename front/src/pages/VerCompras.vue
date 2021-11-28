@@ -28,7 +28,51 @@
           </q-input>
         </div>
       </template>
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.label }}
+          </q-th>
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+            <template v-if="col.name !== 'detalles'">
+              {{ col.value }}
+            </template>
+            <template v-else>
+              <q-btn
+                unelevated
+                icon="zoom_in"
+                @click="showDetails(props.row)"
+              ></q-btn>
+            </template>
+          </q-td>
+        </q-tr>
+      </template>
     </q-table>
+
+    <q-dialog v-model="fixed">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Terms of Agreement</div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section style="max-height: 50vh" class="scroll">
+          idCompra a buscar: {{ msg }}
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn flat label="Decline" color="dakr" v-close-popup />
+          <q-btn flat label="Accept" color="dark" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -81,6 +125,12 @@ const columns = [
     field: "montoNeto",
     sortable: true,
   },
+  {
+    name: "detalles",
+    align: "center",
+    label: "detalles",
+    field: "",
+  },
 ];
 
 export default {
@@ -98,6 +148,12 @@ export default {
     }
     console.log(items);
 
+    function showDetails(row) {
+      console.log(row);
+      this.fixed = true;
+      this.msg = row.idCompra;
+    }
+
     return {
       columns,
       items,
@@ -105,6 +161,9 @@ export default {
       pagination: ref({
         rowsPerPage: 10,
       }),
+      showDetails,
+      fixed: ref(false),
+      msg: ref(""),
     };
   },
 };
