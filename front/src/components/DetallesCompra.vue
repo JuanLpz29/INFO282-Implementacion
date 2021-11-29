@@ -1,10 +1,11 @@
 <template>
-  <q-page class="chido">
-    {{ info }}
+  <!-- <q-page class="chido"> -->
+  <q-page style="min-height: 60vh">
+    <q-page-container style="padding-top: 25px; padding-left: 32px">
+      <informacion-compra :infoCompra="info" :infoProveedor="proveedor" />
+    </q-page-container>
 
-    {{ proveedor }}
-
-    <q-page-container style="padding-top: 40px">
+    <q-page-container style="padding-top: 25px; padding-left: 25px">
       <tabla-productos-simple :items="productos" />
     </q-page-container>
   </q-page>
@@ -14,9 +15,10 @@
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import TablaProductosSimple from "./TablaProductosSimple.vue";
+import InformacionCompra from "./InformacionCompra.vue";
 
 export default {
-  components: { TablaProductosSimple },
+  components: { TablaProductosSimple, InformacionCompra },
   props: {
     idCompra: Number,
   },
@@ -49,4 +51,3 @@ export default {
   },
 };
 </script>
-

@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md column container" style="height: 85vh">
+  <q-page class="container" padding style="min-height: 70vh">
+    <!-- <div class="q-pa-md column container" style="min-height: 80vh"> -->
     <div class="q-gutter-md izquierda" style="max-width: 300px">
       <q-file
         outlined
@@ -39,11 +40,22 @@
       />
     </div>
     <div class="derecha">
-      {{ info }}
-      {{ proveedor }}
+      <q-page-container
+        v-if="productos"
+        style="padding-top: 0px; padding-left: 32px"
+      >
+        <informacion-compra
+          :key="info"
+          :infoCompra="info"
+          :infoProveedor="proveedor"
+        />
+      </q-page-container>
     </div>
     <div class="poto">
-      <q-page-container v-if="productos" style="padding-top: 40px">
+      <q-page-container
+        v-if="productos"
+        style="padding-top: 25px; padding-left: 25px"
+      >
         <productos-compra :items="productos" />
       </q-page-container>
       <div v-if="productos !== null" class="row justify-end">
@@ -57,7 +69,8 @@
         </q-btn>
       </div>
     </div>
-  </div>
+    <!-- </div> -->
+  </q-page>
 </template>
 
 
@@ -66,9 +79,10 @@ import { ref } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import ProductosCompra from "../components/ProductosCompra.vue";
+import InformacionCompra from "../components/InformacionCompra.vue";
 
 export default {
-  components: { ProductosCompra },
+  components: { ProductosCompra, InformacionCompra },
   async setup() {
     const $q = useQuasar();
     return {

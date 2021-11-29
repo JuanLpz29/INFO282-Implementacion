@@ -46,7 +46,7 @@
       </q-drawer>
 
       <q-page-container>
-        <q-page padding style="padding-top: 66px">
+        <q-page padding style="padding-top: 4vh; min-height: 80vh">
           <suspense>
             <template #default>
               <router-view />

@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md">
+  <!-- <q-page style="min-height: 0vh; padding-left: 0px"> -->
+  <div class="q-pa-sm">
     <q-table
       title="Productos"
       :rows="items"
@@ -36,6 +37,7 @@
         </q-tr>
       </template>
     </q-table>
+    <!-- </q-page> -->
   </div>
 </template>
 
@@ -68,7 +70,7 @@ const columns = [
     name: "stock",
     label: "Stock",
     field: "stock",
-    // sortable: true,
+    sortable: true,
     style: "width: 7vh",
     headerStyle: "width: 7vh",
     align: "center",
@@ -94,7 +96,7 @@ export default {
       items: ref(props.items),
       filter: ref(""),
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 5,
       }),
     };
   },

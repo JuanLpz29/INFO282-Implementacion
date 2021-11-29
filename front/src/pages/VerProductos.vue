@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md">
+  <!-- <div class="q-pa-md"> -->
+  <q-page style="min-height: 60vh">
     <q-table
       title="Productos"
       :rows="rows"
@@ -39,7 +40,8 @@
         </q-tr>
       </template>
     </q-table>
-  </div>
+  </q-page>
+  <!-- </div> -->
 </template>
 
 <script>

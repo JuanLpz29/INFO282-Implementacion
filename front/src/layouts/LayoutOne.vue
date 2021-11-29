@@ -2,9 +2,7 @@
   <q-layout view="hHh LpR fFf" style="min-height: 0px">
     <q-header bordered class="bg-dark texto" height-hint="120">
       <q-toolbar>
-        <q-toolbar-title class="text-primary">
-          La Tentación
-        </q-toolbar-title>
+        <q-toolbar-title class="text-primary"> La Tentación </q-toolbar-title>
       </q-toolbar>
 
       <q-tabs align="left">
@@ -72,7 +70,7 @@ export default {
         } else {
           console.log("off");
           setCssVar("primary", "#ffffff");
-          setCssVar("dark", "#301c68");
+          setCssVar("dark", "#051a21");
         }
       },
     };
