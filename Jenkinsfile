@@ -25,11 +25,11 @@ pipeline {
                 sh 'docker cp /var/www/tent/tent.conf tent:/etc/apache2/sites-available/'
                 sh 'docker exec tent pip install -r /var/www/tent/requirements.txt'
                 sh 'docker exec tent a2dissite 000-default.conf'
-                sh 'docker exec tent a2enmod ssl'
-                sh 'docker exec tent openssl req -x509 -nodes -days 365 -newkey \
-                    rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key \
-                    -out /etc/ssl/certs/apache-selfsigned.crt \
-                    -subj "/C=CL/ST=/L=/O=Company Name/OU=Org/CN=146.83.216.218"'
+                // sh 'docker exec tent a2enmod ssl'
+                // sh 'docker exec tent openssl req -x509 -nodes -days 365 -newkey \
+                    // rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key \
+                    // -out /etc/ssl/certs/apache-selfsigned.crt \
+                    // -subj "/C=CL/ST=/L=/O=Company Name/OU=Org/CN=146.83.216.218"'
                 sh 'docker exec tent a2ensite tent.conf'
                 sh 'docker exec tent /etc/init.d/apache2 reload'
                 //sh 'docker exec tent service apache2 restart'
