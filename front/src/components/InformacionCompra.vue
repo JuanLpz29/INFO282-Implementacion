@@ -64,5 +64,5 @@ export default {
 
 <style lang="sass" scoped>
 .my-card
-    width: min(500px, 60vh)
+  width: min(500px, 60vh)
 </style>

@@ -108,6 +108,7 @@ const columns = [
     name: "montoNeto",
     align: "center",
     label: "monto Neto de la compra",
+    format: (val, row) => `$${val.toLocaleString()}`,
     field: "montoNeto",
     sortable: true,
   },
@@ -116,6 +117,7 @@ const columns = [
     align: "center",
     label: "Monto Total de la compra",
     field: "montoTotal",
+    format: (val, row) => `$${val.toLocaleString()}`,
     sortable: true,
   },
   {
@@ -123,6 +125,7 @@ const columns = [
     align: "center",
     label: "Fecha de la compra",
     field: "fecha",
+    format: (val, row) => `${val.split("-").reverse().join("-")}`,
     sortable: true,
   },
   {
@@ -170,4 +173,5 @@ export default {
     };
   },
 };
+
 </script>

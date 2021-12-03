@@ -4,7 +4,6 @@
     <q-page-container style="padding-top: 25px; padding-left: 32px">
       <informacion-compra :infoCompra="info" :infoProveedor="proveedor" />
     </q-page-container>
-
     <q-page-container style="padding-top: 25px; padding-left: 25px">
       <tabla-productos-simple :items="productos" />
     </q-page-container>
@@ -16,9 +15,10 @@ import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import TablaProductosSimple from "./TablaProductosSimple.vue";
 import InformacionCompra from "./InformacionCompra.vue";
+import ProductosCompra from './ProductosCompra.vue';
 
 export default {
-  components: { TablaProductosSimple, InformacionCompra },
+  components: { TablaProductosSimple, InformacionCompra, ProductosCompra },
   props: {
     idCompra: Number,
   },
