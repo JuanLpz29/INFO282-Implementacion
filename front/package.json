@@ -1,6 +1,6 @@
 {
     "name": "my-vue-app",
-    "productName": "Electron tutorial app",
+    "productName": "tent",
     "version": "0.0.0",
     "main": "main.js",
     "scripts": {
