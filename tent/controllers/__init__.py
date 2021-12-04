@@ -6,6 +6,7 @@ from tent.controllers.productos_controller import show as products_show
 from tent.controllers.productos_controller import destroy as products_destroy
 from tent.controllers.productos_controller import store as products_store
 from tent.controllers.productos_controller import update as products_update
+from tent.controllers.productos_controller import reservar_producto as products_reserva
 
 from tent.controllers.compras_controller import upload_documento as compras_store
 from tent.controllers.compras_controller import upload_json as compras_store_json
@@ -21,6 +22,7 @@ compras_bp = Blueprint('compras', 'api', url_prefix='/compras')
 base_bp = Blueprint('', 'api', url_prefix='')
 
 productos_url_rules = [('/', products_index, ['GET']),
+                       ('/reservar/', products_reserva, ['GET']),
                        ('/<int:idProducto>/', products_show, ['GET']),
                        ('/nuevo/', products_store, ['POST'])
                        ]

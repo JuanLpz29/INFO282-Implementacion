@@ -49,13 +49,34 @@ def show(idProducto):
     return f"no se encontro producto con id {idProducto}"
 
 
+def reservar_producto():
+    barcode = request.args.get('barcode', None, type=str)
+    cantidad = request.args.get('cantidad', 1, type=int)
+    if barcode is not None:
+        producto = Producto.query.filter(
+            Producto.codigoBarra == barcode).first()
+        if producto is not None:
+            # manejar lo del stock negativo
+            producto.stock = 1 if cantidad >= producto.stock else producto.stock - cantidad
+            # "reservar" items
+            db.session.commit()
+            return product_schema.dump(producto)
+        # que pasa si no se encuentra un producto con ese barcode?
+        return f"no se encontro producto con codigo de barra {barcode}", 404
+    else:
+        return "Busqueda malarda", 400  # bad request
+
+
+# def cancelar_compra():
+#
+
 def get_many(ids: list):
     prods = Producto.query.filter(Producto.idProducto
                                   .in_(ids)).all()
     return products_schema.dump(prods)
 
 
-def add_or_update(prod_list):
+def add_or_update(prod_list, add_news=True):
     barcodes = [prod.codigoBarra for prod in prod_list]
     existing_prods = Producto.query.filter(Producto.codigoBarra
                                            .in_(barcodes)).all()
@@ -67,7 +88,8 @@ def add_or_update(prod_list):
             existing_prods[i].stock += prod.stock
             i += 1
         else:
-            existing_prods.append(prod)
+            if add_news:
+                existing_prods.append(prod)
     return existing_prods
 
 
