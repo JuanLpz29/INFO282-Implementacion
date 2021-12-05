@@ -114,7 +114,7 @@ export default {
           valorItem: valorItem.value,
           codigoBarra: codigoBarra.value,
         };
-        // modificar para notificar dependiendo si la creacion fue exitosa ofallo
+        // modificar para notificar dependiendo si la creacion fue exitosa o falló
         const response = await rqts
           .postjson("productos/nuevo/", producto)
           .then((response) =>

@@ -1,6 +1,7 @@
 import LayoutOne from '../layouts/LayoutOne.vue'
 import ComprasLayout from '../layouts/ComprasLayout.vue'
 import ProductosLayout from '../layouts/ProductosLayout.vue'
+import VentasLayout from '../layouts/VentasLayout.vue'
 
 import VerCompras from '../pages/VerCompras.vue'
 import SubirCompra from '../pages/SubirCompra.vue'
@@ -44,7 +45,15 @@ const routes = [
             },
             {
                 path: 'ventas',
-                component: Ventas
+                component: VentasLayout,
+                children: [{
+                    path: 'ver',
+                    component: Ventas
+                },
+                {
+                    path: 'subir',
+                    component: SubirCompra
+                }]
             },
             {
                 path: '/',

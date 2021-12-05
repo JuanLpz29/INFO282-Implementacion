@@ -142,7 +142,7 @@ export default {
   async setup() {
     const $q = useQuasar();
     $q.loading.show({
-      message: "Cargandoo...",
+      message: "Cargando...",
     });
     const items = await rqts.get("compras/").catch((e) => {
       console.log(e);

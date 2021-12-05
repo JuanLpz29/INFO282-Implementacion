@@ -19,23 +19,23 @@
       >
         <!-- <q-scroll-area class="fit"> -->
         <q-list padding>
-          <q-item clickable v-ripple to="/app/compras/ver">
+          <q-item clickable v-ripple to="/app/ventas/ver">
             <q-item-section avatar>
               <q-icon name="receipt_long" />
             </q-item-section>
 
             <q-item-section>
-              <p class="centered">Ver Compras</p>
+              <p class="centered">Nueva venta</p>
             </q-item-section>
           </q-item>
 
-          <q-item active clickable v-ripple to="/app/compras/subir">
+          <q-item active clickable v-ripple to="/app/ventas/ver">
             <q-item-section avatar>
               <q-icon name="upload_file" />
             </q-item-section>
 
             <q-item-section>
-              <p class="center">Subir un documento</p>
+              <p class="center">Informe de ventas</p>
             </q-item-section>
           </q-item>
 
