@@ -3,11 +3,7 @@
   <q-page style="min-height: 60vh">
     <div class="q-pa-md input-codigo">
       870657
-      <q-form
-        class="formulario-codigo"
-        @submit.prevent="onSubmit"
-        @reset="onReset"
-      >
+      <q-form class="formulario-codigo" @submit.prevent="onSubmit">
         <q-input
           class=""
           rounded
@@ -33,7 +29,6 @@
       separator="horizontal"
       style="table-layout: fixed"
       wrap-cells
-      @request="onRequest"
       :loading="loading"
       virtual-scroll
       v-model:pagination="pagination"
@@ -72,7 +67,7 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-left">{{total}}</td>
+            <td class="text-left">{{ total }}</td>
           </tr>
         </tbody>
       </q-markup-table>
@@ -137,11 +132,11 @@ export default {
     const codigo = ref(null);
     const rowCount = ref(10);
     const rows = ref([]);
+    const total = ref(0);
 
     // emulate fetching data from server
     function addRow(row) {
-      total += row.valorItem;
-      console.log(row)
+      total.value += row.valorItem;
       loading.value = true;
       setTimeout(() => {
         const index = Math.floor(Math.random() * (rows.value.length + 1));
@@ -163,18 +158,18 @@ export default {
 
     // expose to template
     return {
+      loading,
       mycolumns,
       rows,
       codigo,
       rowCount,
-      total: ref(0),
+      total,
       separator: ref("vertical"),
       pagination: ref({
-        rowsPerPage: 0}),
-      
+        rowsPerPage: 0,
+      }),
 
       async onSubmit(evt) {
-        console.log("submit ", codigo.value);
         $q.loading.show({
           message: "Cargando...",
         });

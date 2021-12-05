@@ -3,3 +3,5 @@ node_modules
 dist
 dist-ssr
 *.local
+*-win32-ia32
+wine*
