@@ -11,7 +11,7 @@ from tent.controllers.productos_controller import add_or_update
 from tent.controllers.productos_controller import get_many as get_many_prods
 from tent.models.proveedor import Proveedor, ProveedorSchema
 from tent.models.producto import ProductSchema
-from tent.models.productoscompra import ProductoCompra
+from tent.models.productocompra import ProductoCompra
 import json
 from sqlalchemy.dialects.mysql import insert
 # from DTE import DTE

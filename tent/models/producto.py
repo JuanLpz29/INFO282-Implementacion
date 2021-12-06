@@ -2,8 +2,10 @@ from tent.models import ma, db
 from numpy import isnan, nan
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from sqlalchemy.orm import relationship
-from tent.models.productoscompra import ProductoCompra
+from tent.models.productocompra import ProductoCompra
+from tent.models.productoventa import ProductoVenta
 from tent.models.compra import Compra
+from tent.models.venta import Venta
 # from tent.models.producto_compra import ProductoCompra
 # from tent.models import ProductoCompra
 
@@ -22,6 +24,7 @@ class Producto(db.Model):
     precioVenta = db.Column(db.Integer, nullable=True)
     precioUnitario = db.Column(db.Integer, nullable=True)
     valorItem = db.Column(db.Integer)
+    ventas = relationship("ProductoVenta", back_populates="producto")
     compras = relationship("ProductoCompra", back_populates="producto")
 
     # comprasProducto = db.relationship(

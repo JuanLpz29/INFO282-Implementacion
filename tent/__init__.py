@@ -23,12 +23,14 @@ def create_app(config_filename=None):
 
 
 def register_blueprints(application):
-    from tent.controllers import productos_bp, compras_bp, base_bp
+    from tent.controllers import productos_bp, compras_bp, base_bp, ventas_bp
     CORS(compras_bp)
     CORS(productos_bp)
+    CORS(ventas_bp)
     CORS(base_bp)
     application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
+    application.register_blueprint(ventas_bp)
     application.register_blueprint(base_bp)
 
 

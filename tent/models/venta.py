@@ -21,18 +21,23 @@ class Venta(db.Model):
     __tablename__ = 'Venta'
     idVenta = db.Column(db.Integer, primary_key=True)
     total = db.Column(db.Integer)
+
+    # efectivo, debito, credito, tia me fia un super8
+    medioDePago = db.Column(db.String(15), nullable=True)
+
     # en curso, confirmada, cancelada, pagada
     estado = db.Column(db.String(15))
-    # efectivo, debito, credito, tia me fia un super8
-    medioDePago = db.Column(db.String(15))
-    fecha = db.Column(db.DateTime)
+
+    fecha = db.Column(db.DateTime, nullable=True)
     idUsuario = db.Column(db.Integer, db.ForeignKey('Usuario.idUsuario'))
     usuario = relationship("Usuario", back_populates="ventas")
     productos = relationship("ProductoVenta", back_populates="venta")
 
     def __init__(self, idUsuario):
         self.idUsuario = idUsuario
-        self.productos = []
+        # self.estado = "en curso"
+        self.total = 0
+        # self.productos = []
 
     def get_id(self):
         return self.idVenta
