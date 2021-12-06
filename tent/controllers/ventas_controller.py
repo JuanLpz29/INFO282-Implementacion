@@ -66,14 +66,17 @@ def start():
     barcode = request.args.get('barcode', '', type=str)
     prod = actualizar_stock(barcode=barcode)
     if prod:
-        a = ProductoVenta(cantidad=1)
-        a.producto = prod
-        a.venta = vnt
+        pv = ProductoVenta(cantidad=1)
+        pv.producto = prod
+        pv.venta = vnt
         vnt.total = prod.valorItem
+        prod_info = producto_schema.dump(prod)
+        prod_info['cantidadReservada'] = pv.cantidad
 
     db.session.add(usuario)
     db.session.commit()
-    return venta_schema.dump(vnt)
+    return jsonify(venta=venta_schema.dump(vnt),
+                   producto=prod_info)
 
 
 # POR USERNAME O POR IDUSUARIO?
