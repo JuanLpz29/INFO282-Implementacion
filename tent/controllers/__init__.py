@@ -19,6 +19,8 @@ from tent.controllers.ventas_controller import show as ventas_show
 from tent.controllers.ventas_controller import start as ventas_start
 from tent.controllers.ventas_controller import details as ventas_details
 from tent.controllers.ventas_controller import update as ventas_update
+from tent.controllers.ventas_controller import cancel as ventas_cancel
+from tent.controllers.ventas_controller import confirm as ventas_confirm
 
 
 productos_bp = Blueprint('productos', 'api', url_prefix='/productos')
@@ -45,6 +47,8 @@ ventas_url_rules = [('/', ventas_index, ['GET']),
                     ('/details/<int:idVenta>/', ventas_details, ['GET']),
                     ('/start/', ventas_start, ['GET']),
                     ('/update/', ventas_update, ['GET']),
+                    ('/cancel/', ventas_cancel, ['GET']),
+                    ('/confirm/', ventas_confirm, ['GET']),
                     ]
 
 base_url_rules = [('/', hello, ['GET'])]

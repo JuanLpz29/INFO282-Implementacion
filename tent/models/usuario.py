@@ -2,6 +2,9 @@ from tent.models import ma
 from tent.models import db
 from sqlalchemy.orm import relationship
 
+ADMIN = "Admin"
+VENDEDOR = "Vendedor"
+
 
 class UsuarioSchema(ma.Schema):
     class Meta:

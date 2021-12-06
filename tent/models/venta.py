@@ -3,6 +3,12 @@ from tent.models import db
 from sqlalchemy.orm import relationship
 from tent.models.usuario import Usuario
 
+
+EN_CURSO = "En Curso"
+CONFIRMADA = "Confirmada"
+ANULADA = "Anulada"
+PAGADA = "Pagada"
+
 # tal vez sea mejor con herencia
 # o simplemente tener un atributo
 # el query por id deberia ser O(log n)
@@ -37,7 +43,7 @@ class Venta(db.Model):
     def __init__(self, idUsuario):
         self.idUsuario = idUsuario
         self.total = 0
-        self.estado = 'en curso'
+        self.estado = EN_CURSO
 
     def get_id(self):
         return self.idVenta

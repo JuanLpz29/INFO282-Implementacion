@@ -67,13 +67,14 @@ def reservar_producto():
         return "Busqueda malarda", 400  # bad request
 
 
-def actualizar_stock(barcode, cantidad=1):
-    producto = Producto.query.filter(
-        Producto.codigoBarra == barcode).first()
+# manejar lo del stock negativo
+# que pasa si no se encuentra un producto con ese barcode?
+def actualizar_stock(producto=None, barcode='', cantidad=1):
+    if producto is None:
+        producto = Producto.query.filter(
+            Producto.codigoBarra == barcode).first()
     if producto is not None:
-        # manejar lo del stock negativo
-        producto.stock = 1 if cantidad >= producto.stock else producto.stock - cantidad
-    # que pasa si no se encuentra un producto con ese barcode?
+        producto.stock = producto.stock - cantidad
     return producto
 
 
