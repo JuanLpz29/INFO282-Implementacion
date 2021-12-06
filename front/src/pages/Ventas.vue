@@ -2,7 +2,7 @@
   <!-- <div class="q-pa-md"> -->
   <q-page style="min-height: 60vh">
     <div class="q-pa-md input-codigo">
-      870657
+      870657 2203308
       <q-form class="formulario-codigo" @submit.prevent="onSubmit">
         <q-input
           class=""
@@ -31,8 +31,8 @@
       wrap-cells
       :loading="loading"
       virtual-scroll
-      v-model:pagination="pagination"
       :rows-per-page-options="[0]"
+      class="tabla-ventas"
     >
       <template v-slot:top-right>
         <div class="bg-white rounded-borders">
@@ -50,7 +50,7 @@
         </div>
       </template>
       <template v-slot:header="props">
-        <q-tr :props="props">
+        <q-tr :props="props" class="td-tabla">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
@@ -62,12 +62,12 @@
       <q-markup-table>
         <thead>
           <tr>
-            <th class="text-left">Total a pagar:</th>
+            <th class="text-left total-label">Total a pagar:</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="text-left">{{ total }}</td>
+            <td class="text-left total-price">${{ total.toLocaleString() }}</td>
           </tr>
         </tbody>
       </q-markup-table>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 
@@ -94,9 +94,10 @@ const mycolumns = [
   },
 
   {
-    name: "precio",
+    name: "valorItem",
     label: "Precio",
-    field: "precio",
+    field: "valorItem",
+    format: (val, row) => `$${val.toLocaleString()}`,
     style: "width: 40vh",
     headerStyle: "width: 40vh",
     align: "left",
@@ -115,13 +116,14 @@ const mycolumns = [
     name: "subtotal",
     label: "Subtotal",
     field: "subtotal",
+    format: (val, row) => `$${(row.stock * row.valorItem).toLocaleString()}`,
     style: "width: 40vh",
     headerStyle: "width: 40vh",
     align: "left",
   },
 ];
 
-const rows = [];
+var idVentaActual = [];
 
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
@@ -134,26 +136,44 @@ export default {
     const rows = ref([]);
     const total = ref(0);
 
+    function verExistencia(codigo) {
+      var existe = false;
+      rows.value.forEach((element) => {
+        if (element.codigoBarra === codigo) {
+          existe = true;
+          element.stock += 1;
+        }
+      });
+      return existe;
+    }
+
     // emulate fetching data from server
     function addRow(row) {
-      total.value += row.valorItem;
-      loading.value = true;
-      setTimeout(() => {
-        const index = Math.floor(Math.random() * (rows.value.length + 1));
+      if (rows.value[0] !== undefined) {
+        var existe = verExistencia(row.codigoBarra);
+        console.log(existe);
+      }
 
-        if (rows.value.length === 0) {
-          rowCount.value = 0;
-        }
+      if (!existe) {
+        loading.value = true;
+        setTimeout(() => {
+          const index = Math.floor(Math.random() * (rows.value.length + 1));
 
-        row.id = ++rowCount.value;
-        const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
-        rows.value = [
-          ...rows.value.slice(0, index),
-          newRow,
-          ...rows.value.slice(index),
-        ];
-        loading.value = false;
-      }, 500);
+          if (rows.value.length === 0) {
+            rowCount.value = 0;
+          }
+
+          row.id = ++rowCount.value;
+          const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
+          rows.value = [
+            ...rows.value.slice(0, index),
+            newRow,
+            ...rows.value.slice(index),
+          ];
+          loading.value = false;
+        }, 500);
+      }
+      total.value += parseInt(row.valorItem);
     }
 
     // expose to template
@@ -165,6 +185,7 @@ export default {
       rowCount,
       total,
       separator: ref("vertical"),
+      aaaa: ref(0),
       pagination: ref({
         rowsPerPage: 0,
       }),
@@ -184,11 +205,17 @@ export default {
             console.log(e);
           });
         $q.loading.hide();
-
-        console.log(items);
         addRow(items);
       },
     };
+  },
+  computed: {
+    getTotal() {
+      this.aaaa += 1;
+      console.log("aaaaa le pegó");
+      console.log(this.rows.value);
+      return this.aaaa;
+    },
   },
 };
 </script>
