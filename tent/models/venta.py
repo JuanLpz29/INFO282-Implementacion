@@ -13,7 +13,8 @@ from tent.models.usuario import Usuario
 
 class VentaSchema(ma.Schema):
     class Meta:
-        fields = ('idVenta', 'idUsuario', 'medioDePago', 'estado'
+        fields = ('idVenta',
+                  'idUsuario', 'medioDePago', 'estado',
                   'fecha', 'total')
 
 
@@ -26,7 +27,7 @@ class Venta(db.Model):
     medioDePago = db.Column(db.String(15), nullable=True)
 
     # en curso, confirmada, cancelada, pagada
-    estado = db.Column(db.String(15))
+    estado = db.Column(db.String(15), nullable=True)
 
     fecha = db.Column(db.DateTime, nullable=True)
     idUsuario = db.Column(db.Integer, db.ForeignKey('Usuario.idUsuario'))
@@ -35,9 +36,8 @@ class Venta(db.Model):
 
     def __init__(self, idUsuario):
         self.idUsuario = idUsuario
-        # self.estado = "en curso"
         self.total = 0
-        # self.productos = []
+        self.estado = 'en curso'
 
     def get_id(self):
         return self.idVenta

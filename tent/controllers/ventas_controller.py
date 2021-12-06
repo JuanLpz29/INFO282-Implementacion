@@ -8,7 +8,6 @@ from tent.controllers.productos_controller import actualizar_stock
 from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema
 from tent.models.productoventa import ProductoVenta
-from tent.models.venta import Venta
 import json
 from sqlalchemy.dialects.mysql import insert
 # from DTE import DTE
@@ -59,7 +58,7 @@ def start():
         vnt.total = prod.valorItem
         db.session.add(usuario)
         db.session.commit()
-        return venta_schema.jsonify(vnt)
+        return venta_schema.dump(vnt)
 
     return f"producto con barcode {barcode} no encontrado", 400
 
@@ -76,24 +75,22 @@ def update():
         vnt.productos[0]
     cantidad = request.args.get('cantidad', 1, type=int)
     barcode = request.args.get('barcode', '', type=str)
-    if barcode:
-        prod = actualizar_stock(barcode, cantidad)
-        if prod:
-            pv = ProductoVenta.query.filter(
-                and_(
-                    ProductoVenta.idProducto == prod.idProducto,
-                    ProductoVenta.idVenta == _id)
-            ).first()
-            if pv:
-                pv.cantidad += cantidad
-            else:
-                a = ProductoVenta(cantidad=1)
-                a.producto = prod
-                a.venta = vnt
-            vnt.total += prod.valorItem * cantidad
-            db.session.add(vnt)
-            db.session.commit()
-            return venta_schema.jsonify(vnt)
+    if barcode and (prod := actualizar_stock(barcode, cantidad)):
+        pv = ProductoVenta.query.filter(
+            and_(
+                ProductoVenta.idProducto == prod.idProducto,
+                ProductoVenta.idVenta == _id)
+        ).first()
+        if pv:
+            pv.cantidad += cantidad
+        else:
+            a = ProductoVenta(cantidad=1)
+            a.producto = prod
+            a.venta = vnt
+        vnt.total += prod.valorItem * cantidad
+        db.session.add(vnt)
+        db.session.commit()
+        return venta_schema.jsonify(vnt)
     return f"barcode piteao", 400
 
 
