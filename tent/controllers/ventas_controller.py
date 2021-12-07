@@ -117,10 +117,12 @@ def update():
 
     actualizar_stock(producto=prod, cantidad=qty)
     vnt.total += prod.valorItem * qty
-    db.session.add(vnt)
-    db.session.commit()
     prod_info = producto_schema.dump(prod)
     prod_info['cantidadReservada'] = pv.cantidad
+    if pv.cantidad == 0:
+        db.session.delete(pv)
+    db.session.add(vnt)
+    db.session.commit()
     return jsonify(venta=venta_schema.dump(vnt),
                    producto=prod_info)
 
