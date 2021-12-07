@@ -18,7 +18,7 @@ DEBUGXD = True
 
 venta_schema = VentaSchema()
 usuario_schema = UsuarioSchema()
-ventass_schema = VentaSchema(many=True)
+ventas_schema = VentaSchema(many=True)
 productos_schema = ProductSchema(many=True)
 producto_schema = ProductSchema()
 
@@ -28,9 +28,9 @@ producto_schema = ProductSchema()
 
 def index():
     all_ventas = Venta.query.paginate(page=1, per_page=30)
-    result = venta_schema.dump(all_ventas.items)
+    result = ventas_schema.dump(all_ventas.items)
     # return jsonify(result)
-    return result
+    return jsonify(result)
 
 
 # Retornamos solo un compra de la base de datos
@@ -88,7 +88,7 @@ def update():
     if not vnt:
         return f"venta con id: {_id} no econtrada", 404
     elif vnt.estado != EN_CURSO:
-        return f"venta con id: {_id} ya se encuentra econtrada {vnt.estado}", 400
+        return f"venta con id: {_id} ya se encuentra {vnt.estado}", 400
 
     cantidad = request.args.get('cantidad', 1, type=int)
     barcode = request.args.get('barcode', '', type=str)

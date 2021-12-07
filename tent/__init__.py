@@ -24,14 +24,17 @@ def create_app(config_filename=None):
 
 def register_blueprints(application):
     from tent.controllers import productos_bp, compras_bp, base_bp, ventas_bp
+    from tent.controllers import usuarios_bp
     CORS(compras_bp)
     CORS(productos_bp)
     CORS(ventas_bp)
     CORS(base_bp)
+    CORS(usuarios_bp)
     application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
     application.register_blueprint(ventas_bp)
     application.register_blueprint(base_bp)
+    application.register_blueprint(usuarios_bp)
 
 
 _env = os.environ.get('FLASK_ENV')

@@ -22,10 +22,14 @@ from tent.controllers.ventas_controller import update as ventas_update
 from tent.controllers.ventas_controller import cancel as ventas_cancel
 from tent.controllers.ventas_controller import confirm as ventas_confirm
 
+from tent.controllers.usuarios_controller import show as usuarios_show
+from tent.controllers.usuarios_controller import store as usuarios_store
+from tent.controllers.usuarios_controller import index as usuarios_index
 
 productos_bp = Blueprint('productos', 'api', url_prefix='/productos')
 compras_bp = Blueprint('compras', 'api', url_prefix='/compras')
 ventas_bp = Blueprint('ventas', 'api', url_prefix='/ventas')
+usuarios_bp = Blueprint('usuarios', 'api', url_prefix='/usuarios')
 base_bp = Blueprint('', 'api', url_prefix='')
 
 productos_url_rules = [('/', products_index, ['GET']),
@@ -51,6 +55,11 @@ ventas_url_rules = [('/', ventas_index, ['GET']),
                     ('/confirm/', ventas_confirm, ['GET']),
                     ]
 
+usuarios_url_rules = [('/', usuarios_index, ['GET']),
+                      ('/<int:idUsuario>/', usuarios_show, ['GET']),
+                      ('/nuevo/', usuarios_store, ['POST'])
+                      ]
+
 base_url_rules = [('/', hello, ['GET'])]
 
 for (rule, func, methods) in productos_url_rules:
@@ -61,6 +70,9 @@ for (rule, func, methods) in compras_url_rules:
 
 for (rule, func, methods) in ventas_url_rules:
     ventas_bp.add_url_rule(rule, view_func=func, methods=methods)
+
+for (rule, func, methods) in usuarios_url_rules:
+    usuarios_bp.add_url_rule(rule, view_func=func, methods=methods)
 
 for (rule, func, methods) in base_url_rules:
     base_bp.add_url_rule(rule, view_func=func, methods=methods)
