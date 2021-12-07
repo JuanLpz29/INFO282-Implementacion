@@ -74,8 +74,12 @@ def actualizar_stock(producto=None, barcode='', cantidad=1):
         producto = Producto.query.filter(
             Producto.codigoBarra == barcode).first()
     if producto is not None:
-        producto.stock = producto.stock - cantidad
-    return producto
+        if producto.stock > cantidad:
+            producto.stock = producto.stock - cantidad
+        else:
+            producto.stock = 0
+        return producto
+    return None
 
 
 # def cancelar_compra():

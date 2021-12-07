@@ -71,8 +71,10 @@ def start():
         pv.venta = vnt
         vnt.total = prod.valorItem
         prod_info = producto_schema.dump(prod)
-        prod_info['cantidadReservada'] = pv.cantidad
-
+        prod_info['cantidad'] = pv.cantidad
+    else:
+        # front debe registrarlo
+        prod_info = None
     db.session.add(usuario)
     db.session.commit()
     return jsonify(venta=venta_schema.dump(vnt),
@@ -105,8 +107,12 @@ def update():
     ).first()
     if pv:
         if cantidad > 0:
-            qty = cantidad if prod.stock > cantidad else prod.stock
+            # no agregar cuando stock sea cero
+            # qty = cantidad if prod.stock > cantidad else prod.stock
+            # agregar de todas formas
+            qty = cantidad
         else:
+            # no devolver mas de los productos que ya tiene la compra
             qty = -pv.cantidad if (cantidad + pv.cantidad) < 0 else cantidad
         pv.cantidad += qty
     else:
@@ -118,7 +124,7 @@ def update():
     actualizar_stock(producto=prod, cantidad=qty)
     vnt.total += prod.valorItem * qty
     prod_info = producto_schema.dump(prod)
-    prod_info['cantidadReservada'] = pv.cantidad
+    prod_info['cantidad'] = pv.cantidad
     if pv.cantidad == 0:
         db.session.delete(pv)
     db.session.add(vnt)
