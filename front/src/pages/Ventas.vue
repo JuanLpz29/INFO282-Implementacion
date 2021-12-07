@@ -10,6 +10,7 @@
             rounded
             outlined
             v-model="codigo"
+            id="input-codigo"
             label="Codigo de barra"
           />
           <q-btn
@@ -27,6 +28,7 @@
             label="Cancelar Venta"
             type="submit"
             color="dark"
+            id="btn-cancelar"
             style="margin-left: 40px"
           />
         </q-form>
@@ -67,6 +69,7 @@
                 v-model.number="props.row.cantidad"
                 buttons
                 v-slot="scope"
+                @save="actualizar"
               >
                 <q-input
                   v-model="scope.value"
@@ -83,7 +86,7 @@
     </q-table>
 
     <div class="total-pagar">
-      <q-markup-table>
+      <q-markup-table class="inner-total">
         <thead>
           <tr>
             <th class="text-left total-label">Total a pagar:</th>
@@ -98,7 +101,18 @@
     </div>
   </q-page>
   <!-- </div> -->
+
+  <div class="q-pa-md finalizar-compra">
+    <q-form class="formulario-cancelar" @submit.prevent="finalizarCompra">
+    <q-btn color="warning" class="full-width" label="Finalizar compra" type="submit" style="padding: 20px; font-weight: 600"/>
+    </q-form>
+  </div>
+
+
+
 </template>
+
+
 
 <script>
 import { ref, onMounted, computed } from "vue";
@@ -160,7 +174,7 @@ export default {
     const inputcantidad = ref(1);
     const total = ref(0);
     const idVenta = ref(null);
-    const usuario = ref("joselo");
+    const usuario = ref("matias");
 
     function verExistencia(codigo) {
       var existe = false;
@@ -255,6 +269,20 @@ export default {
         }
       },
 
+      async actualizar(value, initialValue) {
+        $q.loading.show({
+          message: "Cargando...",
+        });
+        console.log(value);
+        console.log("reservnado");
+        const reqUrl = `?cantidad=${value}&barcode=${codigo.value}&idVenta=${idVenta.value}`;
+        const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
+          console.log(e);
+        });
+        $q.loading.hide();
+        total.value = items.venta.total;
+      },
+
       async cancelarVenta() {
         $q.loading.show({
           message: "Cargando...",
@@ -267,11 +295,24 @@ export default {
           });
         console.log(respuesta);
         $q.loading.hide();
+        //rows._rawValue = [];
+        location.reload();
       },
 
-      nuevaCantidad(cantidad) {
-        console.log(cantidad);
-        return cantidad.set;
+      async finalizarCompra(){
+        $q.loading.show({
+          message: "Cargando...",
+        });
+        const reqUrl = `?idVenta=${idVenta.value}&user=${usuario.value}`;
+        const respuesta = await rqts
+          .get(`ventas/confirm/${reqUrl}`)
+          .catch((e) => {
+            console.log(e);
+          });
+        console.log(respuesta);
+        $q.loading.hide();
+        //rows._rawValue = [];
+        location.reload();
       },
     };
   },
