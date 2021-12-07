@@ -229,7 +229,7 @@ export default {
 
         if (!idVenta.value) {
           console.log("Existe id venta");
-          const reqUrl = `?user=matias&barcode=2203308`;
+          const reqUrl = `?user=matias&barcode=${productoVenta.barcode}`;
           const infoVenta = await rqts
             .get(`ventas/start/${reqUrl}`)
             .catch((e) => {
@@ -244,7 +244,7 @@ export default {
 
         } else {
           console.log("reservnado");
-          const reqUrl = `?cantidad=1&barcode=870657&idVenta=15`;
+          const reqUrl = `?cantidad=1&barcode=${productoVenta.barcode}&idVenta=18`;
           const items = await rqts
             .get(`ventas/update/${reqUrl}`)
             .catch((e) => {
@@ -262,7 +262,7 @@ export default {
         $q.loading.show({
           message: "Cargando...",
         });
-        const reqUrl = `?idVenta=14&user=matias`;
+        const reqUrl = `?idVenta=18&user=matias`;
         const respuesta = await rqts
           .get(`ventas/cancel/${reqUrl}`)
           .catch((e) => {
