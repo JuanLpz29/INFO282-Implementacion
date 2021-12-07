@@ -58,13 +58,13 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <template v-if="col.name !== 'stock'">
+            <template v-if="col.name !== 'cantidad'">
               {{ col.value }}
             </template>
             <template v-else>
               {{ col.value }}
               <q-popup-edit
-                v-model.number="props.row.stock"
+                v-model.number="props.row.cantidad"
                 buttons
                 v-slot="scope"
               >
@@ -128,9 +128,9 @@ const mycolumns = [
   },
 
   {
-    name: "stock",
+    name: "cantidad",
     label: "Cantidad",
-    field: "stock",
+    field: "cantidad",
     style: "width: 7vh",
     headerStyle: "width: 7vh",
     align: "center",
@@ -140,7 +140,7 @@ const mycolumns = [
     name: "subtotal",
     label: "Subtotal",
     field: "subtotal",
-    format: (val, row) => `$${(row.stock * row.valorItem).toLocaleString()}`,
+    format: (val, row) => `$${(row.cantidad * row.valorItem).toLocaleString()}`,
     style: "width: 40vh",
     headerStyle: "width: 40vh",
     align: "left",
@@ -160,13 +160,14 @@ export default {
     const inputcantidad = ref(1);
     const total = ref(0);
     const idVenta = ref(null);
+    const usuario = ref("joselo");
 
     function verExistencia(codigo) {
       var existe = false;
       rows.value.forEach((element) => {
         if (element.codigoBarra === codigo) {
           existe = true;
-          element.stock += 1;
+          element.cantidad += 1;
         }
       });
       return existe;
@@ -199,7 +200,7 @@ export default {
         }, 500);
       }
       row.subtotal = parseInt(row.valorItem) * row.cantidadReservada;
-      row.cantidad = row.cantidadReservada
+      row.cantidad = row.cantidadReservada;
     }
 
     // expose to template
@@ -208,11 +209,11 @@ export default {
       mycolumns,
       rows,
       codigo,
-      count: ref(0),
       rowCount,
       inputcantidad,
       total,
       idVenta,
+      usuario,
       separator: ref("vertical"),
       pagination: ref({
         rowsPerPage: 0,
@@ -229,7 +230,7 @@ export default {
 
         if (!idVenta.value) {
           console.log("Existe id venta");
-          const reqUrl = `?user=matias&barcode=2203308`;
+          const reqUrl = `?user=${usuario.value}&barcode=${codigo.value}`;
           const infoVenta = await rqts
             .get(`ventas/start/${reqUrl}`)
             .catch((e) => {
@@ -239,17 +240,14 @@ export default {
           total.value = infoVenta.venta.total;
           idVenta.value = infoVenta.venta.idVenta;
 
-          console.log(infoVenta.producto)
+          console.log(infoVenta.producto);
           addRow(infoVenta.producto);
-
         } else {
           console.log("reservnado");
-          const reqUrl = `?cantidad=1&barcode=870657&idVenta=15`;
-          const items = await rqts
-            .get(`ventas/update/${reqUrl}`)
-            .catch((e) => {
-              console.log(e);
-            });
+          const reqUrl = `?cantidad=1&barcode=${codigo.value}&idVenta=${idVenta.value}`;
+          const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
+            console.log(e);
+          });
           $q.loading.hide();
           total.value = items.venta.total;
           console.log(total.value);
@@ -257,12 +255,11 @@ export default {
         }
       },
 
-
       async cancelarVenta() {
         $q.loading.show({
           message: "Cargando...",
         });
-        const reqUrl = `?idVenta=14&user=matias`;
+        const reqUrl = `?idVenta=${idVenta.value}&user=${usuario.value}`;
         const respuesta = await rqts
           .get(`ventas/cancel/${reqUrl}`)
           .catch((e) => {
