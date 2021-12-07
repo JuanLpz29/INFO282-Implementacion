@@ -93,7 +93,7 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-left total-price">${{ total }}</td>
+            <td class="text-left total-price">${{ total.toLocaleString() }}</td>
           </tr>
         </tbody>
       </q-markup-table>
@@ -103,12 +103,15 @@
 
   <div class="q-pa-md finalizar-compra">
     <q-form class="formulario-cancelar" @submit.prevent="finalizarCompra">
-    <q-btn color="warning" class="full-width" label="Finalizar compra" type="submit" style="padding: 20px; font-weight: 600"/>
+      <q-btn
+        color="warning"
+        class="full-width"
+        label="Finalizar compra"
+        type="submit"
+        style="padding: 20px; font-weight: 600"
+      />
     </q-form>
   </div>
-
-
-
 </template>
 
 
@@ -173,7 +176,7 @@ export default {
     const inputcantidad = ref(1);
     const total = ref(0);
     const idVenta = ref(null);
-    const usuario = ref("matias");
+    const usuario = ref("joselo");
 
     function verExistencia(codigo) {
       var existe = null;
@@ -188,6 +191,7 @@ export default {
     // emulate fetching data from server
     function addRow(row) {
       if (rows.value[0] !== undefined) {
+        console.log("here add row");
         var existe = verExistencia(row.codigoBarra);
       }
 
@@ -206,6 +210,7 @@ export default {
         console.log(existe, rows.value[existe]);
         rows.value.splice(existe, 1, row);
       }
+      console.log(row);
       row.subtotal = parseInt(row.valorItem) * row.cantidad;
     }
 
@@ -290,7 +295,7 @@ export default {
         location.reload();
       },
 
-      async finalizarCompra(){
+      async finalizarCompra() {
         $q.loading.show({
           message: "Cargando...",
         });
