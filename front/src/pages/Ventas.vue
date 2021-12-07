@@ -3,7 +3,7 @@
   <q-page style="min-height: 60vh">
     <div class="container">
       <div class="q-pa-md input-codigo">
-        870657 2203308
+        870657 2203308 9002490221010 2241366
         <q-form class="formulario-codigo" @submit.prevent="onSubmit">
           <q-input
             class=""
@@ -38,7 +38,6 @@
       :rows="rows"
       :columns="mycolumns"
       row-key="name"
-      binary-state-sort
       separator="horizontal"
       style="table-layout: fixed"
       wrap-cells
@@ -163,11 +162,10 @@ export default {
     const usuario = ref("joselo");
 
     function verExistencia(codigo) {
-      var existe = false;
-      rows.value.forEach((element) => {
+      var existe = null;
+      rows.value.forEach((element, i) => {
         if (element.codigoBarra === codigo) {
-          existe = true;
-          element.cantidad += 1;
+          existe = i;
         }
       });
       return existe;
@@ -177,30 +175,24 @@ export default {
     function addRow(row) {
       if (rows.value[0] !== undefined) {
         var existe = verExistencia(row.codigoBarra);
-        console.log(existe);
       }
 
-      if (!existe) {
+      if (existe === null) {
         loading.value = true;
-        setTimeout(() => {
-          const index = Math.floor(Math.random() * (rows.value.length + 1));
 
-          if (rows.value.length === 0) {
-            rowCount.value = 0;
-          }
+        if (rows.value.length === 0) {
+          rowCount.value = 0;
+        }
 
-          row.id = ++rowCount.value;
-          const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
-          rows.value = [
-            ...rows.value.slice(0, index),
-            newRow,
-            ...rows.value.slice(index),
-          ];
-          loading.value = false;
-        }, 500);
+        row.id = ++rowCount.value;
+        const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
+        rows.value = [...rows.value.slice(0, rows.value.length + 1), newRow];
+        loading.value = false;
+      } else {
+        console.log(existe, rows.value[existe]);
+        rows.value.splice(existe, 1, row);
       }
-      row.subtotal = parseInt(row.valorItem) * row.cantidadReservada;
-      row.cantidad = row.cantidadReservada;
+      row.subtotal = parseInt(row.valorItem) * row.cantidad;
     }
 
     // expose to template
@@ -250,7 +242,6 @@ export default {
           });
           $q.loading.hide();
           total.value = items.venta.total;
-          console.log(total.value);
           addRow(items.producto);
         }
       },
