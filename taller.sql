@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 29, 2021 at 11:03 PM
+-- Generation Time: Dec 06, 2021 at 10:52 PM
 -- Server version: 5.7.36-google-log
 -- PHP Version: 5.5.38
 
@@ -78,12 +78,12 @@ CREATE TABLE `Producto` (
 --
 
 INSERT INTO `Producto` (`idProducto`, `nombre`, `descripcion`, `stock`, `categoria`, `formato`, `codigoBarra`, `foto`, `cantidadRiesgo`, `precioVenta`, `precioUnitario`, `valorItem`, `oculto`) VALUES
-(1, 'Red Bull Tradicional 12Pc Lat250Cc', 'RED BULL TRADICIONAL 12PC LAT250CC', 2, NULL, NULL, '870657', NULL, NULL, NULL, 9976, 9976, 0),
-(2, 'Red Bull 355Ml', 'RED BULL TRADIC_12PF-LATA355CC', 2, NULL, NULL, '9002490221010', NULL, NULL, NULL, 14183, 14183, 0),
+(1, 'Red Bull Tradicional 12Pc Lat250Cc', 'RED BULL TRADICIONAL 12PC LAT250CC', 1, NULL, NULL, '870657', NULL, NULL, NULL, 9976, 9976, 0),
+(2, 'Red Bull 355Ml', 'RED BULL TRADIC_12PF-LATA355CC', 1, NULL, NULL, '9002490221010', NULL, NULL, NULL, 14183, 14183, 0),
 (3, 'Rb Sugarfree Import 8Pf-Lat250Cc', 'RB SUGARFREE IMPORT 8PF-LAT250CC', 2, NULL, NULL, '871093', NULL, NULL, NULL, 6821, 6821, 0),
 (4, 'Flete De Mercaderias', 'Flete de Mercaderias', 4, NULL, NULL, '9999', NULL, NULL, NULL, 2428, 2428, 0),
 (5, 'Red Bull Tradic 12Pc-Lata473Cc', 'RED BULL TRADIC 12PC-LATA473CC', 13, NULL, NULL, '870837', NULL, NULL, NULL, 15979, 15979, 0),
-(6, 'Mant. Colun 250', 'MANT. COLUN 250', 2, NULL, NULL, '2203308', NULL, NULL, NULL, 5264, 5264, 0),
+(6, 'Mant. Colun 250', 'MANT. COLUN 250', 8, NULL, NULL, '2203308', NULL, NULL, NULL, 5264, 5264, 0),
 (7, 'Uht Crema Colun 200', 'UHT CREMA COLUN 200', 2, NULL, NULL, '2225336', NULL, NULL, NULL, 2790, 2790, 0),
 (8, 'Manjar Colun Pot 200', 'MANJAR COLUN POT 200', 1, NULL, NULL, '2241129', NULL, NULL, NULL, 2526, 2526, 0),
 (9, 'Manjar Colun Bol 500', 'MANJAR COLUN BOL 500', 3, NULL, NULL, '2241366', NULL, NULL, NULL, 2052, 2052, 0),
@@ -203,6 +203,27 @@ INSERT INTO `ProductoCompra` (`idProducto`, `idCompra`, `cantidad`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ProductoVenta`
+--
+
+CREATE TABLE `ProductoVenta` (
+  `idProducto` int(11) NOT NULL,
+  `idVenta` int(11) NOT NULL,
+  `cantidad` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `ProductoVenta`
+--
+
+INSERT INTO `ProductoVenta` (`idProducto`, `idVenta`, `cantidad`) VALUES
+(6, 1, 2),
+(1, 1, 3),
+(2, 1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Proveedor`
 --
 
@@ -242,6 +263,28 @@ CREATE TABLE `Usuario` (
 INSERT INTO `Usuario` (`idUsuario`, `nombre`, `rol`, `contraseña`) VALUES
 (1, 'matias', 'admin', '123');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Venta`
+--
+
+CREATE TABLE `Venta` (
+  `idVenta` int(11) NOT NULL,
+  `idUsuario` int(11) NOT NULL,
+  `medioDePago` varchar(15) DEFAULT NULL,
+  `estado` set('En Curso','Confirmada','Pagada','Anulada') NOT NULL,
+  `fecha` datetime DEFAULT NULL,
+  `total` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `Venta`
+--
+
+INSERT INTO `Venta` (`idVenta`, `idUsuario`, `medioDePago`, `estado`, `fecha`, `total`) VALUES
+(1, 1, NULL, 'Confirmada', NULL, 54639);
+
 --
 -- Indexes for dumped tables
 --
@@ -267,6 +310,13 @@ ALTER TABLE `ProductoCompra`
   ADD KEY `idProducto` (`idProducto`);
 
 --
+-- Indexes for table `ProductoVenta`
+--
+ALTER TABLE `ProductoVenta`
+  ADD KEY `idProducto` (`idProducto`),
+  ADD KEY `idVenta` (`idVenta`);
+
+--
 -- Indexes for table `Proveedor`
 --
 ALTER TABLE `Proveedor`
@@ -277,6 +327,13 @@ ALTER TABLE `Proveedor`
 --
 ALTER TABLE `Usuario`
   ADD PRIMARY KEY (`idUsuario`);
+
+--
+-- Indexes for table `Venta`
+--
+ALTER TABLE `Venta`
+  ADD PRIMARY KEY (`idVenta`),
+  ADD KEY `idUsuario` (`idUsuario`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -307,6 +364,12 @@ ALTER TABLE `Usuario`
   MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `Venta`
+--
+ALTER TABLE `Venta`
+  MODIFY `idVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -322,6 +385,19 @@ ALTER TABLE `Compra`
 ALTER TABLE `ProductoCompra`
   ADD CONSTRAINT `ProductoCompra_ibfk_1` FOREIGN KEY (`idCompra`) REFERENCES `Compra` (`idCompra`),
   ADD CONSTRAINT `ProductoCompra_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `Producto` (`idProducto`);
+
+--
+-- Constraints for table `ProductoVenta`
+--
+ALTER TABLE `ProductoVenta`
+  ADD CONSTRAINT `ProductoVenta_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `Producto` (`idProducto`),
+  ADD CONSTRAINT `ProductoVenta_ibfk_2` FOREIGN KEY (`idVenta`) REFERENCES `Venta` (`idVenta`);
+
+--
+-- Constraints for table `Venta`
+--
+ALTER TABLE `Venta`
+  ADD CONSTRAINT `Venta_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `Usuario` (`idUsuario`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

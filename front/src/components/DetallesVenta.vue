@@ -2,10 +2,10 @@
   <!-- <q-page class="chido"> -->
   <q-page style="min-height: 60vh">
     <q-page-container style="padding-top: 25px; padding-left: 32px">
-      <informacion-compra :infoCompra="info" :infoProveedor="proveedor" />
+      <informacion-venta :infoVenta="info" :infoUsuario="vendedor" />
     </q-page-container>
     <q-page-container style="padding-top: 25px; padding-left: 25px">
-      <tabla-productos-simple :items="productos" :esVenta="false" />
+      <tabla-productos-simple :items="productos" :esVenta="true" />
     </q-page-container>
   </q-page>
 </template>
@@ -14,13 +14,12 @@
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import TablaProductosSimple from "./TablaProductosSimple.vue";
-import InformacionCompra from "./InformacionCompra.vue";
-import ProductosCompra from "./ProductosCompra.vue";
+import InformacionVenta from "./InformacionVenta.vue";
 
 export default {
-  components: { TablaProductosSimple, InformacionCompra, ProductosCompra },
+  components: { TablaProductosSimple, InformacionVenta },
   props: {
-    idCompra: Number,
+    idVenta: Number,
   },
   async setup(props) {
     const $q = useQuasar();
@@ -29,7 +28,7 @@ export default {
     });
 
     const response = await rqts
-      .get("compras/details/" + props.idCompra + "/")
+      .get("ventas/details/" + props.idVenta + "/")
       .catch((e) => {
         console.log(e);
       });
@@ -37,16 +36,16 @@ export default {
     console.log(response);
     let info;
     let productos;
-    let proveedor;
+    let vendedor;
     if (typeof response !== "undefined") {
       info = response.info;
       productos = response.productos;
-      proveedor = response.proveedor;
+      vendedor = response.vendedor;
     }
     return {
       info,
       productos,
-      proveedor,
+      vendedor,
     };
   },
 };

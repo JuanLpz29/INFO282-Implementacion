@@ -6,6 +6,7 @@ import VentasLayout from '../layouts/VentasLayout.vue'
 import VerCompras from '../pages/VerCompras.vue'
 import SubirCompra from '../pages/SubirCompra.vue'
 import Ventas from '../pages/Ventas.vue'
+import VerVentas from '../pages/VerVentas.vue'
 import VerProductos from '../pages/VerProductos.vue'
 import NuevoProducto from '../pages/NuevoProducto.vue'
 import LandingNanachi from '../pages/LandingNanachi.vue'
@@ -51,8 +52,8 @@ const routes = [
                     component: Ventas
                 },
                 {
-                    path: 'subir',
-                    component: SubirCompra
+                    path: 'listado',
+                    component: VerVentas
                 }]
             },
             {

@@ -89,8 +89,13 @@ const columns = [
 export default {
   props: {
     items: Array,
+    esVenta: Boolean,
   },
+
   setup(props) {
+    if (props.esVenta) {
+      columns[2].label = "Cantidad";
+    }
     return {
       columns,
       items: ref(props.items),

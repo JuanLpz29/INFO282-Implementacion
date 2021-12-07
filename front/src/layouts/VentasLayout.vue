@@ -29,7 +29,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item active clickable v-ripple to="/app/ventas/ver">
+          <q-item active clickable v-ripple to="/app/ventas/listado">
             <q-item-section avatar>
               <q-icon name="upload_file" />
             </q-item-section>
