@@ -1,23 +1,36 @@
 <template>
   <!-- <div class="q-pa-md"> -->
   <q-page style="min-height: 60vh">
-    <div class="q-pa-md input-codigo">
-      870657 2203308
-      <q-form class="formulario-codigo" @submit.prevent="onSubmit">
-        <q-input
-          class=""
-          rounded
-          outlined
-          v-model="codigo"
-          label="Codigo de barra"
-        />
-        <q-btn
-          label="Agregar"
-          type="submit"
-          color="dark"
-          style="margin-left: 40px"
-        />
-      </q-form>
+    <div class="container">
+      <div class="q-pa-md input-codigo">
+        870657 2203308
+        <q-form class="formulario-codigo" @submit.prevent="onSubmit">
+          <q-input
+            class=""
+            rounded
+            outlined
+            v-model="codigo"
+            label="Codigo de barra"
+          />
+          <q-btn
+            label="Agregar"
+            type="submit"
+            color="dark"
+            style="margin-left: 40px"
+          />
+        </q-form>
+      </div>
+
+      <div class="q-pa-md cancelar-venta">
+        <q-form class="formulario-cancelar" @submit.prevent="cancelarVenta">
+          <q-btn
+            label="Cancelar Venta"
+            type="submit"
+            color="dark"
+            style="margin-left: 40px"
+          />
+        </q-form>
+      </div>
     </div>
 
     <q-table
@@ -34,26 +47,37 @@
       :rows-per-page-options="[0]"
       class="tabla-ventas"
     >
-      <template v-slot:top-right>
-        <div class="bg-white rounded-borders">
-          <q-input
-            borderless
-            dense
-            debounce="300"
-            placeholder="Search"
-            style="margin-left: 8px"
-          >
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-      </template>
       <template v-slot:header="props">
-        <q-tr :props="props" class="td-tabla">
+        <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
+        </q-tr>
+      </template>
+
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+            <template v-if="col.name !== 'stock'">
+              {{ col.value }}
+            </template>
+            <template v-else>
+              {{ col.value }}
+              <q-popup-edit
+                v-model.number="props.row.stock"
+                buttons
+                v-slot="scope"
+              >
+                <q-input
+                  v-model="scope.value"
+                  dense
+                  autofocus
+                  counter
+                  @keyup.enter="scope.set"
+                />
+              </q-popup-edit>
+            </template>
+          </q-td>
         </q-tr>
       </template>
     </q-table>
@@ -67,7 +91,7 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-left total-price">${{ total.toLocaleString() }}</td>
+            <td class="text-left total-price">${{ total }}</td>
           </tr>
         </tbody>
       </q-markup-table>
@@ -124,7 +148,6 @@ const mycolumns = [
 ];
 
 var idVentaActual = [];
-
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
   async setup() {
@@ -134,7 +157,9 @@ export default {
     const codigo = ref(null);
     const rowCount = ref(10);
     const rows = ref([]);
+    const inputcantidad = ref(1);
     const total = ref(0);
+    const idVenta = ref(null);
 
     function verExistencia(codigo) {
       var existe = false;
@@ -173,7 +198,8 @@ export default {
           loading.value = false;
         }, 500);
       }
-      total.value += parseInt(row.valorItem);
+      row.subtotal = parseInt(row.valorItem) * row.cantidadReservada;
+      row.cantidad = row.cantidadReservada
     }
 
     // expose to template
@@ -182,10 +208,12 @@ export default {
       mycolumns,
       rows,
       codigo,
+      count: ref(0),
       rowCount,
+      inputcantidad,
       total,
+      idVenta,
       separator: ref("vertical"),
-      aaaa: ref(0),
       pagination: ref({
         rowsPerPage: 0,
       }),
@@ -198,24 +226,57 @@ export default {
           barcode: codigo.value,
           cantidad: 1,
         };
-        const reqUrl = `?barcode=${productoVenta.barcode}&cantidad=${productoVenta.cantidad}`;
-        const items = await rqts
-          .get(`productos/reservar/${reqUrl}`)
+
+        if (!idVenta.value) {
+          console.log("Existe id venta");
+          const reqUrl = `?user=matias&barcode=2203308`;
+          const infoVenta = await rqts
+            .get(`ventas/start/${reqUrl}`)
+            .catch((e) => {
+              console.log(e);
+            });
+          $q.loading.hide();
+          total.value = infoVenta.venta.total;
+          idVenta.value = infoVenta.venta.idVenta;
+
+          console.log(infoVenta.producto)
+          addRow(infoVenta.producto);
+
+        } else {
+          console.log("reservnado");
+          const reqUrl = `?cantidad=1&barcode=870657&idVenta=15`;
+          const items = await rqts
+            .get(`ventas/update/${reqUrl}`)
+            .catch((e) => {
+              console.log(e);
+            });
+          $q.loading.hide();
+          total.value = items.venta.total;
+          console.log(total.value);
+          addRow(items.producto);
+        }
+      },
+
+
+      async cancelarVenta() {
+        $q.loading.show({
+          message: "Cargando...",
+        });
+        const reqUrl = `?idVenta=14&user=matias`;
+        const respuesta = await rqts
+          .get(`ventas/cancel/${reqUrl}`)
           .catch((e) => {
             console.log(e);
           });
+        console.log(respuesta);
         $q.loading.hide();
-        addRow(items);
+      },
+
+      nuevaCantidad(cantidad) {
+        console.log(cantidad);
+        return cantidad.set;
       },
     };
-  },
-  computed: {
-    getTotal() {
-      this.aaaa += 1;
-      console.log("aaaaa le pegó");
-      console.log(this.rows.value);
-      return this.aaaa;
-    },
   },
 };
 </script>
