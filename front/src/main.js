@@ -15,6 +15,7 @@ import App from './App.vue'
 import axios from 'axios'
 import routes from './router/routes'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import VueScanner from './plugins/barcodeScanner'
 const myApp = createApp(App)
 
 const router = createRouter({
@@ -30,4 +31,6 @@ myApp.use(Quasar, {
 
 myApp.config.globalProperties.$http = axios
 myApp.use(router)
+myApp.use(VueScanner)
+// myApp.config.globalProperties.$barcodeScanner = this.$barcodeScanner
 myApp.mount('#app')

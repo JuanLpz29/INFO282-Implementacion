@@ -117,7 +117,7 @@
 
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, getCurrentInstance } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 
@@ -213,9 +213,53 @@ export default {
       console.log(row);
       row.subtotal = parseInt(row.valorItem) * row.cantidad;
     }
+    // const app = getCurrentInstance()
+    // const barcodeScanner = app.appContext.config.globalProperties.$BarcodeScanner\
 
-    // expose to template
+    async function onSubmit(evt) {
+      $q.loading.show({
+        message: "Cargando...",
+      });
+      if (!idVenta.value) {
+        console.log("Existe id venta");
+        const reqUrl = `?user=${usuario.value}&barcode=${codigo.value}`;
+        const infoVenta = await rqts
+          .get(`ventas/start/${reqUrl}`)
+          .catch((e) => {
+            console.log(e);
+          });
+        $q.loading.hide();
+        total.value = infoVenta.venta.total;
+        idVenta.value = infoVenta.venta.idVenta;
+
+        console.log(infoVenta.producto);
+        addRow(infoVenta.producto);
+      } else {
+        console.log("reservnado");
+        const reqUrl = `?cantidad=1&barcode=${codigo.value}&idVenta=${idVenta.value}`;
+        const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
+          console.log(e);
+        });
+        $q.loading.hide();
+        total.value = items.venta.total;
+        addRow(items.producto);
+      }
+    }
+
+    // funcion que maneja el scaneo en cualquier parte
+    function onBarcodeScanned(barcode) {
+      codigo.value = barcode;
+      console.log("scanned: ", codigo.value);
+      onSubmit();
+    }
+
+    const app = getCurrentInstance();
+    const barcodeScanner =
+      app.appContext.config.globalProperties.$barcodeScanner;
+    barcodeScanner.init(onBarcodeScanned);
+
     return {
+      barcodeScanner,
       loading,
       mycolumns,
       rows,
@@ -229,41 +273,7 @@ export default {
       pagination: ref({
         rowsPerPage: 0,
       }),
-
-      async onSubmit(evt) {
-        $q.loading.show({
-          message: "Cargando...",
-        });
-        const productoVenta = {
-          barcode: codigo.value,
-          cantidad: 1,
-        };
-
-        if (!idVenta.value) {
-          console.log("Existe id venta");
-          const reqUrl = `?user=${usuario.value}&barcode=${codigo.value}`;
-          const infoVenta = await rqts
-            .get(`ventas/start/${reqUrl}`)
-            .catch((e) => {
-              console.log(e);
-            });
-          $q.loading.hide();
-          total.value = infoVenta.venta.total;
-          idVenta.value = infoVenta.venta.idVenta;
-
-          console.log(infoVenta.producto);
-          addRow(infoVenta.producto);
-        } else {
-          console.log("reservnado");
-          const reqUrl = `?cantidad=1&barcode=${codigo.value}&idVenta=${idVenta.value}`;
-          const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
-            console.log(e);
-          });
-          $q.loading.hide();
-          total.value = items.venta.total;
-          addRow(items.producto);
-        }
-      },
+      onSubmit,
 
       async actualizar(value, initialValue) {
         $q.loading.show({
