@@ -32,6 +32,9 @@
             style="margin-left: 40px"
           />
         </q-form>
+        <div v-if="idVentaCancel">
+          cancelar venta anterior (id {{ idVentaCancel }})
+        </div>
       </div>
     </div>
 
@@ -68,14 +71,22 @@
                 v-model.number="props.row.cantidad"
                 buttons
                 v-slot="scope"
+                :validate="cantidadRangeValidation"
+                @hide="cantidadRangeValidation"
                 @save="actualizar"
               >
                 <q-input
+                  type="number"
                   v-model="scope.value"
                   dense
                   autofocus
                   counter
+                  :rules="cantidadRules"
+                  reactive-rules
                   @keyup.enter="scope.set"
+                  hint="Enter a number between 1 and 100"
+                  :error="errorCantidad"
+                  :error-message="errorMessageCantidad"
                 />
               </q-popup-edit>
             </template>
@@ -156,7 +167,7 @@ const mycolumns = [
     name: "subtotal",
     label: "Subtotal",
     field: "subtotal",
-    format: (val, row) => `$${(row.cantidad * row.valorItem).toLocaleString()}`,
+    format: (val) => `$${val.toLocaleString()}`,
     style: "width: 40vh",
     headerStyle: "width: 40vh",
     align: "left",
@@ -176,7 +187,11 @@ export default {
     const inputcantidad = ref(1);
     const total = ref(0);
     const idVenta = ref(null);
+    const idVentaCancel = ref(null);
     const usuario = ref("joselo");
+
+    const errorCantidad = ref(false);
+    const errorMessageCantidad = ref("");
 
     function verExistencia(codigo) {
       var existe = null;
@@ -188,7 +203,6 @@ export default {
       return existe;
     }
 
-    // emulate fetching data from server
     function addRow(row) {
       if (rows.value[0] !== undefined) {
         console.log("here add row");
@@ -211,7 +225,7 @@ export default {
         rows.value.splice(existe, 1, row);
       }
       console.log(row);
-      row.subtotal = parseInt(row.valorItem) * row.cantidad;
+      //   row.subtotal = parseInt(row.subtotal);
     }
     // const app = getCurrentInstance()
     // const barcodeScanner = app.appContext.config.globalProperties.$BarcodeScanner\
@@ -221,7 +235,6 @@ export default {
         message: "Cargando...",
       });
       if (!idVenta.value) {
-        console.log("Existe id venta");
         const reqUrl = `?user=${usuario.value}&barcode=${codigo.value}`;
         const infoVenta = await rqts
           .get(`ventas/start/${reqUrl}`)
@@ -229,13 +242,14 @@ export default {
             console.log(e);
           });
         $q.loading.hide();
-        total.value = infoVenta.venta.total;
-        idVenta.value = infoVenta.venta.idVenta;
-
-        console.log(infoVenta.producto);
-        addRow(infoVenta.producto);
+        if (infoVenta.venta) {
+          total.value = infoVenta.venta.total;
+          idVenta.value = infoVenta.venta.idVenta;
+          addRow(infoVenta.producto);
+        } else {
+          idVentaCancel.value = parseInt(infoVenta.split(":")[1]);
+        }
       } else {
-        console.log("reservnado");
         const reqUrl = `?cantidad=1&barcode=${codigo.value}&idVenta=${idVenta.value}`;
         const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
           console.log(e);
@@ -248,9 +262,11 @@ export default {
 
     // funcion que maneja el scaneo en cualquier parte
     function onBarcodeScanned(barcode) {
-      codigo.value = barcode;
-      console.log("scanned: ", codigo.value);
-      onSubmit();
+      if (barcode.length > 5) {
+        codigo.value = barcode;
+        console.log("scanned: ", codigo.value);
+        onSubmit();
+      }
     }
 
     const app = getCurrentInstance();
@@ -274,18 +290,41 @@ export default {
         rowsPerPage: 0,
       }),
       onSubmit,
+      idVentaCancel,
+      errorMessageCantidad,
+      errorCantidad,
+      cantidadRangeValidation(val) {
+        if (val < 0 || val > 100) {
+          errorCantidad.value = true;
+          errorMessageCantidad.value = "The value must be between 0 and 100!";
+          return false;
+        }
+        errorCantidad.value = false;
+        errorMessageCantidad.value = "";
+        return true;
+      },
 
       async actualizar(value, initialValue) {
         $q.loading.show({
           message: "Cargando...",
         });
-        console.log(value);
-        console.log("reservnado");
-        const reqUrl = `?cantidad=${value}&barcode=${codigo.value}&idVenta=${idVenta.value}`;
+        console.log("row cantidad", value);
+        console.log(" value", initialValue);
+        if (isNaN(value) || value < 1) {
+          value = initialValue;
+        }
+
+        console.log("fijando la cantidad");
+        const reqUrl = `?cantidad=${value}&barcode=${codigo.value}&idVenta=${idVenta.value}&set=true`;
         const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
           console.log(e);
         });
         $q.loading.hide();
+        rows.value.splice(
+          verExistencia(items.producto.codigoBarra),
+          1,
+          items.producto
+        );
         total.value = items.venta.total;
       },
 
@@ -293,7 +332,14 @@ export default {
         $q.loading.show({
           message: "Cargando...",
         });
-        const reqUrl = `?idVenta=${idVenta.value}&user=${usuario.value}`;
+        let idToCancel;
+        if (idVentaCancel) {
+          idToCancel = idVentaCancel.value;
+          idVentaCancel.value = null;
+        } else {
+          idToCancel = idVenta.value;
+        }
+        const reqUrl = `?idVenta=${idToCancel}&user=${usuario.value}`;
         const respuesta = await rqts
           .get(`ventas/cancel/${reqUrl}`)
           .catch((e) => {
