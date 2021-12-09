@@ -2,7 +2,7 @@ from tent.models import ma
 from tent.models import db
 from sqlalchemy.orm import relationship
 from tent.models.usuario import Usuario
-
+from sqlalchemy.sql import func
 
 EN_CURSO = "En Curso"
 CONFIRMADA = "Confirmada"
@@ -35,7 +35,8 @@ class Venta(db.Model):
     # en curso, confirmada, cancelada, pagada
     estado = db.Column(db.String(15), nullable=True)
 
-    fecha = db.Column(db.DateTime, nullable=True)
+    fecha = db.Column(db.DateTime,
+                      onupdate=func.now(), nullable=True)
     idUsuario = db.Column(db.Integer, db.ForeignKey('Usuario.idUsuario'))
     usuario = relationship("Usuario", back_populates="ventas")
     productos = relationship("ProductoVenta", back_populates="venta")

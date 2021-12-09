@@ -1,6 +1,6 @@
 from logging import DEBUG
 from flask import redirect, request, jsonify
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, text
 from tent.models.venta import Venta, VentaSchema
 from tent.models.venta import EN_CURSO, CONFIRMADA, ANULADA, PAGADA
 from tent import db
@@ -9,10 +9,8 @@ from tent.controllers.productos_controller import actualizar_stock
 from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema, ADMIN, VENDEDOR
 from tent.models.productoventa import ProductoVenta
-import json
 from sqlalchemy.dialects.mysql import insert
-# from DTE import DTE
-
+from sqlalchemy import func
 
 DEBUGXD = True
 
@@ -27,10 +25,25 @@ producto_schema = ProductSchema()
 
 
 def index():
-    all_ventas = Venta.query.paginate(page=1, per_page=30)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    # _filter = request.args.get('filter', '', type=str)
+    sort_by = request.args.get('sortby', '', type=str)
+    order = request.args.get('order', '', type=str)
+
+    if sort_by:
+        _order_by = f"{sort_by} {order}"
+    else:
+        _order_by = ""
+
+    filtered_query = Venta.query.order_by(text(_order_by))
+
+    rowsNumber = filtered_query.count()
+    all_ventas = filtered_query.paginate(page=page, per_page=per_page)
     result = ventas_schema.dump(all_ventas.items)
     # return jsonify(result)
-    return jsonify(result)
+    return jsonify(items=result,
+                   rowsNumber=rowsNumber)
 
 
 # Retornamos solo un compra de la base de datos
@@ -61,7 +74,7 @@ def start():
         # o seria mejor
         # - reiniciar la venta (cancelando la anterior)
         # - permitir tener varias ventas en curso
-        return f"{username} ya tiene una venta en curso (id: {vnt.idVenta})"
+        return f"{username} ya tiene una venta en curso idVenta:{vnt.idVenta}"
 
     barcode = request.args.get('barcode', '', type=str)
     prod = actualizar_stock(barcode=barcode)
@@ -72,6 +85,7 @@ def start():
         vnt.total = prod.valorItem
         prod_info = producto_schema.dump(prod)
         prod_info['cantidad'] = pv.cantidad
+        prod_info['subtotal'] = pv.cantidad * prod.valorItem
     else:
         # front debe registrarlo
         prod_info = None
@@ -81,40 +95,38 @@ def start():
                    producto=prod_info)
 
 
-# POR USERNAME O POR IDUSUARIO?
 def update():
     _id = request.args.get('idVenta', None, type=int)
-    if not _id:
-        return "idVenta required", 400
-    vnt = Venta.query.get(_id)
-    if not vnt:
-        return f"venta con id: {_id} no econtrada", 404
-    elif vnt.estado != EN_CURSO:
-        return f"venta con id: {_id} ya se encuentra {vnt.estado}", 400
-
     cantidad = request.args.get('cantidad', 1, type=int)
     barcode = request.args.get('barcode', '', type=str)
-    if not barcode:
-        return "barcode required", 400
+    _set = request.args.get('set', False, type=bool)
+    if not all([_id, barcode]) or cantidad < 0:
+        return "idVenta y barcode, cantidad > 0 required", 400
+    vnt = Venta.query.get(_id)
+    if not vnt:
+        return f"Venta con id: {_id} no econtrada", 404
+    elif vnt.estado != EN_CURSO:
+        return f"Venta con id: {_id} ya se encuentra {vnt.estado}", 400
+
     prod = Producto.query.filter(
         Producto.codigoBarra == barcode).first()
     if not prod:
-        return f"producto con barcode: {barcode} no econtrado", 404
+        return f"Producto con barcode: {barcode} no encontrado", 404
     pv = ProductoVenta.query.filter(
         and_(
             ProductoVenta.idProducto == prod.idProducto,
             ProductoVenta.idVenta == _id)
     ).first()
+    # si el producto ya estaba en la venta actual
     if pv:
-        if cantidad > 0:
-            # no agregar cuando stock sea cero
-            # qty = cantidad if prod.stock > cantidad else prod.stock
-            # agregar de todas formas
-            qty = cantidad
-        else:
-            # no devolver mas de los productos que ya tiene la compra
-            qty = -pv.cantidad if (cantidad + pv.cantidad) < 0 else cantidad
+        # aqui se puede validar que la venta no este solicitando
+        # mas productos de los que hay en el inventario
+        # mientras el inventario no se haya estabilidazo por completo se
+        # agregan te todas formas y el stock se deja >= 0
+        qty = cantidad - pv.cantidad if _set else cantidad
+        print(qty, _set)
         pv.cantidad += qty
+    # si no, se agrega uno a la venta
     else:
         pv = ProductoVenta(cantidad=1)
         pv.producto = prod
@@ -125,6 +137,9 @@ def update():
     vnt.total += prod.valorItem * qty
     prod_info = producto_schema.dump(prod)
     prod_info['cantidad'] = pv.cantidad
+    prod_info['subtotal'] = pv.cantidad * prod.valorItem
+    # verificar que efectivamente se quita de la venta un producto
+    # con cantidad 0
     if pv.cantidad == 0:
         db.session.delete(pv)
     db.session.add(vnt)
@@ -137,33 +152,42 @@ def check_args():
     # cambair codigo repetitivo de validacion de args
     pass
 
-# POR USERNAME O POR IDUSUARIO?
-
 
 def cancel():
+    # obtener args
     _id = request.args.get('idVenta', None, type=int)
     username = request.args.get('user', '', type=str)
 
+    # validacion de args
     if not _id or not username:
         return "idVenta y user requeridos", 400
+
+    # validar venta
     vnt = Venta.query.get(_id)
     if not vnt:
         return f"venta con {_id} no econtrada", 404
+    elif vnt.estado != EN_CURSO:
+        return f"venta con id: {_id} ya se encuentra {vnt.estado}", 400
 
+    # validar usuario que realiza la operacion
+    # solo el mismo propietario de la venta o un admin puede cancelarla
+    # seria mas rapido trabajar con el id
     usuario = Usuario.query.filter(Usuario.nombre == username).first()
     if not usuario:
         return "permiso penegado", 401
     if vnt.idUsuario != usuario.idUsuario and usuario.rol != ADMIN:
         return "permiso penegado", 401
 
+    # devolver los productos
     prods_info = {prod.idProducto: prod.cantidad for prod in vnt.productos}
-    print(prods_info)
+    print("id : cantidad \n", prods_info)
     prods = Producto.query.filter(
         Producto.idProducto.in_(prods_info.keys())
     )
     for prod in prods:
         prod.stock += prods_info[prod.idProducto]
 
+    # anular la venta
     vnt.estado = ANULADA
     db.session.add(usuario)
     db.session.commit()
@@ -173,7 +197,7 @@ def cancel():
 def confirm():
     _id = request.args.get('idVenta', None, type=int)
     username = request.args.get('user', '', type=str)
-    if not _id or not username:
+    if not all([_id, username]):
         return "idVenta y user requeridos", 400
     vnt = Venta.query.get(_id)
     if not vnt:

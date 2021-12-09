@@ -19,12 +19,16 @@ def index():
     _filter = request.args.get('filter', '', type=str)
     sort_by = request.args.get('sortby', '', type=str)
     order = request.args.get('order', '', type=str)
+
     if sort_by:
         _order_by = f"{sort_by} {order}"
     else:
         _order_by = ""
+
     filtered_query = Producto.query.filter(func.lower(Producto.nombre).contains(
         _filter.lower())).order_by(text(_order_by))
+
+    # necesaria para la paginacion
     rowsNumber = filtered_query.count()
     all_productos = filtered_query.paginate(page=page, per_page=per_page)
     result = products_schema.dump(all_productos.items)
