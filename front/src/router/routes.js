@@ -5,7 +5,7 @@ import VentasLayout from '../layouts/VentasLayout.vue'
 
 import VerCompras from '../pages/VerCompras.vue'
 import SubirCompra from '../pages/SubirCompra.vue'
-import Ventas from '../pages/Ventas.vue'
+import NuevaVenta from '../pages/NuevaVenta.vue'
 import VerVentas from '../pages/VerVentas.vue'
 import VerProductos from '../pages/VerProductos.vue'
 import NuevoProducto from '../pages/NuevoProducto.vue'
@@ -48,11 +48,11 @@ const routes = [
                 path: 'ventas',
                 component: VentasLayout,
                 children: [{
-                    path: 'ver',
-                    component: Ventas
+                    path: 'nueva',
+                    component: NuevaVenta
                 },
                 {
-                    path: 'listado',
+                    path: 'ver',
                     component: VerVentas
                 }]
             },

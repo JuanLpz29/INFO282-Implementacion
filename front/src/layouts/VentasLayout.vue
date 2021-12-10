@@ -19,7 +19,7 @@
       >
         <!-- <q-scroll-area class="fit"> -->
         <q-list padding>
-          <q-item clickable v-ripple to="/app/ventas/ver">
+          <q-item clickable v-ripple to="/app/ventas/nueva">
             <q-item-section avatar>
               <q-icon name="receipt_long" />
             </q-item-section>
@@ -29,7 +29,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item active clickable v-ripple to="/app/ventas/listado">
+          <q-item active clickable v-ripple to="/app/ventas/ver">
             <q-item-section avatar>
               <q-icon name="upload_file" />
             </q-item-section>

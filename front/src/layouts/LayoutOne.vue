@@ -13,7 +13,11 @@
           label="Productos"
           class="text-primary"
         />
-        <q-route-tab to="/app/ventas" label="Ventas" class="text-primary" />
+        <q-route-tab
+          to="/app/ventas/nueva"
+          label="Ventas"
+          class="text-primary"
+        />
         <q-space />
         <q-toggle
           :label="`switch ${blueModel}`"
