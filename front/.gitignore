@@ -5,3 +5,4 @@ dist-ssr
 *.local
 *-win32-ia32
 wine*
+*.zip

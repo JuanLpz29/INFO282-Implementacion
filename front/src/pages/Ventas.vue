@@ -3,10 +3,17 @@
   <q-page style="min-height: 60vh">
     <div class="container">
       <div class="q-pa-md input-codigo">
-        870657 2203308 9002490221010 2241366
-        <q-form class="formulario-codigo" @submit.prevent="onSubmit">
+        <q-form class="q-pa-md formulario-codigo" @submit.prevent="onSubmit">
+          <q-btn
+            icon="pin"
+            stack
+            label="random"
+            color="dark"
+            style="margin-right: 20px"
+            @click="randomCode"
+          />
           <q-input
-            class=""
+            style="width: 150px"
             rounded
             outlined
             v-model="codigo"
@@ -17,7 +24,7 @@
             label="Agregar"
             type="submit"
             color="dark"
-            style="margin-left: 40px"
+            style="margin-left: 20px"
           />
         </q-form>
       </div>
@@ -27,7 +34,7 @@
           <q-btn
             label="Cancelar Venta"
             type="submit"
-            color="dark"
+            color="negative"
             id="btn-cancelar"
             style="margin-left: 40px"
           />
@@ -39,17 +46,20 @@
     </div>
 
     <q-table
-      title="Productos"
+      ref="myTab"
+      title="Venta en curso"
       :rows="rows"
       :columns="mycolumns"
       row-key="name"
       separator="horizontal"
-      style="table-layout: fixed"
+      style="table-layout: fixed; height: 400px"
       wrap-cells
       :loading="loading"
       virtual-scroll
       :rows-per-page-options="[0]"
       class="tabla-ventas"
+      no-data-label="Pistolee mi rey"
+      no-results-label="The filter didn't uncover any results"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -93,36 +103,50 @@
           </q-td>
         </q-tr>
       </template>
+
+      <template v-slot:no-data="{ icon, message, filter }">
+        <div class="full-width row flex-center text-positive q-gutter-sm">
+          <q-icon size="2em" name="sentiment_neutral" />
+          <span> {{ message }} </span>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+        </div>
+      </template>
     </q-table>
 
-    <div class="total-pagar">
-      <q-markup-table class="inner-total">
-        <thead>
-          <tr>
-            <th class="text-left total-label">Total a pagar:</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left total-price">${{ total.toLocaleString() }}</td>
-          </tr>
-        </tbody>
-      </q-markup-table>
-    </div>
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <div class="total-pagar">
+        <q-markup-table class="inner-total">
+          <thead>
+            <tr>
+              <th class="text-left total-label">Total a pagar:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left total-price">
+                ${{ total.toLocaleString() }}
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+      </div>
+    </q-page-sticky>
   </q-page>
   <!-- </div> -->
-
-  <div class="q-pa-md finalizar-compra">
-    <q-form class="formulario-cancelar" @submit.prevent="finalizarCompra">
+  <q-page-sticky position="bottom-left" :offset="[18, 12]">
+    <!-- <div class="q-pa-md finalizar-compra"> -->
+    <q-form class="formulario-cancelar" @submit.prevent="finalizarVenta">
       <q-btn
-        color="warning"
+        color="positive"
         class="full-width"
-        label="Finalizar compra"
+        label="Finalizar Venta"
+        :disable="total == false"
         type="submit"
-        style="padding: 20px; font-weight: 600"
+        style="padding: 20px; font-weight: 600; width: 600px"
       />
     </q-form>
-  </div>
+    <!-- </div> -->
+  </q-page-sticky>
 </template>
 
 
@@ -173,7 +197,30 @@ const mycolumns = [
     align: "left",
   },
 ];
+const codes = [
+  "870657",
+  "9002490221010",
+  "871093",
+  "870837",
+  "2203308",
+  "2225336",
+  "2241129",
+  "2241366",
+  "2241455",
+  "2242095",
+  "2242265",
+  "2242362",
+  "700561",
+  "7804300122928",
+  "7802420510205",
+  "10154005C",
+  "7702367003900",
+  "7804616480040",
+];
 
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
 var idVentaActual = [];
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
@@ -182,13 +229,14 @@ export default {
     const $q = useQuasar();
     // const barcode = ref(null);
     const codigo = ref(null);
-    const rowCount = ref(10);
+    const rowCount = ref(0);
     const rows = ref([]);
     const inputcantidad = ref(1);
     const total = ref(0);
     const idVenta = ref(null);
     const idVentaCancel = ref(null);
     const usuario = ref("joselo");
+    const myTab = ref(null);
 
     const errorCantidad = ref(false);
     const errorMessageCantidad = ref("");
@@ -205,7 +253,6 @@ export default {
 
     function addRow(row) {
       if (rows.value[0] !== undefined) {
-        console.log("here add row");
         var existe = verExistencia(row.codigoBarra);
       }
 
@@ -224,7 +271,9 @@ export default {
         console.log(existe, rows.value[existe]);
         rows.value.splice(existe, 1, row);
       }
-      console.log(row);
+
+      console.log(rows.value.length, "here add row");
+      myTab.value.scrollTo(1000, "end-force");
       //   row.subtotal = parseInt(row.subtotal);
     }
     // const app = getCurrentInstance()
@@ -293,6 +342,7 @@ export default {
       idVentaCancel,
       errorMessageCantidad,
       errorCantidad,
+      myTab,
       cantidadRangeValidation(val) {
         if (val < 0 || val > 100) {
           errorCantidad.value = true;
@@ -304,6 +354,9 @@ export default {
         return true;
       },
 
+      randomCode() {
+        codigo.value = codes.random();
+      },
       async actualizar(value, initialValue) {
         $q.loading.show({
           message: "Cargando...",
@@ -326,6 +379,7 @@ export default {
           items.producto
         );
         total.value = items.venta.total;
+        console.log(rows.value.length, "LENXD");
       },
 
       async cancelarVenta() {
@@ -351,7 +405,7 @@ export default {
         location.reload();
       },
 
-      async finalizarCompra() {
+      async finalizarVenta() {
         $q.loading.show({
           message: "Cargando...",
         });
