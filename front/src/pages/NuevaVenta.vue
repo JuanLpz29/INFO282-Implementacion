@@ -221,7 +221,7 @@ const codes = [
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
-var idVentaActual = [];
+
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
   async setup() {
@@ -235,11 +235,17 @@ export default {
     const total = ref(0);
     const idVenta = ref(null);
     const idVentaCancel = ref(null);
-    const usuario = ref("joselo");
+    const usuario = ref("matias");
     const myTab = ref(null);
 
     const errorCantidad = ref(false);
     const errorMessageCantidad = ref("");
+
+    function vaciarVariables(){
+        rows.value = [];
+        total.value = 0;
+        idVenta.value = null;
+    }
 
     function verExistencia(codigo) {
       var existe = null;
@@ -275,6 +281,7 @@ export default {
       console.log(rows.value.length, "here add row");
       myTab.value.scrollTo(1000, "end-force");
       //   row.subtotal = parseInt(row.subtotal);
+      console.log(rows);
     }
     // const app = getCurrentInstance()
     // const barcodeScanner = app.appContext.config.globalProperties.$BarcodeScanner\
@@ -387,7 +394,9 @@ export default {
           message: "Cargando...",
         });
         let idToCancel;
-        if (idVentaCancel) {
+        console.log("idToCancel: " + idToCancel);
+        console.log("idVentaCancel" + idVentaCancel.value);
+        if (idVentaCancel.value) {
           idToCancel = idVentaCancel.value;
           idVentaCancel.value = null;
         } else {
@@ -401,8 +410,9 @@ export default {
           });
         console.log(respuesta);
         $q.loading.hide();
-        //rows._rawValue = [];
-        location.reload();
+        vaciarVariables();
+
+        //location.reload();
       },
 
       async finalizarVenta() {
@@ -417,8 +427,7 @@ export default {
           });
         console.log(respuesta);
         $q.loading.hide();
-        //rows._rawValue = [];
-        location.reload();
+        vaciarVariables();
       },
     };
   },
