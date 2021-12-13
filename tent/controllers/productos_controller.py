@@ -81,7 +81,7 @@ def actualizar_stock(producto=None, barcode='', cantidad=1):
         if producto.stock > cantidad:
             producto.stock = producto.stock - cantidad
         else:
-            producto.stock = 0
+            producto.stock = 1
         return producto
     return None
 
@@ -90,7 +90,7 @@ def actualizar_stock(producto=None, barcode='', cantidad=1):
 #
 
 
-def get_many(ids: list):
+def get_many(ids: list) -> list[Producto]:
     prods = Producto.query.filter(Producto.idProducto
                                   .in_(ids)).all()
     return products_schema.dump(prods)

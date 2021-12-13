@@ -20,9 +20,6 @@ ventas_schema = VentaSchema(many=True)
 productos_schema = ProductSchema(many=True)
 producto_schema = ProductSchema()
 
-# NO SE SI HAY UNA FORMA MEJOR PARA MANEJAR LOS PRODUCTOS
-# DENTOR DE LA COMPRA... OTRA TABLA POR LA RELACION ESA?fal
-
 
 def index():
     page = request.args.get('page', 1, type=int)
@@ -41,7 +38,6 @@ def index():
     rowsNumber = filtered_query.count()
     all_ventas = filtered_query.paginate(page=page, per_page=per_page)
     result = ventas_schema.dump(all_ventas.items)
-    # return jsonify(result)
     return jsonify(items=result,
                    rowsNumber=rowsNumber)
 
@@ -222,21 +218,21 @@ def details(idVenta):
     pvs = ProductoVenta.query.filter(
         ProductoVenta.idVenta == idVenta)
     productos_id = [pc.idProducto for pc in pvs]
-    prods = get_many_prods(productos_id)
-    print(venta_info['idUsuario'])
+    _prods = get_many_prods(productos_id)
     _user = Usuario.query.filter(Usuario
                                  .idUsuario == venta_info['idUsuario']).first()
     user = usuario_schema.dump(_user)
     user.pop('contraseña')
-    # print(prods)
-    for (pv, prod) in zip(pvs, prods):
-        if pv.idProducto != prod['idProducto']:
-            print('f')
-        else:
-            prod['stock'] = pv.cantidad
+    prods_dict = {p['idProducto']: p for p in _prods}
+    output_prods = []
+    for pv in pvs:
+        prod_json = prods_dict[pv.idProducto]
+        prod_json['cantidad'] = pv.cantidad
+        prod_json['stock'] = pv.cantidad
+        output_prods.append(prod_json)
+
     response = jsonify(info=venta_info,
                        vendedor=user,
-                       productos=prods,
+                       productos=output_prods,
                        )
-
     return response
