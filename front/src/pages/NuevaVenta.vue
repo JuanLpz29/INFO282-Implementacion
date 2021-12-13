@@ -83,7 +83,7 @@
                 v-slot="scope"
                 :validate="cantidadRangeValidation"
                 @hide="cantidadRangeValidation"
-                @save="actualizar"
+                @save="actualizar(props.row)"
               >
                 <q-input
                   type="number"
@@ -101,6 +101,18 @@
               </q-popup-edit>
             </template>
           </q-td>
+
+          <!-- <td> -->
+          <!-- <template v-slot:after> -->
+          <q-btn
+            class="flex-center"
+            color="negative"
+            :disable="loading"
+            label="X"
+            @click="removeRow(props.row)"
+          />
+          <!-- </td> -->
+          <!-- </template> -->
         </q-tr>
       </template>
 
@@ -268,11 +280,9 @@ export default {
         rows.value = [...rows.value.slice(0, rows.value.length + 1), newRow];
         loading.value = false;
       } else {
-        console.log(existe, rows.value[existe]);
         rows.value.splice(existe, 1, row);
       }
 
-      console.log(rows.value.length, "here add row");
       myTab.value.scrollTo(1000, "end-force");
       //   row.subtotal = parseInt(row.subtotal);
     }
@@ -357,18 +367,16 @@ export default {
       randomCode() {
         codigo.value = codes.random();
       },
-      async actualizar(value, initialValue) {
+      async actualizar(row) {
         $q.loading.show({
           message: "Cargando...",
         });
-        console.log("row cantidad", value);
-        console.log(" value", initialValue);
-        if (isNaN(value) || value < 1) {
-          value = initialValue;
+        if (isNaN(row.cantidad) || row.cantidad < 0) {
+          row.cantidad = 1;
         }
 
         console.log("fijando la cantidad");
-        const reqUrl = `?cantidad=${value}&barcode=${codigo.value}&idVenta=${idVenta.value}&set=true`;
+        const reqUrl = `?cantidad=${row.cantidad}&barcode=${row.codigoBarra}&idVenta=${idVenta.value}&set=true`;
         const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
           console.log(e);
         });
@@ -379,7 +387,17 @@ export default {
           items.producto
         );
         total.value = items.venta.total;
-        console.log(rows.value.length, "LENXD");
+      },
+
+      async removeRow(row) {
+        console.log(row.codigoBarra);
+        var index = verExistencia(row.codigoBarra);
+        row.cantidad = 0;
+        await this.actualizar(row);
+        rows.value = [
+          ...rows.value.slice(0, index),
+          ...rows.value.slice(index + 1),
+        ];
       },
 
       async cancelarVenta() {
@@ -387,7 +405,7 @@ export default {
           message: "Cargando...",
         });
         let idToCancel;
-        if (idVentaCancel) {
+        if (idVentaCancel.value) {
           idToCancel = idVentaCancel.value;
           idVentaCancel.value = null;
         } else {
@@ -399,10 +417,9 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-        console.log(respuesta);
         $q.loading.hide();
         //rows._rawValue = [];
-        location.reload();
+        // location.reload();
       },
 
       async finalizarVenta() {
@@ -415,7 +432,6 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-        console.log(respuesta);
         $q.loading.hide();
         //rows._rawValue = [];
         location.reload();
