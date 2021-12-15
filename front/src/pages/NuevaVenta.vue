@@ -66,6 +66,7 @@
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
+          <th>Eliminar</th>
         </q-tr>
       </template>
 
@@ -153,12 +154,34 @@
         class="full-width"
         label="Finalizar Venta"
         :disable="total == false"
+        @click="finalizarVenta(total)"
         type="submit"
         style="padding: 20px; font-weight: 600; width: 600px"
       />
     </q-form>
     <!-- </div> -->
   </q-page-sticky>
+
+    <q-dialog v-model="fixed" transition-hide="rotate">
+      <q-card style="max-width: 90vw">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Información de pago</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+          <detalles-finalizar-compra :total="total"/>
+        <q-separator />
+        <q-card-section style="max-height: 80vh">
+          <suspense>
+            <template #default>
+            </template>
+            <template #fallback> </template>
+          </suspense>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+
 </template>
 
 
@@ -167,6 +190,7 @@
 import { ref, getCurrentInstance } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
+import detallesFinalizarCompra from "../components/DetallesFinalizarCompra.vue"
 
 const mycolumns = [
   {
@@ -236,6 +260,8 @@ Array.prototype.random = function () {
 
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
+  components: { detallesFinalizarCompra },
+
   async setup() {
     const loading = ref(false);
     const $q = useQuasar();
@@ -355,6 +381,7 @@ export default {
       pagination: ref({
         rowsPerPage: 0,
       }),
+      fixed: ref(false),
       onSubmit,
       idVentaCancel,
       errorMessageCantidad,
@@ -431,8 +458,12 @@ export default {
 
         //location.reload();
       },
-
-      async finalizarVenta() {
+      
+      async finalizarVenta(total) {
+        this.fixed = true;
+      /*
+        
+        
         $q.loading.show({
           message: "Cargando...",
         });
@@ -444,7 +475,9 @@ export default {
           });
         $q.loading.hide();
         vaciarVariables();
+      */
       },
+      
     };
   },
 };

@@ -52,6 +52,7 @@
         </q-tr>
       </template>
     </q-table>
+
     <q-dialog v-model="fixed" transition-hide="rotate">
       <q-card style="max-width: 90vw">
         <q-card-section class="row items-center q-pb-none">
@@ -71,6 +72,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    
   </div>
 </template>
 
