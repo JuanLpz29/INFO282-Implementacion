@@ -20,7 +20,7 @@ def query_producto_by(_key: str, _value: str) -> Producto:
     query_funcs = {
 
         'idProducto': Producto.query.get,
-        'barcode': lambda x: Producto.query.filter(
+        'codigoBarra': lambda x: Producto.query.filter(
             Producto.codigoBarra == x).first(),
     }
     f = query_funcs.get(_key)
@@ -50,7 +50,7 @@ def abort_if_no_producto_found(key: str, value: any) -> Producto:
     return producto
 
 
-def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
+def productos_from_json_list(lista_productos: list[dict]) -> list[Producto]:
     prods = []
     for prod in lista_productos:
         prods.append(Producto.from_dict(prod))
@@ -73,8 +73,12 @@ def actualizar_stock(producto=None, barcode='', cantidad=1) -> Producto:
         return producto
     return None
 
+# asumir que le codigo de barra sera unique key?
+# creo que todo funciona bajo el supuesto de que no
+# hay mas de un producto registrado con el mismo codigo de barras
 
-def add_or_update(prod_list, add_news=True):
+
+def add_or_update(prod_list: list[Producto], add_news=True) -> list[Producto]:
     barcodes = [prod.codigoBarra for prod in prod_list]
     existing_prods = query_many_productos_by('codigoBarra', barcodes)
     i = 0

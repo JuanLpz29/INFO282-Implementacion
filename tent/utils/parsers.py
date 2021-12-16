@@ -1,7 +1,7 @@
 from flask_restful import reqparse
 
 prod_args_parser = reqparse.RequestParser()
-prod_args_location = ['form', 'json']
+_prod_args_location = ['form', 'json']
 arglist = [('nombre', str, True), ('precioVenta', int, True),
            ('codigoBarra', str, True), ('descripcion', str, False),
            ('stock', int, False), ('categoria', str, False),
@@ -10,7 +10,7 @@ arglist = [('nombre', str, True), ('precioVenta', int, True),
 
 for arg, _type, required in arglist:
     prod_args_parser.add_argument(arg, type=_type,
-                                  location=prod_args_location,
+                                  location=_prod_args_location,
                                   required=required)
 
 pagination_arg_parser = reqparse.RequestParser()

@@ -10,7 +10,6 @@ from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema, ADMIN, VENDEDOR
 from tent.models.productoventa import ProductoVenta
 from flask_restful import Resource, reqparse, abort
-# from tent.controllers import pagination_arg_parser
 from tent.utils.parsers import pagination_arg_parser
 
 
@@ -74,6 +73,38 @@ class VentaManager(Resource):
                                   'pay': self.pay_venta,
                                   'nullify': self.anular_venta}
 
+    def get(self, idVenta):
+        venta = abort_if_no_venta_found(idVenta)
+        venta_info = venta_schema.dump(venta)
+        pvs = self.pv_query(venta.idVenta)
+        productos_id = [pc.idProducto for pc in pvs]
+        _prods = productos_schema.dump(
+            query_many_productos_by('idProducto', productos_id))
+        _user = query_user_by('idUsuario', venta_info['idUsuario'])
+        user = usuario_schema.dump(_user)
+
+        user.pop('contraseña')
+        prods_dict = {p['idProducto']: p for p in _prods}
+        output_prods = []
+        for pv in pvs:
+            prod_json = prods_dict[pv.idProducto]
+            prod_json['cantidad'] = pv.cantidad
+            prod_json['stock'] = pv.cantidad
+            prod_json['precioVenta'] = pv.precio
+            output_prods.append(prod_json)
+
+        response = jsonify(info=venta_info,
+                           vendedor=user,
+                           productos=output_prods,
+                           )
+        return response
+
+    # update, cancelar, pagar, anular
+    def put(self, idVenta):
+        args = self.base_parser.parse_args()
+        op = args['operation']
+        return self.operation_methods[op](idVenta)
+
     def pv_query(self, idVenta):
         return ProductoVenta.query.filter(
             ProductoVenta.idVenta == idVenta)
@@ -119,10 +150,9 @@ class VentaManager(Resource):
 
     def update_venta(self, idVenta):
         args = self.update_prods_parser.parse_args()
-        barcode, _set, cantidad = args['barcode'], args['set'], args['cantidad']
+        barcode, _set, cantidad = args['codigoBarra'], args['set'], args['cantidad']
         venta = abort_if_no_venta_found(idVenta)
         abort_if_invalid_status(venta, valid_status=EN_CURSO)
-        # prod = abort_if_unknown_barcode(barcode)
         prod = abort_if_no_producto_found('codigoBarra', barcode)
         pv = self.pv_query_one(idVenta, prod.idProducto)
 
@@ -181,37 +211,6 @@ class VentaManager(Resource):
             idVenta, PAGADA)
         return self.undo_stock_changes(venta, usuario, ANULADA)
 
-    def get(self, idVenta):
-        venta = abort_if_no_venta_found(idVenta)
-        venta_info = venta_schema.dump(venta)
-        pvs = self.pv_query(venta.idVenta)
-        productos_id = [pc.idProducto for pc in pvs]
-        _prods = productos_schema.dump(
-            query_many_productos_by('idProducto', productos_id))
-        _user = query_user_by('idUsuario', venta_info['idUsuario'])
-        user = usuario_schema.dump(_user)
-
-        user.pop('contraseña')
-        prods_dict = {p['idProducto']: p for p in _prods}
-        output_prods = []
-        for pv in pvs:
-            prod_json = prods_dict[pv.idProducto]
-            prod_json['cantidad'] = pv.cantidad
-            prod_json['stock'] = pv.cantidad
-            output_prods.append(prod_json)
-
-        response = jsonify(info=venta_info,
-                           vendedor=user,
-                           productos=output_prods,
-                           )
-        return response
-
-    # update, cancelar, pagar, anular
-    def put(self, idVenta):
-        args = self.base_parser.parse_args()
-        op = args['operation']
-        return self.operation_methods[op](idVenta)
-
     def init_parsers(self):
         self.base_parser.add_argument('operation', type=str, required=True,
                                       choices=['update', 'cancel',
@@ -223,7 +222,7 @@ class VentaManager(Resource):
                                               location=self.args_loc,
                                               default=1,
                                               )
-        self.update_prods_parser.add_argument('barcode', type=str,
+        self.update_prods_parser.add_argument('codigoBarra', type=str,
                                               location=self.args_loc,
                                               required=True,
                                               )
@@ -254,7 +253,7 @@ class VentaListManager(Resource):
                                       location=['args', 'form', 'json'],
                                       required=True)
 
-        self.post_parser.add_argument('barcode', type=str,
+        self.post_parser.add_argument('codigoBarra', type=str,
                                       location=['args', 'form', 'json'],
                                       default='')
 
@@ -263,15 +262,15 @@ class VentaListManager(Resource):
         _order_by = f"{args['sortby']} {args['order']}".strip()
         filtered_query = Venta.query.order_by(text(_order_by))
         rowsNumber = filtered_query.count()
-        all_users = filtered_query.paginate(
+        all_ventas = filtered_query.paginate(
             page=args['page'], per_page=args['perpage'])
-        result = ventas_schema.dump(all_users.items)
+        result = ventas_schema.dump(all_ventas.items)
         return jsonify(items=result,
                        rowsNumber=rowsNumber)
 
     def post(self):
         args = self.post_parser.parse_args()
-        nombre, barcode = args['nombre'], args['barcode']
+        nombre, barcode = args['nombre'], args['codigoBarra']
         usuario = abort_if_no_usuario('nombre', nombre)
         abort_if_has_venta_en_curso(usuario.idUsuario)
         venta = Venta(usuario.idUsuario)

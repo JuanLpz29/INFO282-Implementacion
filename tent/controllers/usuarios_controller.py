@@ -3,8 +3,7 @@ from sqlalchemy.sql.expression import text, or_
 from tent import db
 from tent.models.usuario import ADMIN, Usuario, UsuarioSchema
 from flask_restful import Resource, reqparse, abort
-from tent.controllers import pagination_arg_parser
-
+from tent.utils.parsers import pagination_arg_parser
 
 usuario_schema = UsuarioSchema()
 usuarios_schema = UsuarioSchema(many=True)
