@@ -17,10 +17,8 @@ class Usuario(db.Model):
     nombre = db.Column(db.String(50))
     rol = db.Column(db.String(15))
     contraseña = db.Column(db.String(15))
-    # un usuario tiene N VENTAS
     ventas = relationship("Venta", back_populates="usuario")
 
-    # Campos minimos para hacer POST
     def __init__(self, nombre, rol, contraseña):
         self.nombre = nombre
         self.rol = rol

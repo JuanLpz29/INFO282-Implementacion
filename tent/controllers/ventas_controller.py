@@ -1,18 +1,17 @@
-from logging import DEBUG
-from flask import redirect, request, jsonify
+from flask import request, jsonify
 from sqlalchemy.sql.expression import and_, text
 from tent.models.venta import Venta, VentaSchema
-from tent.models.venta import EN_CURSO, CONFIRMADA, ANULADA, PAGADA
+from tent.models.venta import EN_CURSO, CONFIRMADA, ANULADA, PAGADA, NO_FINALIZADA
 from tent import db
 from tent.controllers.productos_controller import get_many as get_many_prods
-from tent.controllers.productos_controller import actualizar_stock
+from tent.controllers.productos_controller import actualizar_stock, abort_if_unknown_barcode
+from tent.controllers.usuarios_controller import query_user_by, abort_if_no_usuario, abort_if_not_authorized
 from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema, ADMIN, VENDEDOR
 from tent.models.productoventa import ProductoVenta
-from sqlalchemy.dialects.mysql import insert
-from sqlalchemy import func
+from flask_restful import Resource, reqparse, abort
+from tent.controllers import pagination_arg_parser
 
-DEBUGXD = True
 
 venta_schema = VentaSchema()
 usuario_schema = UsuarioSchema()
@@ -21,218 +20,271 @@ productos_schema = ProductSchema(many=True)
 producto_schema = ProductSchema()
 
 
-def index():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-    # _filter = request.args.get('filter', '', type=str)
-    sort_by = request.args.get('sortby', '', type=str)
-    order = request.args.get('order', '', type=str)
+def query_venta_by(_key: str, _value: str):
+    query_funcs = {
 
-    if sort_by:
-        _order_by = f"{sort_by} {order}"
-    else:
-        _order_by = ""
-
-    filtered_query = Venta.query.order_by(text(_order_by))
-
-    rowsNumber = filtered_query.count()
-    all_ventas = filtered_query.paginate(page=page, per_page=per_page)
-    result = ventas_schema.dump(all_ventas.items)
-    return jsonify(items=result,
-                   rowsNumber=rowsNumber)
+        'idVenta': Venta.query.get,
+        'nombre': lambda x: Venta.query.filter(
+            Venta.nombre == x).first(),
+        'estado': lambda x: Venta.query.filter(
+            Venta.estado == x).items(),
+        EN_CURSO: lambda x: Venta.query.filter(and_(
+            Venta.idUsuario == _value,
+            Venta.estado == EN_CURSO
+        )).first()
+    }
+    f = query_funcs.get(_key)
+    if f is not None:
+        return f(_value)
 
 
-# Retornamos solo un compra de la base de datos
-def show(idVenta):
+def abort_if_no_venta_found(idVenta: int) -> Venta:
     venta = Venta.query.get(idVenta)
-    if Venta is not None:
-        return venta_schema.jsonify(venta)
-    return f"no se encontro Venta con id {idVenta}", 404
+    if venta is None:
+        abort(404, message=f"No se encontro venta con id {idVenta}")
+    return venta
 
 
-def start():
-    username = request.args.get('user', '', type=str)
-    if not username:
-        return "user required", 401
-    usuario = Usuario.query.filter(Usuario.nombre == username).first()
-    if not usuario:
-        return f"usuario {username} invalido", 401
+def abort_if_has_venta_en_curso(idUsuario: int) -> Venta:
+    venta = query_venta_by(EN_CURSO, idUsuario)
+    if venta is not None:
+        abort(
+            409, message=f"idUsuario {idUsuario} ya tiene una venta en curso idVenta:{venta.idVenta}")
 
-    vnt = Venta.query.filter(and_(
-        Venta.idUsuario == usuario.idUsuario,
-        Venta.estado == EN_CURSO
-    )).first()
-    if not vnt:
-        vnt = Venta(usuario.idUsuario)
-        usuario.ventas.append(vnt)
-    else:
-        # no permitir iniciar una venta si hay una en curso
-        # o seria mejor
-        # - reiniciar la venta (cancelando la anterior)
-        # - permitir tener varias ventas en curso
-        return f"{username} ya tiene una venta en curso idVenta:{vnt.idVenta}"
 
-    barcode = request.args.get('barcode', '', type=str)
-    prod = actualizar_stock(barcode=barcode)
-    if prod:
-        pv = ProductoVenta(cantidad=1)
-        pv.producto = prod
-        pv.venta = vnt
-        vnt.total = prod.valorItem
+def abort_if_invalid_status(venta: Venta, valid_status=EN_CURSO) -> None:
+    if venta.estado != valid_status:
+        abort(
+            400, message=f"Venta con id: {venta.idVenta} no se encuentra {valid_status}")
+
+
+class VentaManager(Resource):
+    def __init__(self) -> None:
+        super().__init__()
+        self.update_prods_parser = reqparse.RequestParser()
+        self.base_parser = reqparse.RequestParser()
+        self.update_status_parser = reqparse.RequestParser()
+        self.payment_parser = None
+        self.args_loc = ['args', 'form', 'json']
+        self.init_parsers()
+        self.operation_methods = {'update': self.update_venta,
+                                  'cancel': self.cancel_venta,
+                                  'confirm': self.confirm_venta,
+                                  'pay': self.pay_venta,
+                                  'nullify': self.anular_venta}
+
+    def pv_query(self, idVenta):
+        return ProductoVenta.query.filter(
+            ProductoVenta.idVenta == idVenta)
+
+    def pv_query_one(self, idVenta, idProducto):
+        pv = ProductoVenta.query.filter(
+            and_(
+                ProductoVenta.idProducto == idProducto,
+                ProductoVenta.idVenta == idVenta)
+        ).first()
+        return pv
+
+    def check_conditions_for_status_update(self, idVenta, valid_status):
+        args = self.update_status_parser.parse_args()
+        nombre = args['nombre']
+        venta = abort_if_no_venta_found(idVenta)
+        abort_if_invalid_status(venta, valid_status=valid_status)
+        usuario = abort_if_no_usuario('nombre', nombre)
+        abort_if_not_authorized(usuario, idUsuario=venta.idUsuario)
+        return venta, usuario
+
+    def pay_venta(self, idVenta):
+        venta, usuario = self.check_conditions_for_status_update(
+            idVenta, CONFIRMADA)
+        args = self.payment_parser.parse_args()
+        medio = args['medio']
+        venta.medioDePago = medio
+        venta.estado = PAGADA
+        db.session.add(usuario)
+        db.session.commit()
+        return venta_schema.dump(venta)
+
+    def confirm_venta(self, idVenta):
+        venta, usuario = self.check_conditions_for_status_update(
+            idVenta, EN_CURSO)
+        venta.estado = CONFIRMADA
+        venta.iva = int(venta.total * 0.19)
+        venta.montoNeto = venta.total - venta.iva
+        # calcular iva y monto neto
+        db.session.add(usuario)
+        db.session.commit()
+        return venta_schema.dump(venta)
+
+    def update_venta(self, idVenta):
+        args = self.update_prods_parser.parse_args()
+        barcode, _set, cantidad = args['barcode'], args['set'], args['cantidad']
+        venta = abort_if_no_venta_found(idVenta)
+        abort_if_invalid_status(venta, valid_status=EN_CURSO)
+        prod = abort_if_unknown_barcode(barcode)
+        pv = self.pv_query_one(idVenta, prod.idProducto)
+
+        if pv:
+            # aqui se puede validar que la venta no este solicitando
+            # mas productos de los que hay en el inventario
+            # mientras el inventario no se haya estabilizado por completo se
+            # agregan te todas formas y el stock se deja >= 0
+            qty = cantidad - pv.cantidad if _set else cantidad
+            pv.cantidad += qty
+        # si no, se agrega uno a la venta
+        else:
+            pv = ProductoVenta(cantidad=1)
+            pv.producto = prod
+            pv.precio = prod.valorItem
+            pv.venta = venta
+            qty = 1
+
+        actualizar_stock(producto=prod, cantidad=qty)
+        venta.total += prod.valorItem * qty
         prod_info = producto_schema.dump(prod)
         prod_info['cantidad'] = pv.cantidad
         prod_info['subtotal'] = pv.cantidad * prod.valorItem
-    else:
-        # front debe registrarlo
-        prod_info = None
-    db.session.add(usuario)
-    db.session.commit()
-    return jsonify(venta=venta_schema.dump(vnt),
-                   producto=prod_info)
+        # verificar que efectivamente se quita de la venta un producto
+        # con cantidad 0
+        if pv.cantidad == 0:
+            db.session.delete(pv)
+        db.session.add(venta)
+        db.session.commit()
+        return jsonify(venta=venta_schema.dump(venta),
+                       producto=prod_info)
+
+    def undo_stock_changes(self, venta, usuario, estado_final):
+        prods_info = {
+            prod.idProducto: prod.cantidad for prod in venta.productos
+        }
+        prods = Producto.query.filter(
+            Producto.idProducto.in_(prods_info.keys())
+        )
+        for prod in prods:
+            prod.stock += prods_info[prod.idProducto]
+
+        # cancelar o anular la venta
+        venta.estado = estado_final
+        db.session.add(usuario)
+        db.session.commit()
+        return f"Venta {venta.idVenta} {estado_final}"
+
+    def cancel_venta(self, idVenta):
+        venta, usuario = self.check_conditions_for_status_update(
+            idVenta, EN_CURSO)
+        return self.undo_stock_changes(venta, usuario, NO_FINALIZADA)
+
+    def anular_venta(self, idVenta):
+        venta, usuario = self.check_conditions_for_status_update(
+            idVenta, PAGADA)
+        return self.undo_stock_changes(venta, usuario, ANULADA)
+
+    def get(self, idVenta):
+        venta = abort_if_no_venta_found(idVenta)
+        venta_info = venta_schema.dump(venta)
+        pvs = self.pv_query(venta.idVenta)
+        productos_id = [pc.idProducto for pc in pvs]
+        _prods = get_many_prods(productos_id)
+        _user = query_user_by('idUsuario', venta_info['idUsuario'])
+        user = usuario_schema.dump(_user)
+
+        user.pop('contraseña')
+        prods_dict = {p['idProducto']: p for p in _prods}
+        output_prods = []
+        for pv in pvs:
+            prod_json = prods_dict[pv.idProducto]
+            prod_json['cantidad'] = pv.cantidad
+            prod_json['stock'] = pv.cantidad
+            output_prods.append(prod_json)
+
+        response = jsonify(info=venta_info,
+                           vendedor=user,
+                           productos=output_prods,
+                           )
+        return response
+
+    # update, cancelar, pagar, anular
+    def put(self, idVenta):
+        args = self.base_parser.parse_args()
+        op = args['operation']
+        return self.operation_methods[op](idVenta)
+
+    def init_parsers(self):
+        self.base_parser.add_argument('operation', type=str, required=True,
+                                      choices=['update', 'cancel',
+                                               'confirm', 'pay',
+                                               'nullify'])
+
+        # actualizar la venta en curso
+        self.update_prods_parser.add_argument('cantidad', type=int,
+                                              location=self.args_loc,
+                                              default=1,
+                                              )
+        self.update_prods_parser.add_argument('barcode', type=str,
+                                              location=self.args_loc,
+                                              required=True,
+                                              )
+        self.update_prods_parser.add_argument('set', type=bool,
+                                              location=self.args_loc,
+                                              default=False,
+                                              )
+
+        # cancelar la venta en curso (estado -> no finalizada)
+        self.update_status_parser.add_argument('nombre', type=str,
+                                               location=self.args_loc,
+                                               required=True,
+                                               )
+        self.payment_parser = self.update_status_parser.copy()
+        self.payment_parser.add_argument('medio', type=str,
+                                         location=self.args_loc,
+                                         choices=['Efectivo',
+                                                  'Debito', 'Credito'],
+                                         required=True)
 
 
-def update():
-    _id = request.args.get('idVenta', None, type=int)
-    cantidad = request.args.get('cantidad', 1, type=int)
-    barcode = request.args.get('barcode', '', type=str)
-    _set = request.args.get('set', False, type=bool)
-    if not all([_id, barcode]) or cantidad < 0:
-        return "idVenta y barcode, cantidad > 0 required", 400
-    vnt = Venta.query.get(_id)
-    if not vnt:
-        return f"Venta con id: {_id} no econtrada", 404
-    elif vnt.estado != EN_CURSO:
-        return f"Venta con id: {_id} ya se encuentra {vnt.estado}", 400
+class VentaListManager(Resource):
+    def __init__(self) -> None:
+        super().__init__()
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument('nombre', type=str,
+                                      location=['args', 'form', 'json'],
+                                      required=True)
 
-    prod = Producto.query.filter(
-        Producto.codigoBarra == barcode).first()
-    if not prod:
-        return f"Producto con barcode: {barcode} no encontrado", 404
-    pv = ProductoVenta.query.filter(
-        and_(
-            ProductoVenta.idProducto == prod.idProducto,
-            ProductoVenta.idVenta == _id)
-    ).first()
-    # si el producto ya estaba en la venta actual
-    if pv:
-        # aqui se puede validar que la venta no este solicitando
-        # mas productos de los que hay en el inventario
-        # mientras el inventario no se haya estabilidazo por completo se
-        # agregan te todas formas y el stock se deja >= 0
-        qty = cantidad - pv.cantidad if _set else cantidad
-        print(qty, _set)
-        pv.cantidad += qty
-    # si no, se agrega uno a la venta
-    else:
-        pv = ProductoVenta(cantidad=1)
-        pv.producto = prod
-        pv.venta = vnt
-        qty = 1
+        self.post_parser.add_argument('barcode', type=str,
+                                      location=['args', 'form', 'json'],
+                                      default='')
 
-    actualizar_stock(producto=prod, cantidad=qty)
-    vnt.total += prod.valorItem * qty
-    prod_info = producto_schema.dump(prod)
-    prod_info['cantidad'] = pv.cantidad
-    prod_info['subtotal'] = pv.cantidad * prod.valorItem
-    # verificar que efectivamente se quita de la venta un producto
-    # con cantidad 0
-    if pv.cantidad == 0:
-        db.session.delete(pv)
-    db.session.add(vnt)
-    db.session.commit()
-    return jsonify(venta=venta_schema.dump(vnt),
-                   producto=prod_info)
+    def get(self):
+        args = pagination_arg_parser.parse_args()
+        _order_by = f"{args['sortby']} {args['order']}".strip()
+        filtered_query = Venta.query.order_by(text(_order_by))
+        rowsNumber = filtered_query.count()
+        all_users = filtered_query.paginate(
+            page=args['page'], per_page=args['perpage'])
+        result = ventas_schema.dump(all_users.items)
+        return jsonify(items=result,
+                       rowsNumber=rowsNumber)
 
-
-def check_args():
-    # cambair codigo repetitivo de validacion de args
-    pass
-
-
-def cancel():
-    # obtener args
-    _id = request.args.get('idVenta', None, type=int)
-    username = request.args.get('user', '', type=str)
-
-    # validacion de args
-    if not _id or not username:
-        return "idVenta y user requeridos", 400
-
-    # validar venta
-    vnt = Venta.query.get(_id)
-    if not vnt:
-        return f"venta con {_id} no econtrada", 404
-    elif vnt.estado != EN_CURSO:
-        return f"venta con id: {_id} ya se encuentra {vnt.estado}", 400
-
-    # validar usuario que realiza la operacion
-    # solo el mismo propietario de la venta o un admin puede cancelarla
-    # seria mas rapido trabajar con el id
-    usuario = Usuario.query.filter(Usuario.nombre == username).first()
-    if not usuario:
-        return "permiso penegado", 401
-    if vnt.idUsuario != usuario.idUsuario and usuario.rol != ADMIN:
-        return "permiso penegado", 401
-
-    # devolver los productos
-    prods_info = {prod.idProducto: prod.cantidad for prod in vnt.productos}
-    print("id : cantidad \n", prods_info)
-    prods = Producto.query.filter(
-        Producto.idProducto.in_(prods_info.keys())
-    )
-    for prod in prods:
-        prod.stock += prods_info[prod.idProducto]
-
-    # anular la venta
-    vnt.estado = ANULADA
-    db.session.add(usuario)
-    db.session.commit()
-    return f"Venta {_id} cancelada"
-
-
-def confirm():
-    _id = request.args.get('idVenta', None, type=int)
-    username = request.args.get('user', '', type=str)
-    if not all([_id, username]):
-        return "idVenta y user requeridos", 400
-    vnt = Venta.query.get(_id)
-    if not vnt:
-        return f"venta con {_id} no econtrada", 404
-
-    usuario = Usuario.query.filter(Usuario.nombre == username).first()
-    if not usuario:
-        return "permiso penegado", 401
-    if vnt.idUsuario != usuario.idUsuario and usuario.rol != ADMIN:
-        return "permiso penegado", 401
-    vnt.estado = CONFIRMADA
-    db.session.add(usuario)
-    db.session.commit()
-    return venta_schema.dump(vnt)
-
-
-def details(idVenta):
-    venta = Venta.query.get(idVenta)
-    if venta is None:
-        return f"no se encontro venta con id {idVenta}"
-    venta_info = venta_schema.dump(venta)
-    pvs = ProductoVenta.query.filter(
-        ProductoVenta.idVenta == idVenta)
-    productos_id = [pc.idProducto for pc in pvs]
-    _prods = get_many_prods(productos_id)
-    _user = Usuario.query.filter(Usuario
-                                 .idUsuario == venta_info['idUsuario']).first()
-    user = usuario_schema.dump(_user)
-    user.pop('contraseña')
-    prods_dict = {p['idProducto']: p for p in _prods}
-    output_prods = []
-    for pv in pvs:
-        prod_json = prods_dict[pv.idProducto]
-        prod_json['cantidad'] = pv.cantidad
-        prod_json['stock'] = pv.cantidad
-        output_prods.append(prod_json)
-
-    response = jsonify(info=venta_info,
-                       vendedor=user,
-                       productos=output_prods,
-                       )
-    return response
+    def post(self):
+        args = self.post_parser.parse_args()
+        nombre, barcode = args['nombre'], args['barcode']
+        usuario = abort_if_no_usuario('nombre', nombre)
+        abort_if_has_venta_en_curso(usuario.idUsuario)
+        venta = Venta(usuario.idUsuario)
+        usuario.ventas.append(venta)
+        prod = actualizar_stock(barcode=barcode)
+        if prod:
+            pv = ProductoVenta(cantidad=1, precio=prod.valorItem)
+            pv.producto = prod
+            pv.venta = venta
+            venta.total = prod.valorItem
+            prod_info = producto_schema.dump(prod)
+            prod_info['cantidad'] = pv.cantidad
+            prod_info['subtotal'] = pv.cantidad * prod.valorItem
+        else:
+            # front debe registrarlo
+            prod_info = None
+        db.session.add(usuario)
+        db.session.commit()
+        return jsonify(venta=venta_schema.dump(venta),
+                       producto=prod_info)

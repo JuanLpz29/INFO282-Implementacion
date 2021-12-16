@@ -8,35 +8,26 @@ EN_CURSO = "En Curso"
 CONFIRMADA = "Confirmada"
 ANULADA = "Anulada"
 PAGADA = "Pagada"
-
-# tal vez sea mejor con herencia
-# o simplemente tener un atributo
-# el query por id deberia ser O(log n)
-# class VentaTemporalSchema(ma.Schema):
-#     class Meta:
-#         fields = ('idVenta', 'idUsuario', 'total')
+NO_FINALIZADA = "No Finalizada"
 
 
 class VentaSchema(ma.Schema):
     class Meta:
         fields = ('idVenta',
                   'idUsuario', 'medioDePago', 'estado',
-                  'fecha', 'total')
+                  'fecha', 'montoNeto', 'iva', 'total')
 
 
 class Venta(db.Model):
     __tablename__ = 'Venta'
     idVenta = db.Column(db.Integer, primary_key=True)
     total = db.Column(db.Integer)
-
-    # efectivo, debito, credito, tia me fia un super8
     medioDePago = db.Column(db.String(15), nullable=True)
-
-    # en curso, confirmada, cancelada, pagada
     estado = db.Column(db.String(15), nullable=True)
-
     fecha = db.Column(db.DateTime,
                       onupdate=func.now(), nullable=True)
+    montoNeto = db.Column(db.Integer)
+    iva = db.Column(db.Integer)
     idUsuario = db.Column(db.Integer, db.ForeignKey('Usuario.idUsuario'))
     usuario = relationship("Usuario", back_populates="ventas")
     productos = relationship("ProductoVenta", back_populates="venta")

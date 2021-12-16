@@ -1,5 +1,5 @@
-import os
 from flask import Blueprint, current_app
+from flask_restful import reqparse
 
 from tent.controllers.productos_controller import index as products_index
 from tent.controllers.productos_controller import show as products_show
@@ -14,22 +14,8 @@ from tent.controllers.compras_controller import details as compras_details
 
 from tent.controllers.base_controller import hello
 
-from tent.controllers.ventas_controller import index as ventas_index
-from tent.controllers.ventas_controller import show as ventas_show
-from tent.controllers.ventas_controller import start as ventas_start
-from tent.controllers.ventas_controller import details as ventas_details
-from tent.controllers.ventas_controller import update as ventas_update
-from tent.controllers.ventas_controller import cancel as ventas_cancel
-from tent.controllers.ventas_controller import confirm as ventas_confirm
-
-from tent.controllers.usuarios_controller import show as usuarios_show
-from tent.controllers.usuarios_controller import store as usuarios_store
-from tent.controllers.usuarios_controller import index as usuarios_index
-
 productos_bp = Blueprint('productos', 'api', url_prefix='/productos')
 compras_bp = Blueprint('compras', 'api', url_prefix='/compras')
-ventas_bp = Blueprint('ventas', 'api', url_prefix='/ventas')
-usuarios_bp = Blueprint('usuarios', 'api', url_prefix='/usuarios')
 base_bp = Blueprint('', 'api', url_prefix='')
 
 productos_url_rules = [('/', products_index, ['GET']),
@@ -46,20 +32,6 @@ compras_url_rules = [('/', compras_index, ['GET']),
                      ]
 
 
-ventas_url_rules = [('/', ventas_index, ['GET']),
-                    ('/<int:idVenta>/', ventas_show, ['GET']),
-                    ('/details/<int:idVenta>/', ventas_details, ['GET']),
-                    ('/start/', ventas_start, ['GET']),
-                    ('/update/', ventas_update, ['GET']),
-                    ('/cancel/', ventas_cancel, ['GET']),
-                    ('/confirm/', ventas_confirm, ['GET']),
-                    ]
-
-usuarios_url_rules = [('/', usuarios_index, ['GET']),
-                      ('/<int:idUsuario>/', usuarios_show, ['GET']),
-                      ('/nuevo/', usuarios_store, ['POST'])
-                      ]
-
 base_url_rules = [('/', hello, ['GET'])]
 
 for (rule, func, methods) in productos_url_rules:
@@ -68,11 +40,16 @@ for (rule, func, methods) in productos_url_rules:
 for (rule, func, methods) in compras_url_rules:
     compras_bp.add_url_rule(rule, view_func=func, methods=methods)
 
-for (rule, func, methods) in ventas_url_rules:
-    ventas_bp.add_url_rule(rule, view_func=func, methods=methods)
-
-for (rule, func, methods) in usuarios_url_rules:
-    usuarios_bp.add_url_rule(rule, view_func=func, methods=methods)
-
 for (rule, func, methods) in base_url_rules:
     base_bp.add_url_rule(rule, view_func=func, methods=methods)
+
+
+pagination_arg_parser = reqparse.RequestParser()
+pagination_arg_parser.add_argument('page', default=1, type=int,
+                                   help='Page cannot be converted')
+pagination_arg_parser.add_argument("perpage", default=10, type=int,
+                                   help='perpage cannot be converted')
+pagination_arg_parser.add_argument("filter", default="", type=str,)
+pagination_arg_parser.add_argument("sortby", default="", type=str,)
+pagination_arg_parser.add_argument("order", default="", type=str,
+                                   choices=["asc", "desc", ""],)

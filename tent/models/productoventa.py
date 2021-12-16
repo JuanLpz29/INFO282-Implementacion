@@ -12,5 +12,6 @@ class ProductoVenta(db.Model):
     idVenta = Column(ForeignKey('Venta.idVenta'),
                      primary_key=True)
     cantidad = Column(Integer)
+    precio = Column(Integer)
     producto = relationship("Producto", back_populates="ventas")
     venta = relationship("Venta", back_populates="productos")

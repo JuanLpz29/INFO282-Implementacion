@@ -3,3 +3,5 @@ tent/data/uploads/*
 __pycache__/
 pycache/
 *.pyc
+settings.json
+cspell.json

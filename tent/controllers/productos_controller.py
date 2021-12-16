@@ -7,12 +7,34 @@ from tent import db
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import func
 import json
+from flask_restful import Resource, reqparse, abort
+
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 
 
+def query_producto_by(_key: str, _value: str):
+    query_funcs = {
+
+        'idProducto': Producto.query.get,
+        'barcode': lambda x: Producto.query.filter(
+            Producto.codigoBarra == x).first(),
+    }
+    f = query_funcs.get(_key)
+    if f is not None:
+        return f(_value)
+
+
+def abort_if_unknown_barcode(barcode: str) -> Producto:
+    producto = query_producto_by('barcode', barcode)
+    if producto is None:
+        abort(404, message=f"No se encontro producto con barcode {barcode}")
+    return producto
+
 # Retornamos todos los productos de la base de datos
+
+
 def index():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
@@ -73,7 +95,7 @@ def reservar_producto():
 
 # manejar lo del stock negativo
 # que pasa si no se encuentra un producto con ese barcode?
-def actualizar_stock(producto=None, barcode='', cantidad=1):
+def actualizar_stock(producto=None, barcode='', cantidad=1) -> Producto:
     if producto is None:
         producto = Producto.query.filter(
             Producto.codigoBarra == barcode).first()

@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, Blueprint
 import os
 from flask_cors import CORS
 from tent.models import db, ma
+from flask_restful import Api
 
 
 def create_app(config_filename=None):
@@ -11,7 +12,10 @@ def create_app(config_filename=None):
     # from tent.models import db, ma
     db.init_app(application)
     ma.init_app(application)
-    register_blueprints(application)
+
+    api_bp = Blueprint('api', __name__)
+    api = Api(api_bp)
+    register_blueprints(application, api, api_bp)
     return application
 
 
@@ -22,19 +26,23 @@ def create_app(config_filename=None):
 #     from tent.models.proveedor import Proveedor, ProveedorSchema
 
 
-def register_blueprints(application):
-    from tent.controllers import productos_bp, compras_bp, base_bp, ventas_bp
-    from tent.controllers import usuarios_bp
+def register_blueprints(application, api, api_bp):
+    from tent.controllers import productos_bp, compras_bp, base_bp
+    from tent.controllers.usuarios_controller import UserManager, UserListManager
+    from tent.controllers.ventas_controller import VentaManager, VentaListManager
+
+    api.add_resource(UserManager, '/usuarios/<int:idUsuario>')
+    api.add_resource(UserListManager, '/usuarios/')
+    api.add_resource(VentaManager, '/ventas/<int:idVenta>')
+    api.add_resource(VentaListManager, '/ventas/')
     CORS(compras_bp)
     CORS(productos_bp)
-    CORS(ventas_bp)
     CORS(base_bp)
-    CORS(usuarios_bp)
+    CORS(api_bp)
     application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
-    application.register_blueprint(ventas_bp)
     application.register_blueprint(base_bp)
-    application.register_blueprint(usuarios_bp)
+    application.register_blueprint(api_bp)
 
 
 _env = os.environ.get('FLASK_ENV')
@@ -48,3 +56,4 @@ tent.config.from_pyfile(config_filename)
 # tent.config.from_pyfile(config_filename)
 db.init_app(tent)
 ma.init_app(tent)
+api = Api(tent)
