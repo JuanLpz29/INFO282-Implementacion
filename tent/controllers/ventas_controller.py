@@ -49,7 +49,7 @@ def abort_if_has_venta_en_curso(idUsuario: int) -> Venta:
     venta = query_venta_by(EN_CURSO, idUsuario)
     if venta is not None:
         abort(
-            409, message=f"idUsuario {idUsuario} ya tiene una venta en curso idVenta:{venta.idVenta}")
+            200, message=f"idUsuario {idUsuario} ya tiene una venta en curso idVenta:{venta.idVenta}")
 
 
 def abort_if_invalid_status(venta: Venta, valid_status=EN_CURSO) -> None:
