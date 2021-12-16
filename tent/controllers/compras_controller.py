@@ -8,15 +8,14 @@ from tent.utils.DTE import DTE
 from tent import db
 from tent.controllers.productos_controller import productos_compra_json
 from tent.controllers.productos_controller import add_or_update
-from tent.controllers.productos_controller import get_many as get_many_prods
+# from tent.controllers.productos_controller import get_many as get_many_prods
+from tent.controllers.productos_controller import query_many_productos_by
 from tent.models.proveedor import Proveedor, ProveedorSchema
 from tent.models.producto import ProductSchema
 from tent.models.productocompra import ProductoCompra
 import json
 from sqlalchemy.dialects.mysql import insert
 # from DTE import DTE
-
-DEBUGXD = True
 
 compra_schema = CompraSchema()
 proveedor_schema = ProveedorSchema()
@@ -49,8 +48,7 @@ def details(idCompra):
     pcs = ProductoCompra.query.filter(
         ProductoCompra.idCompra == idCompra)
     productos_id = [pc.idProducto for pc in pcs]
-    prods = get_many_prods(productos_id)
-    print(compra_info['idProveedor'])
+    prods = query_many_productos_by('idProducto', productos_id)
     _prov = Proveedor.query.filter(Proveedor
                                    .idProveedor == compra_info['idProveedor']).first()
     prov = proveedor_schema.dump(_prov)
@@ -77,7 +75,7 @@ def check_and_dump_products(datos_compra: dict, lista_productos: list[dict]):
     cmp = Compra.query.filter_by(folio=datos_compra['folio']).first()
     prods = productos_compra_json(lista_productos)
     prods_dump = productos_schema.dump(prods)
-    if cmp is not None and DEBUGXD:
+    if cmp is not None:
         print('la compra ya se encuentra registrada en el sistema!!')
     return prods_dump, cmp
 
@@ -86,7 +84,7 @@ def upload_json():
     body = request.data.decode()
     body_json = json.loads(body)
     if body_json['registrada'] == True:
-        return "ya existe"  # porsiaca
+        return "ya existe"
 
     datos_proveedor = body_json['proveedor']
     prov = Proveedor.query.filter_by(rut=datos_proveedor['rut']).first()
@@ -110,7 +108,7 @@ def upload_json():
         a.compra = cmp
     db.session.add(prov)
     db.session.commit()
-    return "ok"
+    return "compra registrada satisfactoriamente"
 
 
 def upload_documento():

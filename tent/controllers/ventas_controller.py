@@ -3,14 +3,15 @@ from sqlalchemy.sql.expression import and_, text
 from tent.models.venta import Venta, VentaSchema
 from tent.models.venta import EN_CURSO, CONFIRMADA, ANULADA, PAGADA, NO_FINALIZADA
 from tent import db
-from tent.controllers.productos_controller import get_many as get_many_prods
-from tent.controllers.productos_controller import actualizar_stock, abort_if_unknown_barcode
+from tent.controllers.productos_controller import query_many_productos_by
+from tent.controllers.productos_controller import actualizar_stock, abort_if_no_producto_found
 from tent.controllers.usuarios_controller import query_user_by, abort_if_no_usuario, abort_if_not_authorized
 from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema, ADMIN, VENDEDOR
 from tent.models.productoventa import ProductoVenta
 from flask_restful import Resource, reqparse, abort
-from tent.controllers import pagination_arg_parser
+# from tent.controllers import pagination_arg_parser
+from tent.utils.parsers import pagination_arg_parser
 
 
 venta_schema = VentaSchema()
@@ -121,7 +122,8 @@ class VentaManager(Resource):
         barcode, _set, cantidad = args['barcode'], args['set'], args['cantidad']
         venta = abort_if_no_venta_found(idVenta)
         abort_if_invalid_status(venta, valid_status=EN_CURSO)
-        prod = abort_if_unknown_barcode(barcode)
+        # prod = abort_if_unknown_barcode(barcode)
+        prod = abort_if_no_producto_found('codigoBarra', barcode)
         pv = self.pv_query_one(idVenta, prod.idProducto)
 
         if pv:
@@ -184,7 +186,8 @@ class VentaManager(Resource):
         venta_info = venta_schema.dump(venta)
         pvs = self.pv_query(venta.idVenta)
         productos_id = [pc.idProducto for pc in pvs]
-        _prods = get_many_prods(productos_id)
+        _prods = productos_schema.dump(
+            query_many_productos_by('idProducto', productos_id))
         _user = query_user_by('idUsuario', venta_info['idUsuario'])
         user = usuario_schema.dump(_user)
 
@@ -245,6 +248,7 @@ class VentaManager(Resource):
 class VentaListManager(Resource):
     def __init__(self) -> None:
         super().__init__()
+        self.pagination_parser = pagination_arg_parser.copy()
         self.post_parser = reqparse.RequestParser()
         self.post_parser.add_argument('nombre', type=str,
                                       location=['args', 'form', 'json'],
@@ -255,7 +259,7 @@ class VentaListManager(Resource):
                                       default='')
 
     def get(self):
-        args = pagination_arg_parser.parse_args()
+        args = self.pagination_parser.parse_args()
         _order_by = f"{args['sortby']} {args['order']}".strip()
         filtered_query = Venta.query.order_by(text(_order_by))
         rowsNumber = filtered_query.count()

@@ -8,13 +8,15 @@ from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import func
 import json
 from flask_restful import Resource, reqparse, abort
-
+from tent.utils.parsers import pagination_arg_parser, prod_args_parser
+# from tent.controllers import pagination_arg_parser
+# from tent.controllers import prod_args_parser
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 
 
-def query_producto_by(_key: str, _value: str):
+def query_producto_by(_key: str, _value: str) -> Producto:
     query_funcs = {
 
         'idProducto': Producto.query.get,
@@ -26,36 +28,26 @@ def query_producto_by(_key: str, _value: str):
         return f(_value)
 
 
-def abort_if_unknown_barcode(barcode: str) -> Producto:
-    producto = query_producto_by('barcode', barcode)
+def query_many_productos_by(key: str, value: list) -> list[Producto]:
+    query_funcs = {
+
+        'idProducto': lambda x: Producto.query.filter(Producto.idProducto
+                                                      .in_(value)).all(),
+        'codigoBarra': lambda x: Producto.query.filter(Producto.codigoBarra
+                                                       .in_(value)).all(),
+        'nombre': lambda x: Producto.query.filter(func.lower(Producto.nombre).contains(
+            x.lower()))
+    }
+    f = query_funcs.get(key)
+    if f is not None:
+        return f(value)
+
+
+def abort_if_no_producto_found(key: str, value: any) -> Producto:
+    producto = query_producto_by(key, value)
     if producto is None:
-        abort(404, message=f"No se encontro producto con barcode {barcode}")
+        abort(404, message=f"No se encontro producto con {key} {value}")
     return producto
-
-# Retornamos todos los productos de la base de datos
-
-
-def index():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-    _filter = request.args.get('filter', '', type=str)
-    sort_by = request.args.get('sortby', '', type=str)
-    order = request.args.get('order', '', type=str)
-
-    if sort_by:
-        _order_by = f"{sort_by} {order}"
-    else:
-        _order_by = ""
-
-    filtered_query = Producto.query.filter(func.lower(Producto.nombre).contains(
-        _filter.lower())).order_by(text(_order_by))
-
-    # necesaria para la paginacion
-    rowsNumber = filtered_query.count()
-    all_productos = filtered_query.paginate(page=page, per_page=per_page)
-    result = products_schema.dump(all_productos.items)
-    return jsonify(items=result,
-                   rowsNumber=rowsNumber)
 
 
 def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
@@ -65,32 +57,6 @@ def productos_compra_json(lista_productos: list[dict]) -> list[Producto]:
     return prods
     # result = products_schema.dump(prods)
     # return result
-
-
-# ProductoRetornamos solo un producto de la base de datos
-def show(idProducto):
-    producto = Producto.query.get(idProducto)
-    if producto is not None:
-        return product_schema.dump(producto)
-    return f"no se encontro producto con id {idProducto}"
-
-
-def reservar_producto():
-    barcode = request.args.get('barcode', None, type=str)
-    cantidad = request.args.get('cantidad', 1, type=int)
-    if barcode is not None:
-        producto = Producto.query.filter(
-            Producto.codigoBarra == barcode).first()
-        if producto is not None:
-            # manejar lo del stock negativo
-            producto.stock = 1 if cantidad >= producto.stock else producto.stock - cantidad
-            # "reservar" items
-            db.session.commit()
-            return product_schema.dump(producto)
-        # que pasa si no se encuentra un producto con ese barcode?
-        return f"no se encontro producto con codigo de barra {barcode}", 404
-    else:
-        return "Busqueda malarda", 400  # bad request
 
 
 # manejar lo del stock negativo
@@ -108,20 +74,9 @@ def actualizar_stock(producto=None, barcode='', cantidad=1) -> Producto:
     return None
 
 
-# def cancelar_compra():
-#
-
-
-def get_many(ids: list) -> list[Producto]:
-    prods = Producto.query.filter(Producto.idProducto
-                                  .in_(ids)).all()
-    return products_schema.dump(prods)
-
-
 def add_or_update(prod_list, add_news=True):
     barcodes = [prod.codigoBarra for prod in prod_list]
-    existing_prods = Producto.query.filter(Producto.codigoBarra
-                                           .in_(barcodes)).all()
+    existing_prods = query_many_productos_by('codigoBarra', barcodes)
     i = 0
     n_existing = len(existing_prods)
     for prod in prod_list:
@@ -135,43 +90,46 @@ def add_or_update(prod_list, add_news=True):
     return existing_prods
 
 
-def destroy(idProducto):
-    producto = Producto.query.get(idProducto)
-    db.session.delete(producto)
-    db.session.commit()
-    return product_schema.jsonify(producto)
+class ProductoManager(Resource):
+    def get(self, idProducto):
+        prod = abort_if_no_producto_found('idProducto', idProducto)
+        return product_schema.dump(prod)
+
+    def put(self, idProducto):
+        prod = abort_if_no_producto_found('idProducto', idProducto)
+        args = prod_args_parser.parse_args()
+        for key, value in args:
+            setattr(prod, key, value)
+        db.session.add(prod)
+        db.session.commit()
+        return product_schema.jsonify(prod)
 
 
-def store():
-    body = request.data.decode()
-    body_json = json.loads(body)
-    new_product = Producto.from_dict(body_json)
-    [prod] = add_or_update([new_product])
-    # ver lo de INSERT ... ON DUPLICATE KEY UPDATE Statement
-    db.session.add(prod)
-    db.session.commit()
-    return "OK MI REY"
-    # return product_schema.dumps(new_product)
+class ProductoListManager(Resource):
+    def get(self):
+        args = pagination_arg_parser.parse_args()
 
+        _order_by = f"{args['sortby']} {args['order']}".strip()
 
-# Actualizamos la info de un producto SOLO FUNCIONA CON debug=False, no sé por qué xd
-def update(idProducto):
+        filtered_query = query_many_productos_by(
+            'nombre', args['filter']).order_by(text(_order_by))
+        rowsNumber = filtered_query.count()
+        all_prods = filtered_query.paginate(
+            page=args['page'], per_page=args['perpage'])
+        result = products_schema.dump(all_prods.items)
+        return jsonify(items=result,
+                       rowsNumber=rowsNumber)
 
-    producto = Producto.query.get(idProducto)
-    descripcion = request.json['descripcion']
-    categoria = request.json['categoria']
-    formato = request.json['formato']
-    codigoBarra = request.json['codigoBarra']
-    cantidadRiesgo = request.json['cantidadRiesgo']
-    precioVenta = request.json['precioVenta']
-
-    producto.descripcion = descripcion
-    producto.categoria = categoria
-    producto.formato = formato
-    producto.codigoBarra = codigoBarra
-    producto.cantidadRiesgo = cantidadRiesgo
-    producto.precioVenta = precioVenta
-
-    db.session.commit()
-
-    return product_schema.jsonify(producto)
+    def post(self):
+        args = prod_args_parser.parse_args()
+        prod = query_producto_by('codigoBarra', args['codigoBarra'])
+        if prod is None:
+            prod = Producto.from_dict(args)
+            db.session.add(prod)
+            db.session.commit()
+            added = True
+        else:
+            # si ya existe se debe actualizar con un put(idProducto)
+            added = False
+        return jsonify(producto=product_schema.dump(prod),
+                       added=added)

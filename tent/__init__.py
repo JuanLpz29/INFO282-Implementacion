@@ -27,19 +27,23 @@ def create_app(config_filename=None):
 
 
 def register_blueprints(application, api, api_bp):
-    from tent.controllers import productos_bp, compras_bp, base_bp
+    from tent.controllers import compras_bp, base_bp
     from tent.controllers.usuarios_controller import UserManager, UserListManager
     from tent.controllers.ventas_controller import VentaManager, VentaListManager
+    from tent.controllers.productos_controller import ProductoManager, ProductoListManager
 
-    api.add_resource(UserManager, '/usuarios/<int:idUsuario>')
+    api.add_resource(UserManager, '/usuarios/<int:idUsuario>',
+                     '/usuarios/<int:idUsuario>/')
     api.add_resource(UserListManager, '/usuarios/')
-    api.add_resource(VentaManager, '/ventas/<int:idVenta>')
+    api.add_resource(VentaManager, '/ventas/<int:idVenta>',
+                     '/ventas/<int:idVenta>/')
     api.add_resource(VentaListManager, '/ventas/')
+    api.add_resource(ProductoManager,
+                     '/productos/<int:idProducto>', '/productos/<int:idProducto>/')
+    api.add_resource(ProductoListManager, '/productos/')
     CORS(compras_bp)
-    CORS(productos_bp)
     CORS(base_bp)
     CORS(api_bp)
-    application.register_blueprint(productos_bp)
     application.register_blueprint(compras_bp)
     application.register_blueprint(base_bp)
     application.register_blueprint(api_bp)
