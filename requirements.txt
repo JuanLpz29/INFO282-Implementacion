@@ -10,4 +10,6 @@ python_dateutil
 pymysql
 marshmallow-sqlalchemy
 flask_restful
+pytest
+coverage
 
