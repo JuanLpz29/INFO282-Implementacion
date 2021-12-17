@@ -48,7 +48,7 @@
     <div class="q-pa-md input-codigo" style="width: 100%">
       <q-form
         class="q-pa-md formulario-codigo"
-        @submit.prevent="buscarProducto"
+        @submit.prevent="() => (buscar = true)"
       >
         <q-btn
           label="Buscar producto existente"
@@ -56,7 +56,7 @@
           color="dark"
           id="btn-cancelar"
           style="width: 100%; font-weight: bold; padding: 10px 0"
-          @click="buscarProducto()"
+          @click="() => (buscar = true)"
         ></q-btn>
       </q-form>
     </div>
@@ -570,9 +570,9 @@ export default {
         this.fixed = true;
       },
 
-      async buscarProducto() {
-        this.buscar = true;
-      },
+      //   async buscarProducto() {
+      //     this.buscar = true;
+      //   },
     };
   },
 };
