@@ -72,7 +72,6 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    
   </div>
 </template>
 
@@ -146,14 +145,15 @@ export default {
     $q.loading.show({
       message: "Cargando...",
     });
-    const items = await rqts.get("compras/").catch((e) => {
+    const response = await rqts.get("compras/").catch((e) => {
       console.log(e);
     });
     $q.loading.hide();
+    const items = response.items;
     if (typeof items == "undefined") {
       console.log("XDDDDDDD");
     }
-    console.log(items);
+    console.log(items.items);
 
     return {
       columns,
@@ -175,5 +175,4 @@ export default {
     };
   },
 };
-
 </script>

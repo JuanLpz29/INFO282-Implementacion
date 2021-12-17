@@ -162,26 +162,29 @@
     <!-- </div> -->
   </q-page-sticky>
 
-    <q-dialog v-model="fixed" transition-hide="rotate">
-      <q-card style="max-width: 90vw">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Información de pago</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-          <detalles-finalizar-compra :total="total"/>
-        <q-separator />
-        <q-card-section style="max-height: 80vh">
-          <suspense>
-            <template #default>
-            </template>
-            <template #fallback> </template>
-          </suspense>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+  <q-dialog v-model="fixed" transition-hide="rotate">
+    <q-card style="max-width: 90vw">
+      <q-card-section class="row items-center q-pb-none">
+        <div class="text-h6">Información de pago</div>
+        <q-space />
+        <q-btn icon="close" flat round dense v-close-popup />
+      </q-card-section>
+      <detalles-finalizar-compra :total="total" />
+      <q-separator />
+      <q-card-section style="max-height: 80vh">
+        <suspense>
+          <template #default> </template>
+          <template #fallback> </template>
+        </suspense>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 
-
+  <!-- <q-dialog v-model="fixed" transition-hide="rotate">
+    <q-card style="max-width: 90vw">
+      <ver-productos />
+    </q-card>
+  </q-dialog> -->
 </template>
 
 
@@ -190,7 +193,8 @@
 import { ref, getCurrentInstance } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
-import detallesFinalizarCompra from "../components/DetallesFinalizarCompra.vue"
+import detallesFinalizarCompra from "../components/DetallesFinalizarCompra.vue";
+import VerProductos from "./VerProductos.vue";
 
 const mycolumns = [
   {
@@ -260,7 +264,7 @@ Array.prototype.random = function () {
 
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
-  components: { detallesFinalizarCompra },
+  components: { detallesFinalizarCompra, VerProductos },
 
   async setup() {
     const loading = ref(false);
@@ -273,7 +277,7 @@ export default {
     const total = ref(0);
     const idVenta = ref(null);
     const idVentaCancel = ref(null);
-    const usuario = ref("matias");
+    const usuario = ref("joselo");
     const myTab = ref(null);
 
     const errorCantidad = ref(false);
@@ -327,25 +331,38 @@ export default {
         message: "Cargando...",
       });
       if (!idVenta.value) {
-        const reqUrl = `?user=${usuario.value}&barcode=${codigo.value}`;
+        const nueva_venta = {
+          nombre: usuario.value,
+          codigoBarra: codigo.value,
+        };
         const infoVenta = await rqts
-          .get(`ventas/start/${reqUrl}`)
+          .postjson(`ventas/`, nueva_venta)
           .catch((e) => {
             console.log(e);
           });
         $q.loading.hide();
-        if (infoVenta.venta) {
-          total.value = infoVenta.venta.total;
-          idVenta.value = infoVenta.venta.idVenta;
-          addRow(infoVenta.producto);
+        if (infoVenta) {
+          if (infoVenta.venta) {
+            total.value = infoVenta.venta.total;
+            idVenta.value = infoVenta.venta.idVenta;
+            addRow(infoVenta.producto);
+          } else {
+            idVentaCancel.value = parseInt(infoVenta.split(":")[1]);
+          }
         } else {
-          idVentaCancel.value = parseInt(infoVenta.split(":")[1]);
+          console.log("xd");
         }
       } else {
-        const reqUrl = `?cantidad=1&barcode=${codigo.value}&idVenta=${idVenta.value}`;
-        const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
-          console.log(e);
-        });
+        const req_args = {
+          operation: "update",
+          cantidad: 1,
+          codigoBarra: codigo.value,
+        };
+        const items = await rqts
+          .putjson(`ventas/${idVenta.value}`, req_args)
+          .catch((e) => {
+            console.log(e);
+          });
         $q.loading.hide();
         total.value = items.venta.total;
         addRow(items.producto);
@@ -410,10 +427,17 @@ export default {
         }
 
         console.log("fijando la cantidad");
-        const reqUrl = `?cantidad=${row.cantidad}&barcode=${row.codigoBarra}&idVenta=${idVenta.value}&set=true`;
-        const items = await rqts.get(`ventas/update/${reqUrl}`).catch((e) => {
-          console.log(e);
-        });
+        const req_args = {
+          operation: "update",
+          cantidad: 1,
+          codigoBarra: row.codigoBarra,
+          set: true,
+        };
+        const items = await rqts
+          .putjson(`ventas/${idVenta.value}`, req_args)
+          .catch((e) => {
+            console.log(e);
+          });
         $q.loading.hide();
         rows.value.splice(
           verExistencia(items.producto.codigoBarra),
@@ -447,9 +471,13 @@ export default {
         } else {
           idToCancel = idVenta.value;
         }
-        const reqUrl = `?idVenta=${idToCancel}&user=${usuario.value}`;
+        const req_args = {
+          operation: "cancel",
+          nombre: usuario.value,
+          idVenta: idToCancel,
+        };
         const respuesta = await rqts
-          .get(`ventas/cancel/${reqUrl}`)
+          .putjson(`ventas/${idToCancel}`, req_args)
           .catch((e) => {
             console.log(e);
           });
@@ -458,10 +486,20 @@ export default {
 
         //location.reload();
       },
-      
+
       async finalizarVenta(total) {
         this.fixed = true;
-      /*
+        //   const req_args = {
+        //   operation: "cancel",
+        //   nombre: usuario.value,
+        //   idVenta: idToCancel,
+        // };
+        // const respuesta = await rqts
+        //   .putjson(`ventas/${idToCancel}`, req_args)
+        //   .catch((e) => {
+        //     console.log(e);
+        //   });
+        /*
         
         
         $q.loading.show({
@@ -477,7 +515,6 @@ export default {
         vaciarVariables();
       */
       },
-      
     };
   },
 };

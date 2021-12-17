@@ -114,7 +114,7 @@ export default {
         const formData = new FormData();
         formData.append("file", model);
         const response = await rqts
-          .post("compras/documento", formData)
+          .post("compras/?uploading=documento", formData)
           .catch((e) => {
             console.log(e);
           });
@@ -141,6 +141,7 @@ export default {
           message: "subiend2...",
         });
         const compra = {
+          uploading: "json",
           info: this.info,
           proveedor: this.proveedor,
           productos: this.productos,
@@ -148,7 +149,7 @@ export default {
         };
         // modificar para notificar dependiendo si la creacion fue exitosa ofallo
         const response = await rqts
-          .postjson("compras/upload", compra)
+          .postjson("compras/", compra)
           .then(
             (response) =>
               $q.notify({

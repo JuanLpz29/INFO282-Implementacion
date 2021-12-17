@@ -107,7 +107,7 @@ export default {
 
     async function fetchFromServer(page, filter, rowsPerPage, sortBy, order) {
       // buscar una forma mejor
-      const reqUrl = `?page=${page}&filter=${filter}&per_page=${rowsPerPage}&sortby=${sortBy}&order=${order}`;
+      const reqUrl = `?page=${page}&filter=${filter}&perpage=${rowsPerPage}&sortby=${sortBy}&order=${order}`;
       const items = await rqts.get(`productos/${reqUrl}`).catch((e) => {
         console.log(e);
       });

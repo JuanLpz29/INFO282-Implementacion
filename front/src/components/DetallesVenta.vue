@@ -28,7 +28,7 @@ export default {
     });
 
     const response = await rqts
-      .get("ventas/details/" + props.idVenta + "/")
+      .get("ventas/" + props.idVenta + "/")
       .catch((e) => {
         console.log(e);
       });

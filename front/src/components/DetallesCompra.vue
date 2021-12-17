@@ -29,7 +29,7 @@ export default {
     });
 
     const response = await rqts
-      .get("compras/details/" + props.idCompra + "/")
+      .get("compras/" + props.idCompra + "/") /*.then(r => r.items)*/
       .catch((e) => {
         console.log(e);
       });
