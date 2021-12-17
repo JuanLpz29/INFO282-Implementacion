@@ -82,18 +82,16 @@
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
-          <th>Eliminar</th>
         </q-tr>
       </template>
 
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <template v-if="col.name !== 'cantidad'">
+            <template v-if="col.name !== 'cantidad' && col.name !== 'eliminar'">
               {{ col.value }}
             </template>
-            <template v-else>
-              {{ col.value }}
+            <template v-else-if="col.name === 'cantidad'">
               <q-popup-edit
                 v-model.number="props.row.cantidad"
                 buttons
@@ -117,18 +115,21 @@
                 />
               </q-popup-edit>
             </template>
+
+            <template v-else>
+              <q-btn
+                class="flex-center"
+                color="negative"
+                :disable="loading"
+                label="X"
+                @click="removeRow(props.row)"
+              />
+            </template>
           </q-td>
 
           <!-- <td> -->
           <!-- <template v-slot:after> -->
 
-          <q-btn
-            class="flex-center"
-            color="negative"
-            :disable="loading"
-            label="X"
-            @click="removeRow(props.row)"
-          />
           <!-- </td> -->
           <!-- </template> -->
         </q-tr>
@@ -143,7 +144,7 @@
       </template>
     </q-table>
 
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+    <q-page-sticky position="bottom-right" :offt="[18, 18]">
       <div class="total-pagar">
         <q-markup-table class="inner-total">
           <thead>
@@ -186,7 +187,7 @@
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
-      <detalles-finalizar-venta :total="total" />
+      <detalles-finalizar-venta :total="total" @enlarge-text="medio = $event" />
       <q-separator />
       <q-card-section style="max-height: 80vh">
         <suspense>
@@ -202,7 +203,7 @@
       <q-card-section class="row items-center q-pb-none">
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
-      <buscador-productos />
+      <buscador-productos @enlarge-text="producto = $event" />
     </q-card>
   </q-dialog>
 </template>
@@ -210,7 +211,7 @@
 
 
 <script>
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, watch } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import detallesFinalizarVenta from "../components/DetallesFinalizarVenta.vue";
@@ -256,6 +257,13 @@ const mycolumns = [
     headerStyle: "width: 40vh",
     align: "left",
   },
+  {
+    name: "eliminar",
+    align: "center",
+    label: "Eliminar",
+    headerStyle: "font-weight: 600",
+    // field: "",
+  },
 ];
 const codes = [
   "870657",
@@ -299,6 +307,8 @@ export default {
     const idVentaCancel = ref(null);
     const usuario = ref("joselo");
     const myTab = ref(null);
+    const producto = ref(null);
+    const medio = ref(null);
 
     const errorCantidad = ref(false);
     const errorMessageCantidad = ref("");
@@ -320,6 +330,7 @@ export default {
     }
 
     function addRow(row) {
+      console.log("nuevito", row);
       if (rows.value[0] !== undefined) {
         var existe = verExistencia(row.codigoBarra);
       }
@@ -389,6 +400,33 @@ export default {
       }
     }
 
+    async function pagarVenta() {
+      $q.loading.show({
+        message: "Cargando...",
+      });
+      const req_args = {
+        operation: "pay",
+        nombre: usuario.value,
+        medio: medio.value,
+      };
+      const respuesta = await rqts
+        .putjson(`ventas/${idVenta.value}`, req_args)
+        .then((response) =>
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: response.estado,
+          })
+        )
+        .catch((e) => {
+          console.log(e);
+        });
+      $q.loading.hide();
+      console.log(respuesta);
+      vaciarVariables();
+    }
+
     // funcion que maneja el scaneo en cualquier parte
     function onBarcodeScanned(barcode) {
       if (barcode.length > 5) {
@@ -402,7 +440,16 @@ export default {
     const barcodeScanner =
       app.appContext.config.globalProperties.$barcodeScanner;
     barcodeScanner.init(onBarcodeScanned);
+    watch(producto, (producto, prevCount) => {
+      console.log("xzd", producto);
+      codigo.value = producto.codigoBarra;
+      onSubmit();
+    });
 
+    watch(medio, (medio, prevCount) => {
+      console.log("el medioooooo", medio);
+      pagarVenta();
+    });
     return {
       barcodeScanner,
       loading,
@@ -425,6 +472,8 @@ export default {
       errorMessageCantidad,
       errorCantidad,
       myTab,
+      producto,
+      medio,
       cantidadRangeValidation(val) {
         if (val < 0 || val > 100) {
           errorCantidad.value = true;
@@ -508,33 +557,17 @@ export default {
         //location.reload();
       },
 
-      async finalizarVenta(total) {
-        this.fixed = true;
-        //   const req_args = {
-        //   operation: "cancel",
-        //   nombre: usuario.value,
-        //   idVenta: idToCancel,
-        // };
-        // const respuesta = await rqts
-        //   .putjson(`ventas/${idToCancel}`, req_args)
-        //   .catch((e) => {
-        //     console.log(e);
-        //   });
-        /*
-        
-        
-        $q.loading.show({
-          message: "Cargando...",
-        });
-        const reqUrl = `?idVenta=${idVenta.value}&user=${usuario.value}`;
+      async mediosDePago() {
+        const req_args = {
+          operation: "confirm",
+          nombre: usuario.value,
+        };
         const respuesta = await rqts
-          .get(`ventas/confirm/${reqUrl}`)
+          .putjson(`ventas/${idVenta.value}`, req_args)
           .catch((e) => {
             console.log(e);
           });
-        $q.loading.hide();
-        vaciarVariables();
-      */
+        this.fixed = true;
       },
 
       async buscarProducto() {
@@ -548,5 +581,5 @@ export default {
 
 <style lang="sass">
 label
-  width: 100%
+    width: 100%
 </style>

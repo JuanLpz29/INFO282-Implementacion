@@ -47,12 +47,12 @@
             </template>
             <template v-else>
               <q-btn
-              icon="add"
+                icon="add"
                 class="flex-center"
                 color="positive"
                 :disable="loading"
-                
-                @click="removeRow(props.row)"
+                @click="$emit('enlargeText', props.row)"
+                v-close-popup
               />
             </template>
           </q-td>
@@ -100,6 +100,8 @@ const mycolumns = [
 ];
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
+  emits: ["enlargeText"],
+
   async setup() {
     const loading = ref(false);
     const rows = ref([]);
