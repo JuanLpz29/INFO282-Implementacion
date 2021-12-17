@@ -45,6 +45,22 @@
       </div>
     </div>
 
+    <div class="q-pa-md input-codigo" style="width: 100%">
+      <q-form
+        class="q-pa-md formulario-codigo"
+        @submit.prevent="buscarProducto"
+      >
+        <q-btn
+          label="Buscar producto existente"
+          type="submit"
+          color="dark"
+          id="btn-cancelar"
+          style="width: 100%; font-weight: bold; padding: 10px 0"
+          @click="buscarProducto()"
+        ></q-btn>
+      </q-form>
+    </div>
+
     <q-table
       ref="myTab"
       title="Venta en curso"
@@ -105,6 +121,7 @@
 
           <!-- <td> -->
           <!-- <template v-slot:after> -->
+
           <q-btn
             class="flex-center"
             color="negative"
@@ -148,13 +165,13 @@
   <!-- </div> -->
   <q-page-sticky position="bottom-left" :offset="[18, 12]">
     <!-- <div class="q-pa-md finalizar-compra"> -->
-    <q-form class="formulario-cancelar" @submit.prevent="finalizarVenta">
+    <q-form class="formulario-cancelar" @submit.prevent="mediosDePago">
       <q-btn
         color="positive"
         class="full-width"
-        label="Finalizar Venta"
+        label="Medios de pago"
         :disable="total == false"
-        @click="finalizarVenta(total)"
+        @click="mediosDePago(total)"
         type="submit"
         style="padding: 20px; font-weight: 600; width: 600px"
       />
@@ -162,26 +179,32 @@
     <!-- </div> -->
   </q-page-sticky>
 
-    <q-dialog v-model="fixed" transition-hide="rotate">
-      <q-card style="max-width: 90vw">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Información de pago</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-          <detalles-finalizar-compra :total="total"/>
-        <q-separator />
-        <q-card-section style="max-height: 80vh">
-          <suspense>
-            <template #default>
-            </template>
-            <template #fallback> </template>
-          </suspense>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+  <q-dialog v-model="fixed" transition-hide="rotate">
+    <q-card style="max-width: 90vw">
+      <q-card-section class="row items-center q-pb-none">
+        <div class="text-h6">Información de pago</div>
+        <q-space />
+        <q-btn icon="close" flat round dense v-close-popup />
+      </q-card-section>
+      <detalles-finalizar-venta :total="total" />
+      <q-separator />
+      <q-card-section style="max-height: 80vh">
+        <suspense>
+          <template #default> </template>
+          <template #fallback> </template>
+        </suspense>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 
-
+  <q-dialog v-model="buscar" transition-hide="rotate">
+    <q-card style="max-width: 90vw">
+      <q-card-section class="row items-center q-pb-none">
+        <q-btn icon="close" flat round dense v-close-popup />
+      </q-card-section>
+      <buscador-productos />
+    </q-card>
+  </q-dialog>
 </template>
 
 
@@ -190,7 +213,8 @@
 import { ref, getCurrentInstance } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
-import detallesFinalizarCompra from "../components/DetallesFinalizarCompra.vue"
+import detallesFinalizarVenta from "../components/DetallesFinalizarVenta.vue";
+import buscadorProductos from "../components/BuscadorProductos.vue";
 
 const mycolumns = [
   {
@@ -260,7 +284,7 @@ Array.prototype.random = function () {
 
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
-  components: { detallesFinalizarCompra },
+  components: { detallesFinalizarVenta, buscadorProductos },
 
   async setup() {
     const loading = ref(false);
@@ -382,6 +406,7 @@ export default {
         rowsPerPage: 0,
       }),
       fixed: ref(false),
+      buscar: ref(false),
       onSubmit,
       idVentaCancel,
       errorMessageCantidad,
@@ -458,10 +483,10 @@ export default {
 
         //location.reload();
       },
-      
-      async finalizarVenta(total) {
+
+      async mediosDePago(total) {
         this.fixed = true;
-      /*
+        /*
         
         
         $q.loading.show({
@@ -477,10 +502,17 @@ export default {
         vaciarVariables();
       */
       },
-      
+
+      async buscarProducto() {
+        this.buscar = true;
+      },
     };
   },
 };
 </script>
 
 
+<style lang="sass">
+label
+  width: 100%
+</style>
