@@ -91,7 +91,7 @@
             <template v-if="col.name !== 'cantidad' && col.name !== 'eliminar'">
               {{ col.value }}
             </template>
-            <template v-else-if="col.name === 'cantidad'">
+            <template v-else-if="col.name === 'cantidad' ">
               <q-popup-edit
                 v-model.number="props.row.cantidad"
                 buttons
@@ -109,7 +109,7 @@
                   :rules="cantidadRules"
                   reactive-rules
                   @keyup.enter="scope.set"
-                  hint="Enter a number between 1 and 100"
+                  hint="Eliga una nueva cantidad de producto"
                   :error="errorCantidad"
                   :error-message="errorMessageCantidad"
                 />
@@ -268,22 +268,14 @@ const mycolumns = [
 const codes = [
   "870657",
   "9002490221010",
-  "871093",
   "870837",
-  "2203308",
-  "2225336",
-  "2241129",
-  "2241366",
-  "2241455",
+  "871093",
+  "7804300004019",
+  "7868863",
+  "7868863",
+  "7868865",
+  "7868862",
   "2242095",
-  "2242265",
-  "2242362",
-  "700561",
-  "7804300122928",
-  "7802420510205",
-  "10154005C",
-  "7702367003900",
-  "7804616480040",
 ];
 
 Array.prototype.random = function () {
