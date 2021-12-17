@@ -97,7 +97,7 @@ class CompraManager(Resource):
             output_prods.append(prod_json)
 
         response = jsonify(info=compra_info,
-                           vendedor=prov,
+                           proveedor=prov,
                            productos=output_prods,
                            )
         return response

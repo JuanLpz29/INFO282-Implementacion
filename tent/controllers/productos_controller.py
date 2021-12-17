@@ -31,12 +31,13 @@ def query_producto_by(_key: str, _value: str) -> Producto:
 def query_many_productos_by(key: str, value: list) -> list[Producto]:
     query_funcs = {
 
+        'all': lambda x: Producto.query.all(),
+
         'idProducto': lambda x: Producto.query.filter(Producto.idProducto
                                                       .in_(value)).all(),
         'codigoBarra': lambda x: Producto.query.filter(Producto.codigoBarra
                                                        .in_(value)).all(),
-        'nombre': lambda x: Producto.query.filter(func.lower(Producto.nombre).contains(
-            x.lower()))
+        'nombre': lambda x: Producto.query.filter((Producto.nombre).contains(x))
     }
     f = query_funcs.get(key)
     if f is not None:
@@ -113,8 +114,7 @@ class ProductoListManager(Resource):
     def get(self):
         args = pagination_arg_parser.parse_args()
 
-        _order_by = f"{args['sortby']} {args['order']}".strip()
-
+        _order_by = f"{args['sortby']} {args['order']}" if args['sortby'] else ""
         filtered_query = query_many_productos_by(
             'nombre', args['filter']).order_by(text(_order_by))
         rowsNumber = filtered_query.count()

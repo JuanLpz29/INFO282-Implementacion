@@ -21,4 +21,4 @@ pagination_arg_parser.add_argument("perpage", default=10, type=int,
 pagination_arg_parser.add_argument("filter", default="", type=str,)
 pagination_arg_parser.add_argument("sortby", default="", type=str,)
 pagination_arg_parser.add_argument("order", default="", type=str,
-                                   choices=["asc", "desc", ""],)
+                                   choices=["ASC", "DESC", ""],)

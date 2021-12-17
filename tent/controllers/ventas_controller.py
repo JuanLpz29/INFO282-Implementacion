@@ -259,7 +259,7 @@ class VentaListManager(Resource):
 
     def get(self):
         args = self.pagination_parser.parse_args()
-        _order_by = f"{args['sortby']} {args['order']}".strip()
+        _order_by = f"{args['sortby']} {args['order']}" if args['sortby'] else ""
         filtered_query = Venta.query.order_by(text(_order_by))
         rowsNumber = filtered_query.count()
         all_ventas = filtered_query.paginate(
@@ -286,7 +286,8 @@ class VentaListManager(Resource):
             prod_info['subtotal'] = pv.cantidad * prod.valorItem
         else:
             # front debe registrarlo
-            prod_info = None
+            # prod_info = None
+            prod_info = 'bruh'
         db.session.add(usuario)
         db.session.commit()
         return jsonify(venta=venta_schema.dump(venta),
