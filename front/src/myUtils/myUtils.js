@@ -3,7 +3,7 @@
 import axios from 'axios';
 const apiUrl = 'http://146.83.216.218:8008/'
 const localUrl = 'http://127.0.0.1:5000/'
-const testing = false
+const testing = false;
 const TIMEOUT = 10000;
 var xd = {
     getUrl(isDebug) {
@@ -15,7 +15,7 @@ var xd = {
             url = apiUrl
         }
         return url
-    }
+    },
 }
 
 var rqts = {
@@ -39,13 +39,28 @@ var rqts = {
         return items
     },
     async postjson(endpoint, jsondata, timeout = TIMEOUT, debug = false) {
-        let response
         const url = xd.getUrl(debug)
-        response = await axios.post(url + endpoint, jsondata, { timeout: timeout })
-            .then(r => r.data)
-            .catch(e => console.log(e))
-        console.log('postjson', response)
-        return response
+        try {
+            const items = await axios.post(url + endpoint, jsondata, { timeout: timeout })
+            return items.data
+        }
+        catch (error) {
+            console.log(error.response.data)
+            return error.response.data.message
+        }
+
+    },
+
+    async putjson(endpoint, jsondata, timeout = TIMEOUT, debug = false) {
+        const url = xd.getUrl(debug)
+        try {
+            const items = await axios.put(url + endpoint, jsondata, { timeout: timeout })
+            return items.data
+        }
+        catch (error) {
+            console.log(error.response.data)
+            return error.response.data.message
+        }
     },
 }
 export default rqts
