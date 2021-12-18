@@ -28,7 +28,7 @@ compras_schema = CompraSchema(many=True)
 productos_schema = ProductSchema(many=True)
 
 
-def _allowed_file(filename):
+def _allowed_file(filename: str) -> bool:
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ['xml']
 
@@ -43,7 +43,7 @@ def check_and_dump_products(datos_compra: dict, lista_productos: list[dict]) -> 
     return prods_dump, cmp
 
 
-def query_compra_by(_key: str, _value: str):
+def query_compra_by(_key: str, _value: str) -> Compra:
     query_funcs = {
 
         'idCompra': Compra.query.get,
@@ -114,7 +114,7 @@ class CompraListManager(Resource):
         self.operation_methods = {'documento': self.process_file,
                                   'json': self.upload_json}
 
-    def init_parsers(self):
+    def init_parsers(self) -> None:
         self.pagination_parser = pagination_arg_parser.copy()
         self.base_post_parser = pagination_arg_parser.copy()
         self.base_post_parser.add_argument('uploading', type=str,

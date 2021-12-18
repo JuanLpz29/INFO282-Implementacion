@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import prod
 from tent.models import ma, db
 from numpy import isnan, nan
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
@@ -31,23 +32,30 @@ class Producto(db.Model):
     # "Compra", secondary=association_table, back_populates="productosCompra")
 
     # Campos minimos para hacer POST
-    def __init__(self, nombre, descripcion, stock, precioUnitario, barcode=nan):
+    def __init__(self, nombre, stock, precioVenta, barcode, _dict=None):
         self.nombre = nombre
-        self.descripcion = descripcion
         self.stock = stock
-        self.precioUnitario = precioUnitario
-        self.valorItem = precioUnitario
+        if precioVenta is not None:
+            self.valorItem = int(precioVenta)
+        else:
+            self.precioVenta = round(
+                int(_dict.get('precioUnitario') * 1.3) / 10) * 10
+            self.valorItem = self.precioVenta
         if barcode is not None:
             if isinstance(barcode, str) or not isnan(barcode):
                 self.codigoBarra = str(barcode)
+        for key, value in _dict.items():
+            setattr(self, key, value)
 
     @classmethod
     def from_dict(cls, prod_dict):
-        return cls(prod_dict['nombre'],
-                   prod_dict['descripcion'],
-                   int(prod_dict['stock']),
-                   prod_dict['precioUnitario'],
-                   prod_dict["codigoBarra"])
+        return cls(
+            prod_dict['nombre'],
+            int(prod_dict['stock']),
+            prod_dict.get('precioVenta'),
+            barcode=prod_dict.get("codigoBarra"),
+            _dict=prod_dict
+        )
 
 
 class ProductSchema(SQLAlchemyAutoSchema):
