@@ -73,7 +73,6 @@
   </q-page>
 </template>
 
-
 <script>
 import { ref } from "vue";
 import { useQuasar } from "quasar";
@@ -119,7 +118,7 @@ export default {
             console.log(e);
           });
         $q.loading.hide();
-        console.log(response);
+        console.log("wena compare", response.productos);
         if (typeof response !== "undefined") {
           this.info = response.info;
           this.productos = response.productos;
