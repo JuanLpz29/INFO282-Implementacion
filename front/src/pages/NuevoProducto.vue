@@ -19,10 +19,6 @@
         label="Descripcion del producto"
         hint="ej: Bebida gaseosa envase desechable"
         bg-color="#363A4D"
-        lazy-rules
-        :rules="[
-          (val) => (val && val.length > 0) || 'Este campo es obligarorio',
-        ]"
       />
       <q-input
         filled
@@ -46,7 +42,7 @@
       />
       <q-input
         filled
-        v-model="valorItem"
+        v-model="precioVenta"
         type="number"
         label="Valtor item"
         hint="precio de
@@ -58,7 +54,7 @@
       <q-input
         filled
         type="text"
-        v-model="codigoBarra"
+        v-model="codigo"
         label="Codigo de barras"
         hint="Opcional"
         bg-color="#363A4D"
@@ -83,7 +79,7 @@
 
 <script>
 import { useQuasar } from "quasar";
-import { ref } from "vue";
+import { ref, getCurrentInstance } from "vue";
 import rqts from "../myUtils/myUtils";
 
 export default {
@@ -93,50 +89,63 @@ export default {
     const descripcion = ref(null);
     const stock = ref(null);
     const precioUnitario = ref(null);
-    const valorItem = ref(null);
-    const codigoBarra = ref(null);
+    const precioVenta = ref(null);
+    const codigo = ref(null);
+
+    function onBarcodeScanned(barcode) {
+      if (barcode.length > 5) {
+        codigo.value = barcode;
+        console.log("scanned: ", codigo.value);
+      }
+    }
+
+    const app = getCurrentInstance();
+    const barcodeScanner =
+      app.appContext.config.globalProperties.$barcodeScanner;
+    barcodeScanner.init(onBarcodeScanned);
+
     return {
       nombre,
       descripcion,
       stock,
       precioUnitario,
-      valorItem,
-      codigoBarra,
+      precioVenta,
+      codigo,
       async onSubmit(evt) {
-        $q.loading.show({
-          message: "Cargandoo...",
-        });
         const producto = {
           nombre: nombre.value,
           descripcion: descripcion.value,
           stock: stock.value,
           precioUnitario: precioUnitario.value,
-          valorItem: valorItem.value,
-          codigoBarra: codigoBarra.value,
+          precioVenta: precioVenta.value,
+          codigoBarra: codigo.value,
         };
         // modificar para notificar dependiendo si la creacion fue exitosa o falló
-        const response = await rqts
-          .postjson("productos/nuevo/", producto)
-          .then((response) =>
-            $q.notify({
-              color: "green-4",
-              textColor: "white",
-              icon: "cloud_done",
-              message: response,
-            })
-          )
-          .catch((e) => {
-            console.log(e);
+        const response = await rqts.postjson("productos/", producto);
+        if (response.agregado == true) {
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Agregado mi rey",
           });
-        $q.loading.hide();
+        } else {
+          $q.notify({
+            color: "red-4",
+            textColor: "white",
+            icon: "error",
+            message: "Nose agrego umu",
+          });
+        }
+        console.log(response);
       },
       onReset() {
-        nombre.value = "cocacola 1 L";
-        descripcion.value = "bebida pulentamente de pana que toma la gente g";
-        stock.value = 13;
-        precioUnitario.value = 1200;
-        valorItem.value = 1500;
-        codigoBarra.value = 1234567;
+        nombre.value = "Leche chocolatada colun 200ml";
+        descripcion.value = "";
+        stock.value = 6;
+        precioUnitario.value = 300;
+        precioVenta.value = 450;
+        codigo.value = 7802920777214;
       },
       oelarva() {
         $q.notify({

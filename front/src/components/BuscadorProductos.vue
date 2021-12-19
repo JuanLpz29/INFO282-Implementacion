@@ -93,7 +93,7 @@ const mycolumns = [
   {
     name: "detalles",
     align: "center",
-    label: "Ver detalles",
+    label: "Agregar",
     headerStyle: "font-weight: 600",
     // field: "",
   },
