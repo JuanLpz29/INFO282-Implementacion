@@ -2,23 +2,23 @@
   <q-layout view="hHh LpR fFf" style="min-height: 0px">
     <q-header bordered class="bg-dark texto" height-hint="120">
       <q-toolbar>
-        <q-toolbar-title class="text-primary"> La Tentación </q-toolbar-title>
+        <q-toolbar-title class="text-info"> La Tentación </q-toolbar-title>
       </q-toolbar>
 
       <!-- <q-tabs align="left"> -->
       <q-tabs>
         <div v-if="currentUser" class="row" align="left">
-          <q-route-tab to="/" label="Home" class="text-primary" />
-          <q-route-tab to="/app/compras" label="Compras" class="text-primary" />
+          <q-route-tab to="/" label="Home" class="text-info" />
+          <q-route-tab to="/app/compras" label="Compras" class="text-info" />
           <q-route-tab
             to="/app/productos"
             label="Productos"
-            class="text-primary"
+            class="text-info"
           />
           <q-route-tab
             to="/app/ventas/nueva"
             label="Ventas"
-            class="text-primary"
+            class="text-info"
           />
         </div>
         <q-space />
@@ -46,7 +46,7 @@
           <q-item-section avatar>
             <q-icon round flat name="manage_accounts" style="font-size: 32px" />
           </q-item-section>
-          <div v-if="currentUser">Hola, {{ currentUser }}!</div>
+          <div style="align-self: center;" v-if="currentUser">Hola, {{ currentUser }}!</div>
           <div v-else>Iniciar sesion</div>
         </q-item>
       </q-tabs>

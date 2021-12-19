@@ -21,21 +21,21 @@
         <q-list padding>
           <q-item clickable v-ripple to="/app/compras/ver">
             <q-item-section avatar>
-              <q-icon name="receipt_long" />
+              <q-icon color="info" name="receipt_long" />
             </q-item-section>
 
             <q-item-section>
-              <p class="centered">Ver Compras</p>
+              <p class="centered text-info">Ver Compras</p>
             </q-item-section>
           </q-item>
 
           <q-item active clickable v-ripple to="/app/compras/subir">
             <q-item-section avatar>
-              <q-icon name="upload_file" />
+              <q-icon color="info" name="upload_file" />
             </q-item-section>
 
             <q-item-section>
-              <p class="center">Subir un documento</p>
+              <p class="center text-info">Subir un documento</p>
             </q-item-section>
           </q-item>
 

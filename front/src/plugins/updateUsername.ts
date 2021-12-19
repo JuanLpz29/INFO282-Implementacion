@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
-const currentUser = ref('')
-const currentUserId = ref(0)
+const currentUser = ref('matias')
+const currentUserId = ref(123)
 
 export default function updateUsername() {
 

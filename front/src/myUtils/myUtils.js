@@ -58,7 +58,8 @@ var rqts = {
             return items.data
         }
         catch (error) {
-            console.log(error.response.data)
+            console.log(error.response)
+            //console.log(error.response.data)
             return error.response.data.message
         }
     },

@@ -5,14 +5,6 @@
       <div class="first-container">
         <div class="inner-container">
           <q-form class="q-pa-md formulario-codigo" @submit.prevent="onSubmit">
-            <q-btn
-              icon="pin"
-              stack
-              label="random"
-              color="dark"
-              style="margin-right: 20px"
-              @click="randomCode"
-            />
             <q-input
               style="width: 300px"
               rounded
@@ -20,23 +12,24 @@
               outlined
               v-model="codigo"
             >
-              <template v-slot:append>
-                <q-icon name="search" @click="onSubmit" />
+              <template v-slot:after>
+                <q-btn round dense flat icon="send" @click="onSubmit" />
               </template>
             </q-input>
           </q-form>
         </div>
         <div class="operations-container">
           <div class="cancelar-venta">
-            <q-form class="formulario-cancelar">
+            <div class="formulario-cancelar">
               <q-btn
+                icon="cancel"
                 label="Cancelar Venta"
                 type="submit"
                 color="negative"
                 id="btn-cancelar"
                 @click="confirmCancelar = true"
               />
-            </q-form>
+            </div>
             <div v-if="idVentaCancel">
               cancelar venta anterior (id {{ idVentaCancel }})
             </div>
@@ -44,6 +37,7 @@
 
           <div class="buscar-producto inner-container">
             <q-btn
+              icon="search"
               label="Buscar producto"
               type="submit"
               color="dark"
@@ -56,12 +50,12 @@
 
       <q-table
         ref="myTab"
-        title="Venta en curso"
+        :title="titulotabla"
         :rows="rows"
         :columns="mycolumns"
         row-key="name"
         separator="horizontal"
-        style="table-layout: fixed; height: 400px"
+        style="table-layout: fixed; height: 500px"
         wrap-cells
         :loading="loading"
         virtual-scroll
@@ -87,6 +81,7 @@
                 {{ col.value }}
               </template>
               <template v-else-if="col.name === 'cantidad'">
+                {{ col.value }}
                 <q-popup-edit
                   v-model.number="props.row.cantidad"
                   buttons
@@ -171,6 +166,7 @@
             <q-icon name="money" />
           </template>
         </q-input>
+
         <table class="full-table vuelto">
           <tbody>
             <tr>
@@ -195,6 +191,7 @@
       <div class="btns-finalizar">
         <q-form class="formulario-finalizar-venta">
           <q-btn
+            icon="done"
             color="positive"
             class="full-width"
             label="Finalizar venta"
@@ -205,13 +202,14 @@
         </q-form>
 
         <div class="cancelar-venta">
-            <q-btn
-              label="Cancelar"
-              type="submit"
-              color="negative"
-              id="btn-cancelar"
-              @click="confirmCancelar = true"
-            />
+          <q-btn
+            icon="cancel"
+            label="Cancelar"
+            type="submit"
+            color="negative"
+            id="btn-cancelar"
+            @click="confirmCancelar = true"
+          />
           <div v-if="idVentaCancel">
             cancelar venta anterior (id {{ idVentaCancel }})
           </div>
@@ -238,7 +236,6 @@
   <q-dialog v-model="confirmCancelar" persistent>
     <q-card>
       <q-card-section class="row items-center">
-        <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
         <span class="q-ml-sm"
           >¿Estás seguro que deseas cancelar la venta en curso?</span
         >
@@ -260,7 +257,6 @@
   <q-dialog v-model="confirmFinalizar" persistent>
     <q-card>
       <q-card-section class="row items-center">
-        <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
         <span class="q-ml-sm"
           >¿Estás seguro que deseas finalizar la venta en curso?</span
         >
@@ -367,6 +363,7 @@ export default {
     const rows = ref([]);
     const inputcantidad = ref(1);
     const total = ref(0);
+    const titulotabla = ref("Agregue productos para iniciar la venta");
     const idVenta = ref(null);
     const idVentaCancel = ref(null);
     const myTab = ref(null);
@@ -396,6 +393,7 @@ export default {
     }
 
     function addRow(row) {
+      titulotabla.value = "Venta en curso";
       console.log("nuevito", row);
       if (rows.value[0] !== undefined) {
         var existe = verExistencia(row.codigoBarra);
@@ -438,16 +436,16 @@ export default {
             console.log(e);
           });
         $q.loading.hide();
-        if (infoVenta) {
-          if (infoVenta.venta) {
-            total.value = infoVenta.venta.total;
-            idVenta.value = infoVenta.venta.idVenta;
-            addRow(infoVenta.producto);
-          } else {
-            idVentaCancel.value = parseInt(infoVenta.split(":")[1]);
-          }
-        } else {
-          console.log("xd");
+        console.log(infoVenta.producto);
+        if (infoVenta.venta) {
+          console.log("producto weno " + typeof(infoVenta))
+          total.value = infoVenta.venta.total;
+          idVenta.value = infoVenta.venta.idVenta;
+          addRow(infoVenta.producto);
+        }
+        else {
+          idVentaCancel.value = parseInt(infoVenta.split(":")[1]);
+          titulotabla.value = "Debe cancelar la venta anterior ";
         }
       } else {
         const req_args = {
@@ -519,12 +517,13 @@ export default {
       producto,
       medio,
       documento,
+      titulotabla,
       confirmFinalizar: ref(false),
       confirmCancelar: ref(false),
       cantidadRangeValidation(val) {
         if (val < 0 || val > 100) {
           errorCantidad.value = true;
-          errorMessageCantidad.value = "The value must be between 0 and 100!";
+          errorMessageCantidad.value = "Debe ser entre 0 y 100";
           return false;
         }
         errorCantidad.value = false;
@@ -532,9 +531,6 @@ export default {
         return true;
       },
 
-      randomCode() {
-        codigo.value = codes.random();
-      },
       async actualizar(row) {
         $q.loading.show({
           message: "Cargando...",
@@ -600,6 +596,7 @@ export default {
           });
         $q.loading.hide();
         vaciarVariables();
+        titulotabla.value = "Agregue productos para iniciar la venta";
 
         //location.reload();
       },
@@ -649,60 +646,58 @@ export default {
 
 <style lang="sass">
 label
-    width: 100%
+  width: 100%
 
 .first-container
-    display: grid
-    grid-template-columns: 50% 50%!important
+  display: grid
+  grid-template-columns: 50% 50%!important
 
     /* justify-content: space-between; */
 
 .operations-container
-    display: flex
-    justify-content: flex-end
+  display: flex
+  justify-content: flex-end
 
 .f-container
-    display: grid
-    grid-template-columns: 68% 32%
-    grid-gap: 20px
+  display: grid
+  grid-template-columns: 68% 32%
+  grid-gap: 20px
 
 .grid-child-element
-    margin: 10px
+  margin: 10px
 
 h4
-    margin: 0
-    margin-bottom: 50px
-    padding: 0
+  margin: 0
+  margin-bottom: 50px
+  padding: 0
 
 .grid-child-element
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
-    border-radius: 6px
-    padding: 20px
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
+  border-radius: 6px
+  padding: 20px
 
 .btns-finalizar
-    display: flex
-    flex-direction: column
-
+  display: flex
+  flex-direction: column
 
 .full-table
-    width: 100%
+  width: 100%
 
 .full-table > td
-    width: 50%
+  width: 50%
 
 .full-table td
-    text-align: left
-
+  text-align: left
 
 .vuelto-container
-    margin-top: 30px
+  margin-top: 30px
 
 .label
-    color: $negative
-    font-weight: bold
+  color: $negative
+  font-weight: bold
 
 .selector-documento
-    margin-top: 10px
+  margin-top: 10px
 
 form.q-form.formulario-finalizar-venta
   padding: 0
@@ -712,5 +707,8 @@ form.q-form.formulario-finalizar-venta
   padding: 10px
 
 .vuelto h4
-    font-size: 22px
+  font-size: 22px
+
+.formulario-cancelar
+  margin-right: 10px
 </style>

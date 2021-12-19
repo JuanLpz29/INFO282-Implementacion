@@ -22,21 +22,21 @@
         <q-list padding>
           <q-item clickable v-ripple to="/app/productos/ver">
             <q-item-section avatar>
-              <q-icon name="storefront" />
+              <q-icon color="info" name="storefront" />
             </q-item-section>
 
             <q-item-section>
-              <p class="centered">Ver Productos</p>
+              <p class="centered text-info">Ver Productos</p>
             </q-item-section>
           </q-item>
 
           <q-item active clickable v-ripple to="/app/productos/new">
             <q-item-section avatar>
-              <q-icon name="add_circle_outline" />
+              <q-icon color="info" name="add_circle_outline" />
             </q-item-section>
 
             <q-item-section>
-              <p class="center">Agregar un producto</p>
+              <p class="center text-info">Agregar un producto</p>
             </q-item-section>
           </q-item>
 
