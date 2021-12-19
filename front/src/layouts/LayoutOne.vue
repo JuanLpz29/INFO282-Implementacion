@@ -58,7 +58,7 @@
       </q-dialog>
       <suspense>
         <template #default>
-          <router-view />
+          <router-view v-if="currentUser" />
         </template>
         <template #fallback>
           <div>Loading...</div>

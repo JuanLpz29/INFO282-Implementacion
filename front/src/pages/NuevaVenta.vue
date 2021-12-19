@@ -485,6 +485,12 @@ export default {
       onSubmit();
     });
 
+    watch(currentUser, (currentUser, prevCount) => {
+      console.log("xzd", currentUser);
+      alert("bye");
+      vaciarVariables();
+    });
+
     return {
       barcodeScanner,
       loading,
