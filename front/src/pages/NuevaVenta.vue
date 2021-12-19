@@ -1,202 +1,232 @@
 <template>
   <!-- <div class="q-pa-md"> -->
-  <q-page style="min-height: 60vh">
-    <div class="container">
-      <div class="q-pa-md input-codigo">
-        <q-form class="q-pa-md formulario-codigo" @submit.prevent="onSubmit">
-          <q-btn
-            icon="pin"
-            stack
-            label="random"
-            color="dark"
-            style="margin-right: 20px"
-            @click="randomCode"
-          />
-          <q-input
-            style="width: 150px"
-            rounded
-            outlined
-            v-model="codigo"
-            id="input-codigo"
-            label="Codigo de barra"
-          />
-          <q-btn
-            label="Agregar"
-            type="submit"
-            color="dark"
-            style="margin-left: 20px"
-          />
-        </q-form>
-      </div>
-
-      <div class="q-pa-md cancelar-venta">
-        <q-form class="formulario-cancelar" @submit.prevent="cancelarVenta">
-          <q-btn
-            label="Cancelar Venta"
-            type="submit"
-            color="negative"
-            id="btn-cancelar"
-            style="margin-left: 40px"
-          />
-        </q-form>
-        <div v-if="idVentaCancel">
-          cancelar venta anterior (id {{ idVentaCancel }})
+  <q-page class="f-container" style="min-height: 60vh">
+    <div class="grid-child-element">
+      <div class="first-container">
+        <div class="inner-container">
+          <q-form class="q-pa-md formulario-codigo" @submit.prevent="onSubmit">
+            <q-btn
+              icon="pin"
+              stack
+              label="random"
+              color="dark"
+              style="margin-right: 20px"
+              @click="randomCode"
+            />
+            <q-input
+              style="width: 300px"
+              rounded
+              label="Ingrese codigo de barra"
+              outlined
+              v-model="codigo"
+            >
+              <template v-slot:append>
+                <q-icon name="search" @click="onSubmit" />
+              </template>
+            </q-input>
+          </q-form>
         </div>
-      </div>
-    </div>
-
-    <div class="q-pa-md input-codigo" style="width: 100%">
-      <q-form
-        class="q-pa-md formulario-codigo"
-        @submit.prevent="() => (buscar = true)"
-      >
-        <q-btn
-          label="Buscar producto existente"
-          type="submit"
-          color="dark"
-          id="btn-cancelar"
-          style="width: 100%; font-weight: bold; padding: 10px 0"
-          @click="() => (buscar = true)"
-        ></q-btn>
-      </q-form>
-    </div>
-
-    <q-table
-      ref="myTab"
-      title="Venta en curso"
-      :rows="rows"
-      :columns="mycolumns"
-      row-key="name"
-      separator="horizontal"
-      style="table-layout: fixed; height: 400px"
-      wrap-cells
-      :loading="loading"
-      virtual-scroll
-      :rows-per-page-options="[0]"
-      class="tabla-ventas"
-      no-data-label="Pistolee mi rey"
-      no-results-label="The filter didn't uncover any results"
-    >
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <template v-if="col.name !== 'cantidad' && col.name !== 'eliminar'">
-              {{ col.value }}
-            </template>
-            <template v-else-if="col.name === 'cantidad' ">
-              <q-popup-edit
-                v-model.number="props.row.cantidad"
-                buttons
-                v-slot="scope"
-                :validate="cantidadRangeValidation"
-                @hide="cantidadRangeValidation"
-                @save="actualizar(props.row)"
-              >
-                <q-input
-                  type="number"
-                  v-model="scope.value"
-                  dense
-                  autofocus
-                  counter
-                  :rules="cantidadRules"
-                  reactive-rules
-                  @keyup.enter="scope.set"
-                  hint="Eliga una nueva cantidad de producto"
-                  :error="errorCantidad"
-                  :error-message="errorMessageCantidad"
-                />
-              </q-popup-edit>
-            </template>
-
-            <template v-else>
+        <div class="operations-container">
+          <div class="cancelar-venta">
+            <q-form class="formulario-cancelar">
               <q-btn
-                class="flex-center"
+                label="Cancelar Venta"
+                type="submit"
                 color="negative"
-                :disable="loading"
-                label="X"
-                @click="removeRow(props.row)"
+                id="btn-cancelar"
+                @click="confirmCancelar = true"
               />
-            </template>
-          </q-td>
+            </q-form>
+            <div v-if="idVentaCancel">
+              cancelar venta anterior (id {{ idVentaCancel }})
+            </div>
+          </div>
 
-          <!-- <td> -->
-          <!-- <template v-slot:after> -->
-
-          <!-- </td> -->
-          <!-- </template> -->
-        </q-tr>
-      </template>
-
-      <template v-slot:no-data="{ icon, message, filter }">
-        <div class="full-width row flex-center text-positive q-gutter-sm">
-          <q-icon size="2em" name="sentiment_neutral" />
-          <span> {{ message }} </span>
-          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+          <div class="buscar-producto inner-container">
+            <q-btn
+              label="Buscar producto"
+              type="submit"
+              color="dark"
+              id="btn-cancelar"
+              @click="() => (buscar = true)"
+            ></q-btn>
+          </div>
         </div>
-      </template>
-    </q-table>
+      </div>
 
-    <q-page-sticky position="bottom-right" :offt="[18, 18]">
-      <div class="total-pagar">
-        <q-markup-table class="inner-total">
-          <thead>
-            <tr>
-              <th class="text-left total-label">Total a pagar:</th>
-            </tr>
-          </thead>
+      <q-table
+        ref="myTab"
+        title="Venta en curso"
+        :rows="rows"
+        :columns="mycolumns"
+        row-key="name"
+        separator="horizontal"
+        style="table-layout: fixed; height: 400px"
+        wrap-cells
+        :loading="loading"
+        virtual-scroll
+        :rows-per-page-options="[0]"
+        class="tabla-ventas"
+        no-data-label="Escanee o busque un producto"
+        no-results-label="No se encontraron productos"
+      >
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
+
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              <template
+                v-if="col.name !== 'cantidad' && col.name !== 'eliminar'"
+              >
+                {{ col.value }}
+              </template>
+              <template v-else-if="col.name === 'cantidad'">
+                <q-popup-edit
+                  v-model.number="props.row.cantidad"
+                  buttons
+                  v-slot="scope"
+                  :validate="cantidadRangeValidation"
+                  @hide="cantidadRangeValidation"
+                  @save="actualizar(props.row)"
+                >
+                  <q-input
+                    type="number"
+                    v-model="scope.value"
+                    dense
+                    autofocus
+                    counter
+                    :rules="cantidadRules"
+                    reactive-rules
+                    @keyup.enter="scope.set"
+                    hint="Eliga una nueva cantidad de producto"
+                    :error="errorCantidad"
+                    :error-message="errorMessageCantidad"
+                  />
+                </q-popup-edit>
+              </template>
+
+              <template v-else>
+                <q-btn
+                  class="flex-center"
+                  color="negative"
+                  :disable="loading"
+                  label="X"
+                  @click="removeRow(props.row)"
+                />
+              </template>
+            </q-td>
+          </q-tr>
+        </template>
+
+        <template v-slot:no-data="{ message }">
+          <div class="full-width row flex-center text-positive q-gutter-sm">
+            <span> {{ message }} </span>
+          </div>
+        </template>
+      </q-table>
+    </div>
+    <div class="grid-child-element">
+      <table class="full-table">
+        <tbody>
+          <tr>
+            <td><h4 class="label">Total:</h4></td>
+            <td>
+              <h4 class="info">${{ total.toLocaleString() }}</h4>
+            </td>
+          </tr>
+          <!-- <tr>
+            <td><h4>Vuelto:</h4></td>
+            <td>
+              <h4>{{ total }}</h4>
+            </td>
+          </tr> -->
+        </tbody>
+      </table>
+
+      <q-select
+        outlined
+        v-model="medio"
+        :options="selectMedio"
+        label="Medios de pago"
+        emit-value
+      />
+
+      <q-select
+        outlined
+        v-model="documento"
+        :options="tipoDeDocumento"
+        label="Tipo de documento"
+        class="selector-documento"
+      />
+
+      <div v-if="medio == 'Efectivo'" class="vuelto-container">
+        <q-input outlined v-model="monto" placeholder="Efectivo recibido">
+          <template v-slot:prepend>
+            <q-icon name="money" />
+          </template>
+        </q-input>
+        <table class="full-table vuelto">
           <tbody>
             <tr>
-              <td class="text-left total-price">
-                ${{ total.toLocaleString() }}
+              <td><h4>Vuelto:</h4></td>
+              <td>
+                <h4>
+                  ${{
+                    (monto - total > 0 ? monto - total : 0).toLocaleString()
+                  }}
+                </h4>
               </td>
             </tr>
+            <!-- <tr>
+            <td><h4>Vuelto:</h4></td>
+            <td>
+              <h4>{{ total }}</h4>
+            </td>
+          </tr> -->
           </tbody>
-        </q-markup-table>
+        </table>
       </div>
-    </q-page-sticky>
+      <div class="btns-finalizar">
+        <q-form
+          class="formulario-finalizar-venta"        >
+          <q-btn
+            color="positive"
+            label="Finalizar venta"
+            :disable="total == false"
+            type="submit"
+            @click="confirmFinalizar = true"
+          />
+        </q-form>
+
+        <div class="cancelar-venta">
+          <q-form class="formulario-cancelar">
+            <q-btn
+              label="Cancelar"
+              type="submit"
+              color="negative"
+              id="btn-cancelar"
+              @click="confirmCancelar = true"
+            />
+          </q-form>
+          <div v-if="idVentaCancel">
+            cancelar venta anterior (id {{ idVentaCancel }})
+          </div>
+        </div>
+      </div>
+    </div>
   </q-page>
   <!-- </div> -->
   <q-page-sticky position="bottom-left" :offset="[18, 12]">
     <!-- <div class="q-pa-md finalizar-compra"> -->
-    <q-form class="formulario-cancelar" @submit.prevent="mediosDePago">
-      <q-btn
-        color="positive"
-        class="full-width"
-        label="Medios de pago"
-        :disable="total == false"
-        @click="mediosDePago(total)"
-        type="submit"
-        style="padding: 20px; font-weight: 600; width: 600px"
-      />
-    </q-form>
+
     <!-- </div> -->
   </q-page-sticky>
-
-  <q-dialog v-model="fixed" transition-hide="rotate">
-    <q-card style="max-width: 90vw">
-      <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6">Información de pago</div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-      <detalles-finalizar-venta :total="total" @enlarge-text="medio = $event" />
-      <q-separator />
-      <q-card-section style="max-height: 80vh">
-        <suspense>
-          <template #default> </template>
-          <template #fallback> </template>
-        </suspense>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
 
   <q-dialog v-model="buscar" transition-hide="rotate">
     <q-card style="max-width: 90vw">
@@ -206,6 +236,40 @@
       <buscador-productos @enlarge-text="producto = $event" />
     </q-card>
   </q-dialog>
+
+  <q-dialog v-model="confirmCancelar" persistent>
+    <q-card>
+      <q-card-section class="row items-center">
+        <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
+        <span class="q-ml-sm"
+          >¿Estás seguro que deseas cancelar la venta en curso?</span
+        >
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="No" color="negative" v-close-popup />
+        <q-btn flat label="Si" color="dark" v-close-popup @click="cancelarVenta" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="confirmFinalizar" persistent>
+    <q-card>
+      <q-card-section class="row items-center">
+        <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
+        <span class="q-ml-sm"
+          >¿Estás seguro que deseas finalizar la venta en curso?</span
+        >
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="No" color="negative" v-close-popup />
+        <q-btn flat label="Si" color="dark" v-close-popup @click="finalizarVenta" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+
 </template>
 
 
@@ -214,7 +278,6 @@
 import { ref, getCurrentInstance, watch } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
-import detallesFinalizarVenta from "../components/DetallesFinalizarVenta.vue";
 import buscadorProductos from "../components/BuscadorProductos.vue";
 
 const mycolumns = [
@@ -284,7 +347,7 @@ Array.prototype.random = function () {
 
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
-  components: { detallesFinalizarVenta, buscadorProductos },
+  components: { buscadorProductos },
 
   async setup() {
     const loading = ref(false);
@@ -300,7 +363,10 @@ export default {
     const usuario = ref("joselo");
     const myTab = ref(null);
     const producto = ref(null);
-    const medio = ref(null);
+    const medio = ref("Efectivo");
+    const monto = ref(null);
+    const vuelto = ref(0);
+    const documento = ref("Boleta");
 
     const errorCantidad = ref(false);
     const errorMessageCantidad = ref("");
@@ -391,34 +457,6 @@ export default {
         addRow(items.producto);
       }
     }
-
-    async function pagarVenta() {
-      $q.loading.show({
-        message: "Cargando...",
-      });
-      const req_args = {
-        operation: "pay",
-        nombre: usuario.value,
-        medio: medio.value,
-      };
-      const respuesta = await rqts
-        .putjson(`ventas/${idVenta.value}`, req_args)
-        .then((response) =>
-          $q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "cloud_done",
-            message: response.estado,
-          })
-        )
-        .catch((e) => {
-          console.log(e);
-        });
-      $q.loading.hide();
-      console.log(respuesta);
-      vaciarVariables();
-    }
-
     // funcion que maneja el scaneo en cualquier parte
     function onBarcodeScanned(barcode) {
       if (barcode.length > 5) {
@@ -438,13 +476,12 @@ export default {
       onSubmit();
     });
 
-    watch(medio, (medio, prevCount) => {
-      console.log("el medioooooo", medio);
-      pagarVenta();
-    });
     return {
       barcodeScanner,
       loading,
+      medio,
+      vuelto,
+      monto,
       mycolumns,
       rows,
       codigo,
@@ -457,8 +494,9 @@ export default {
       pagination: ref({
         rowsPerPage: 0,
       }),
-      fixed: ref(false),
       buscar: ref(false),
+      selectMedio: ["Efectivo", "Debito", "Credito", "Fiado"],
+      tipoDeDocumento: ["Boleta", "Factura", "Guia de despacho"],
       onSubmit,
       idVentaCancel,
       errorMessageCantidad,
@@ -466,6 +504,9 @@ export default {
       myTab,
       producto,
       medio,
+      documento,
+      confirmFinalizar: ref(false),
+      confirmCancelar: ref(false),
       cantidadRangeValidation(val) {
         if (val < 0 || val > 100) {
           errorCantidad.value = true;
@@ -549,22 +590,43 @@ export default {
         //location.reload();
       },
 
-      async mediosDePago() {
-        const req_args = {
+      async finalizarVenta() {
+        $q.loading.show({
+          message: "Cargando...",
+        });
+        const req_args_confirm = {
           operation: "confirm",
           nombre: usuario.value,
         };
-        const respuesta = await rqts
-          .putjson(`ventas/${idVenta.value}`, req_args)
+        const respuesta_c = await rqts
+          .putjson(`ventas/${idVenta.value}`, req_args_confirm)
           .catch((e) => {
             console.log(e);
           });
-        this.fixed = true;
-      },
+        message: "";
+        const req_args = {
+          operation: "pay",
+          nombre: usuario.value,
+          medio: medio.value,
+        };
 
-      //   async buscarProducto() {
-      //     this.buscar = true;
-      //   },
+        const respuesta = await rqts
+          .putjson(`ventas/${idVenta.value}`, req_args)
+          .then((response) =>
+            $q.notify({
+              color: "green-4",
+              textColor: "white",
+              icon: "cloud_done",
+              message: "pagada",
+            })
+          )
+          .catch((e) => {
+            console.log(e);
+          });
+        $q.loading.hide();
+        console.log(respuesta);
+        vaciarVariables();
+      },
     };
   },
 };
@@ -573,5 +635,62 @@ export default {
 
 <style lang="sass">
 label
-    width: 100%
+  width: 100%
+
+.first-container
+  display: grid
+  grid-template-columns: 50% 50%!important
+
+    /* justify-content: space-between; */
+
+.operations-container
+  display: flex
+  justify-content: flex-end
+
+.f-container
+  display: grid
+  grid-template-columns: 68% 32%
+  grid-gap: 20px
+
+.grid-child-element
+  margin: 10px
+
+h4
+  margin: 0
+  margin-bottom: 50px
+  padding: 0
+
+.grid-child-element
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
+  border-radius: 6px
+  padding: 20px
+
+.btns-finalizar
+  display: flex
+  flex-direction: column
+  position: absolute
+  bottom: 10px
+  right: 8%
+
+.full-table
+  width: 100%
+
+.full-table > td
+  width: 50%
+
+.full-table td
+  text-align: left
+
+.full-table.vuelto
+  margin-top: 20px
+
+.vuelto-container
+  margin-top: 30px
+
+.label
+  color: $negative
+  font-weight: bold
+
+.selector-documento
+  margin-top: 10px
 </style>
