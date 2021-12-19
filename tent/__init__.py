@@ -47,7 +47,7 @@ def register_blueprints(application, api, api_bp):
     # productos
     api.add_resource(ProductoManager,
                      '/productos/<int:idProducto>', '/productos/<int:idProducto>/')
-    api.add_resource(ProductoListManager, '/productos/')
+    api.add_resource(ProductoListManager, '/productos/', '/productos')
 
     # compras
     api.add_resource(CompraManager,

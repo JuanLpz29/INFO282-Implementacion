@@ -9,8 +9,6 @@ from sqlalchemy import func
 import json
 from flask_restful import Resource, reqparse, abort
 from tent.utils.parsers import pagination_arg_parser, prod_args_parser
-# from tent.controllers import pagination_arg_parser
-# from tent.controllers import prod_args_parser
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
@@ -126,6 +124,7 @@ class ProductoListManager(Resource):
 
     def post(self):
         args = prod_args_parser.parse_args()
+        print(args)
         prod = query_producto_by('codigoBarra', args['codigoBarra'])
         if prod is None:
             prod = Producto.from_dict(args)
