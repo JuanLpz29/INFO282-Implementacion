@@ -196,6 +196,7 @@
         <q-form class="formulario-finalizar-venta">
           <q-btn
             color="positive"
+            class="full-width"
             label="Finalizar venta"
             :disable="total == false"
             type="submit"
@@ -204,7 +205,6 @@
         </q-form>
 
         <div class="cancelar-venta">
-          <q-form class="formulario-cancelar">
             <q-btn
               label="Cancelar"
               type="submit"
@@ -212,7 +212,6 @@
               id="btn-cancelar"
               @click="confirmCancelar = true"
             />
-          </q-form>
           <div v-if="idVentaCancel">
             cancelar venta anterior (id {{ idVentaCancel }})
           </div>
@@ -677,9 +676,7 @@ h4
 .btns-finalizar
     display: flex
     flex-direction: column
-    position: absolute
-    bottom: 10px
-    right: 8%
+
 
 .full-table
     width: 100%
@@ -702,4 +699,11 @@ h4
 
 .selector-documento
     margin-top: 10px
+
+form.q-form.formulario-finalizar-venta
+  padding: 0
+  padding-bottom: 10px
+.btn-finalizar-venta
+  width: 100%
+  padding: 10px
 </style>

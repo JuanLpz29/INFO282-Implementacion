@@ -5,8 +5,8 @@
       <div class="absolute-top-right">
         <q-btn
           fab
+          class="text-purple"
           icon="close"
-          color="purple-4"
           @click="$emit('close-dialog')"
         />
       </div>
