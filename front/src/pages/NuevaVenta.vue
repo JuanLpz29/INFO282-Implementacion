@@ -22,6 +22,7 @@
           <div class="cancelar-venta">
             <div class="formulario-cancelar">
               <q-btn
+                :disabled="!idVentaCancel"
                 icon="cancel"
                 label="Cancelar Venta"
                 type="submit"
@@ -30,7 +31,7 @@
                 @click="confirmCancelar = true"
               />
             </div>
-            <div v-if="idVentaCancel">
+            <div v-if="ventaAnterior">
               cancelar venta anterior (id {{ idVentaCancel }})
             </div>
           </div>
@@ -191,6 +192,7 @@
       <div class="btns-finalizar">
         <q-form class="formulario-finalizar-venta">
           <q-btn
+            :disabled="!idVentaCancel"
             icon="done"
             color="positive"
             class="full-width"
@@ -203,6 +205,7 @@
 
         <div class="cancelar-venta">
           <q-btn
+            :disabled="!idVentaCancel"
             icon="cancel"
             label="Cancelar"
             type="submit"
@@ -210,7 +213,7 @@
             id="btn-cancelar"
             @click="confirmCancelar = true"
           />
-          <div v-if="idVentaCancel">
+          <div v-if="ventaAnterior">
             cancelar venta anterior (id {{ idVentaCancel }})
           </div>
         </div>
@@ -279,7 +282,7 @@
 
 
 <script>
-import { ref, getCurrentInstance, watch } from "vue";
+import { ref, getCurrentInstance, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import buscadorProductos from "../components/BuscadorProductos.vue";
@@ -354,10 +357,9 @@ export default {
   components: { buscadorProductos },
 
   async setup() {
-    const { currentUser } = updateUsername();
+    const { currentUser, currentUserId } = updateUsername();
     const loading = ref(false);
     const $q = useQuasar();
-    // const barcode = ref(null);
     const codigo = ref(null);
     const rowCount = ref(0);
     const rows = ref([]);
@@ -372,7 +374,7 @@ export default {
     const monto = ref(null);
     const vuelto = ref(0);
     const documento = ref("Boleta");
-
+    const ventaAnterior = ref(false);
     const errorCantidad = ref(false);
     const errorMessageCantidad = ref("");
 
@@ -380,6 +382,7 @@ export default {
       rows.value = [];
       total.value = 0;
       idVenta.value = null;
+      idVentaCancel.value = null;
     }
 
     function verExistencia(codigo) {
@@ -394,11 +397,12 @@ export default {
 
     function addRow(row) {
       titulotabla.value = "Venta en curso";
-      console.log("nuevito", row);
+      //   si hay al menos un producto ver si es que el que se quiere agregar es el mismo
       if (rows.value[0] !== undefined) {
         var existe = verExistencia(row.codigoBarra);
       }
 
+      // si no existe, agregar una row
       if (existe === null) {
         loading.value = true;
 
@@ -407,62 +411,89 @@ export default {
         }
 
         row.id = ++rowCount.value;
-        const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
+        const newRow = { ...row };
         rows.value = [...rows.value.slice(0, rows.value.length + 1), newRow];
         loading.value = false;
-      } else {
+      }
+      // si existe, modificar la row correspondiente
+      else {
         rows.value.splice(existe, 1, row);
       }
-
+      // parece que se murio el autoscroll
       myTab.value.scrollTo(1000, "end-force");
-      //   row.subtotal = parseInt(row.subtotal);
-      console.log(rows);
     }
-    // const app = getCurrentInstance()
-    // const barcodeScanner = app.appContext.config.globalProperties.$BarcodeScanner\
 
     async function onSubmit(evt) {
+      if (!idVenta.value) {
+        iniciarVenta();
+      } else {
+        actualizarVenta();
+      }
+    }
+
+    async function iniciarVenta() {
+      const argsIniciarVenta = {
+        nombre: currentUser.value,
+        codigoBarra: codigo.value,
+      };
       $q.loading.show({
         message: "Cargando...",
       });
-      if (!idVenta.value) {
-        const nueva_venta = {
-          nombre: currentUser.value,
-          codigoBarra: codigo.value,
-        };
-        const infoVenta = await rqts
-          .postjson(`ventas/`, nueva_venta)
-          .catch((e) => {
-            console.log(e);
-          });
-        $q.loading.hide();
-        console.log(infoVenta.producto);
-        if (infoVenta.venta) {
-          console.log("producto weno " + typeof(infoVenta))
-          total.value = infoVenta.venta.total;
-          idVenta.value = infoVenta.venta.idVenta;
-          addRow(infoVenta.producto);
-        }
-        else {
-          idVentaCancel.value = parseInt(infoVenta.split(":")[1]);
-          titulotabla.value = "Debe cancelar la venta anterior ";
-        }
-      } else {
-        const req_args = {
-          operation: "update",
-          cantidad: 1,
-          codigoBarra: codigo.value,
-        };
-        const items = await rqts
-          .putjson(`ventas/${idVenta.value}`, req_args)
-          .catch((e) => {
-            console.log(e);
-          });
-        $q.loading.hide();
-        total.value = items.venta.total;
-        addRow(items.producto);
+      console.log("INICIANDOOOO");
+      const infoVenta = await rqts
+        .postjson(`ventas/`, argsIniciarVenta)
+        .catch((e) => {
+          console.log(e);
+        });
+      $q.loading.hide();
+      const ok = checkAndAdd(infoVenta);
+      if (ok == true) {
+        idVenta.value = infoVenta.venta.idVenta;
+        idVentaCancel.value = infoVenta.venta.idVenta;
       }
     }
+
+    async function actualizarVenta() {
+      const updateArgs = {
+        operation: "update",
+        cantidad: 1,
+        codigoBarra: codigo.value,
+      };
+      $q.loading.show({
+        message: "Cargando...",
+      });
+      const infoVenta = await rqts
+        .putjson(`ventas/${idVenta.value}`, updateArgs)
+        .catch((e) => {
+          console.log(e);
+        });
+      $q.loading.hide();
+      checkAndAdd(infoVenta);
+    }
+
+    function checkAndAdd(infoVenta) {
+      console.log("checkeando", infoVenta);
+      if (infoVenta.venta) {
+        total.value = infoVenta.venta.total;
+        addRow(infoVenta.producto);
+        return true;
+      } else if (infoVenta.statusText == "CONFLICT") {
+        // alternativa permitir reanudar_venta()
+        console.log("error!", infoVenta.message);
+        idVentaCancel.value = parseInt(infoVenta.message.split(":")[1]);
+        titulotabla.value = "Debe cancelar la venta anterior ";
+      } else if (infoVenta.statusText == "NOT FOUND") {
+        console.log("error!", infoVenta.message);
+        // ok = agregar_producto(nuevo_barcode, nuevo_nombre, nuevo_precio)
+        // if ok
+        //  codigo.value = nuevo_barcode
+        //  return onsubmit()
+      } else {
+        console.log("error desconocido!", infoVenta.message);
+      }
+      return false;
+    }
+
     // funcion que maneja el scaneo en cualquier parte
     function onBarcodeScanned(barcode) {
       if (barcode.length > 5) {
@@ -486,6 +517,20 @@ export default {
       console.log("xzd", currentUser);
       alert("bye");
       vaciarVariables();
+    });
+
+    async function setIdToCancel() {
+      if (currentUserId.value) {
+        const resp = await rqts.get(`usuarios/${currentUserId.value}`);
+        console.log(resp);
+        if (resp.idVentaActiva) {
+          idVentaCancel.value = resp.idVentaActiva;
+          ventaAnterior.value = resp.idVentaActiva;
+        }
+      }
+    }
+    onMounted(() => {
+      setIdToCancel();
     });
 
     return {
@@ -518,6 +563,7 @@ export default {
       medio,
       documento,
       titulotabla,
+      ventaAnterior,
       confirmFinalizar: ref(false),
       confirmCancelar: ref(false),
       cantidadRangeValidation(val) {
@@ -575,27 +621,20 @@ export default {
         $q.loading.show({
           message: "Cargando...",
         });
-        let idToCancel;
-        console.log("idToCancel: " + idToCancel);
-        console.log("idVentaCancel" + idVentaCancel.value);
-        if (idVentaCancel.value) {
-          idToCancel = idVentaCancel.value;
-          idVentaCancel.value = null;
-        } else {
-          idToCancel = idVenta.value;
-        }
+        console.log("idVentaCancel", idVentaCancel.value);
+
         const req_args = {
           operation: "cancel",
           nombre: currentUser.value,
-          idVenta: idToCancel,
         };
         const respuesta = await rqts
-          .putjson(`ventas/${idToCancel}`, req_args)
+          .putjson(`ventas/${idVentaCancel.value}`, req_args)
           .catch((e) => {
             console.log(e);
           });
         $q.loading.hide();
         vaciarVariables();
+        ventaAnterior.value = false;
         titulotabla.value = "Agregue productos para iniciar la venta";
 
         //location.reload();
@@ -646,69 +685,69 @@ export default {
 
 <style lang="sass">
 label
-  width: 100%
+    width: 100%
 
 .first-container
-  display: grid
-  grid-template-columns: 50% 50%!important
+    display: grid
+    grid-template-columns: 50% 50%!important
 
     /* justify-content: space-between; */
 
 .operations-container
-  display: flex
-  justify-content: flex-end
+    display: flex
+    justify-content: flex-end
 
 .f-container
-  display: grid
-  grid-template-columns: 68% 32%
-  grid-gap: 20px
+    display: grid
+    grid-template-columns: 68% 32%
+    grid-gap: 20px
 
 .grid-child-element
-  margin: 10px
+    margin: 10px
 
 h4
-  margin: 0
-  margin-bottom: 50px
-  padding: 0
+    margin: 0
+    margin-bottom: 50px
+    padding: 0
 
 .grid-child-element
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
-  border-radius: 6px
-  padding: 20px
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
+    border-radius: 6px
+    padding: 20px
 
 .btns-finalizar
-  display: flex
-  flex-direction: column
+    display: flex
+    flex-direction: column
 
 .full-table
-  width: 100%
+    width: 100%
 
 .full-table > td
-  width: 50%
+    width: 50%
 
 .full-table td
-  text-align: left
+    text-align: left
 
 .vuelto-container
-  margin-top: 30px
+    margin-top: 30px
 
 .label
-  color: $negative
-  font-weight: bold
+    color: $negative
+    font-weight: bold
 
 .selector-documento
-  margin-top: 10px
+    margin-top: 10px
 
 form.q-form.formulario-finalizar-venta
-  padding: 0
-  padding-bottom: 10px
+    padding: 0
+    padding-bottom: 10px
 .btn-finalizar-venta
-  width: 100%
-  padding: 10px
+    width: 100%
+    padding: 10px
 
 .vuelto h4
-  font-size: 22px
+    font-size: 22px
 
 .formulario-cancelar
-  margin-right: 10px
+    margin-right: 10px
 </style>
