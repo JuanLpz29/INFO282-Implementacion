@@ -1,5 +1,3 @@
-from logging import DEBUG
-from operator import add
 from flask import redirect, request, jsonify
 from tent.models import producto
 from tent.models import proveedor
@@ -8,7 +6,6 @@ from tent.utils.DTE import DTE
 from tent import db
 from tent.controllers.productos_controller import productos_from_json_list
 from tent.controllers.productos_controller import add_or_update
-# from tent.controllers.productos_controller import get_many as get_many_prods
 from tent.controllers.productos_controller import query_many_productos_by
 from tent.models.proveedor import Proveedor, ProveedorSchema
 from tent.models.producto import ProductSchema

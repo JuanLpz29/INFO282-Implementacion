@@ -28,7 +28,7 @@ def create_app(config_filename=None):
 
 def register_blueprints(application, api, api_bp):
     from tent.controllers import base_bp
-    from tent.controllers.usuarios_controller import UserManager, UserListManager
+    from tent.controllers.usuarios_controller import UserManager, UserListManager, UserLoginManager
     from tent.controllers.ventas_controller import VentaManager, VentaListManager
     from tent.controllers.productos_controller import ProductoManager, ProductoListManager
     from tent.controllers.compras_controller import CompraManager, CompraListManager
@@ -37,6 +37,7 @@ def register_blueprints(application, api, api_bp):
     api.add_resource(UserManager, '/usuarios/<int:idUsuario>',
                      '/usuarios/<int:idUsuario>/')
     api.add_resource(UserListManager, '/usuarios/')
+    api.add_resource(UserLoginManager, '/usuarios/login/', '/usuarios/login')
 
     # ventas
     api.add_resource(VentaManager, '/ventas/<int:idVenta>',

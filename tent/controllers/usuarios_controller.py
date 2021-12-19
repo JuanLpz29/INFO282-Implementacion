@@ -1,6 +1,6 @@
 from flask import redirect, url_for, request, jsonify
 from sqlalchemy.sql.expression import text, or_
-from tent import db
+from tent import controllers, db
 from tent.models.usuario import ADMIN, Usuario, UsuarioSchema
 from flask_restful import Resource, reqparse, abort
 from tent.utils.parsers import pagination_arg_parser
@@ -31,6 +31,13 @@ def abort_if_not_authorized(usuario: Usuario, idUsuario=None) -> None:
     if usuario.rol != ADMIN and (idUsuario is not None and usuario.idUsuario != idUsuario):
         abort(
             401, message=f"El usuario {usuario.nombre} no esta autorizado para realizar esta operacion")
+
+
+def abort_if_bad_login(usuario: str, contrasena: str) -> None:
+    user = query_user_by('nombre', usuario)
+    if user is None or user.contraseña != contrasena:
+        abort(401, message=f"Datos incorrectos")
+    return user
 
 
 class UserManager(Resource):
@@ -81,3 +88,22 @@ class UserListManager(Resource):
             db.session.commit()
             return f"usuario: {args['nombre']}"
         abort(409, message=f"Ya existe un usuario con nombre {nombre}")
+
+
+class UserLoginManager(Resource):
+    def __init__(self) -> None:
+        # super().__init__()
+        self.post_parser = reqparse.RequestParser()
+        for _arg in ['nombre', 'contraseña']:
+            self.post_parser.add_argument(_arg, type=str,
+                                          location=['form', 'json'],
+                                          required=True)
+
+    def post(self):
+        args = self.post_parser.parse_args()
+        nombre = args['nombre']
+        contrasena = args['contraseña']
+        user = abort_if_bad_login(nombre, contrasena)
+        user_info = usuario_schema.dump(user)
+        user_info.pop('contraseña')
+        return user_info

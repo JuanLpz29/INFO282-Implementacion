@@ -339,7 +339,7 @@ class DTE:
 
     def set_datos_proveedor(self):
         self.proveedor_dict = {
-            "proveedor": self.razon_social,
+            "razonSocial": self.razon_social,
             "rut": self.rut_proveedor,
             "comuna": self.comuna_proveedor,
         }
