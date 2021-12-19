@@ -83,27 +83,40 @@
               </template>
               <template v-else-if="col.name === 'cantidad'">
                 {{ col.value }}
-                <q-popup-edit
+                <!-- <q-popup-edit
                   v-model.number="props.row.cantidad"
                   buttons
                   v-slot="scope"
                   :validate="cantidadRangeValidation"
                   @hide="cantidadRangeValidation"
                   @save="actualizar(props.row)"
+                > -->
+                <q-popup-edit
+                  v-model.number="props.row.cantidad"
+                  buttons
+                  :validate="(val) => val >= 0 && val < 100"
+                  @save="
+                    (val, previous) => actualizar(props.row, val, previous)
+                  "
                 >
-                  <q-input
-                    type="number"
-                    v-model="scope.value"
-                    dense
-                    autofocus
-                    counter
-                    :rules="cantidadRules"
-                    reactive-rules
-                    @keyup.enter="scope.set"
-                    hint="Eliga una nueva cantidad de producto"
-                    :error="errorCantidad"
-                    :error-message="errorMessageCantidad"
-                  />
+                  <template v-slot="scope">
+                    <q-input
+                      type="number"
+                      v-model="scope.value"
+                      :model-value="scope.value"
+                      dense
+                      autofocus
+                      counter
+                      reactive-rules
+                      :rules="[
+                        (val) =>
+                          scope.validate(scope.value) ||
+                          'Debe ingresar una cantidad entre 0 y 100',
+                      ]"
+                      @keyup.enter="scope.set"
+                      hint="Elija una nueva cantidad de producto"
+                    />
+                  </template>
                 </q-popup-edit>
               </template>
 
@@ -113,7 +126,7 @@
                   color="negative"
                   :disable="loading"
                   label="X"
-                  @click="removeRow(props.row)"
+                  @click="actualizar(props.row, 0, props.row.cantidad)"
                 />
               </template>
             </q-td>
@@ -363,7 +376,7 @@ export default {
     const codigo = ref(null);
     const rowCount = ref(0);
     const rows = ref([]);
-    const inputcantidad = ref(1);
+    // const inputcantidad = ref(1);
     const total = ref(0);
     const titulotabla = ref("Agregue productos para iniciar la venta");
     const idVenta = ref(null);
@@ -543,7 +556,7 @@ export default {
       rows,
       codigo,
       rowCount,
-      inputcantidad,
+      //   inputcantidad,
       total,
       idVenta,
       currentUser,
@@ -577,18 +590,19 @@ export default {
         return true;
       },
 
-      async actualizar(row) {
+      async actualizar(row, val, prev) {
         $q.loading.show({
           message: "Cargando...",
         });
-        if (isNaN(row.cantidad) || row.cantidad < 0) {
-          row.cantidad = 1;
+        console.log("CANTIDAD", row.cantidad);
+        if (isNaN(val) || val < 0) {
+          row.cantidad = prev;
+        } else {
+          row.cantidad = val;
         }
-
-        console.log("fijando la cantidad");
         const req_args = {
           operation: "update",
-          cantidad: 1,
+          cantidad: row.cantidad,
           codigoBarra: row.codigoBarra,
           set: true,
         };
@@ -598,19 +612,16 @@ export default {
             console.log(e);
           });
         $q.loading.hide();
-        rows.value.splice(
-          verExistencia(items.producto.codigoBarra),
-          1,
-          items.producto
-        );
+        const idx = verExistencia(items.producto.codigoBarra);
+        if (val == 0) {
+          this.removeRow(idx);
+        } else {
+          rows.value.splice(idx, 1, items.producto);
+        }
         total.value = items.venta.total;
       },
 
-      async removeRow(row) {
-        console.log(row.codigoBarra);
-        var index = verExistencia(row.codigoBarra);
-        row.cantidad = 0;
-        await this.actualizar(row);
+      removeRow(index) {
         rows.value = [
           ...rows.value.slice(0, index),
           ...rows.value.slice(index + 1),
