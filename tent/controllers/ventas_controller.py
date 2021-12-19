@@ -5,7 +5,7 @@ from tent.models.venta import EN_CURSO, CONFIRMADA, ANULADA, PAGADA, NO_FINALIZA
 from tent import db
 from tent.controllers.productos_controller import query_many_productos_by
 from tent.controllers.productos_controller import actualizar_stock, abort_if_no_producto_found
-from tent.controllers.usuarios_controller import query_user_by, abort_if_no_usuario, abort_if_not_authorized
+from tent.controllers.usuarios_controller import query_user_by, abort_if_no_usuario, abort_if_not_authorized, query_venta_en_curso_usuario
 from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema, ADMIN, VENDEDOR
 from tent.models.productoventa import ProductoVenta
@@ -22,16 +22,11 @@ producto_schema = ProductSchema()
 
 def query_venta_by(_key: str, _value: str):
     query_funcs = {
-
         'idVenta': Venta.query.get,
         'nombre': lambda x: Venta.query.filter(
             Venta.nombre == x).first(),
         'estado': lambda x: Venta.query.filter(
             Venta.estado == x).items(),
-        EN_CURSO: lambda x: Venta.query.filter(and_(
-            Venta.idUsuario == _value,
-            Venta.estado == EN_CURSO
-        )).first()
     }
     f = query_funcs.get(_key)
     if f is not None:
@@ -46,7 +41,7 @@ def abort_if_no_venta_found(idVenta: int) -> Venta:
 
 
 def abort_if_has_venta_en_curso(idUsuario: int) -> Venta:
-    venta = query_venta_by(EN_CURSO, idUsuario)
+    venta = query_venta_en_curso_usuario(idUsuario)
     if venta is not None:
         abort(
             409, message=f"idUsuario {idUsuario} ya tiene una venta en curso idVenta:{venta.idVenta}")
@@ -273,6 +268,7 @@ class VentaListManager(Resource):
         nombre, barcode = args['nombre'], args['codigoBarra']
         usuario = abort_if_no_usuario('nombre', nombre)
         abort_if_has_venta_en_curso(usuario.idUsuario)
+        abort_if_no_producto_found('codigoBarra', barcode)
         venta = Venta(usuario.idUsuario)
         usuario.ventas.append(venta)
         prod = actualizar_stock(barcode=barcode)

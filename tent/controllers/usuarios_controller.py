@@ -1,12 +1,22 @@
 from flask import redirect, url_for, request, jsonify
-from sqlalchemy.sql.expression import text, or_
-from tent import controllers, db
+from sqlalchemy.sql.expression import and_, text
+from tent import db
 from tent.models.usuario import ADMIN, Usuario, UsuarioSchema
+from tent.models.venta import Venta, EN_CURSO
 from flask_restful import Resource, reqparse, abort
 from tent.utils.parsers import pagination_arg_parser
 
 usuario_schema = UsuarioSchema()
 usuarios_schema = UsuarioSchema(many=True)
+
+
+def query_venta_en_curso_usuario(idUsuario):
+    venta = Venta.query.filter(and_(
+        Venta.idUsuario == idUsuario,
+        Venta.estado == EN_CURSO
+    )).first()
+
+    return venta
 
 
 def query_user_by(_key: str, _value: str):
@@ -44,15 +54,14 @@ def abort_if_bad_login(usuario: str, contrasena: str) -> None:
 
 
 class UserManager(Resource):
-    # def abort_if_no_usuario(self, idUsuario):
-    #     usuario = Usuario.query.get(idUsuario)
-    #     if usuario is None:
-    #         abort(404, message=f"No existe el usuario con id {idUsuario}")
-    #     return usuario
-
     def get(self, idUsuario):
         usuario = abort_if_no_usuario('idUsuario', idUsuario)
-        return usuario_schema.jsonify(usuario)
+        user_info = usuario_schema.dump(usuario)
+        venta = query_venta_en_curso_usuario(idUsuario)
+        if venta is not None:
+            user_info['idVentaActiva'] = venta.idVenta
+        user_info.pop('contraseña')
+        return user_info
 
     def put(self, idUsuario):
         todito = request.form['data']
