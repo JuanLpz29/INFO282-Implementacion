@@ -693,8 +693,6 @@ h4
 .full-table td
     text-align: left
 
-.full-table.vuelto
-    margin-top: 20px
 
 .vuelto-container
     margin-top: 30px
@@ -712,4 +710,7 @@ form.q-form.formulario-finalizar-venta
 .btn-finalizar-venta
   width: 100%
   padding: 10px
+
+.vuelto h4
+    font-size: 22px
 </style>

@@ -3,3 +3,4 @@ app/data/uploads/*
 __pycache__/
 pycache/
 *.pyc
+*.ts
