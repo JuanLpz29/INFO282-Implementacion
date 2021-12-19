@@ -13,7 +13,6 @@
     "dependencies": {
         "axios": "^0.24.0",
         "quasar": "^2.3.0",
-        "v-money": "^0.8.1",
         "vue": "^3.2.16",
         "vue-axios": "^3.4.0",
         "vue-router": "^4.0.12"

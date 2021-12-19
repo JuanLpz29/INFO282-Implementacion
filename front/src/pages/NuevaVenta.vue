@@ -203,7 +203,10 @@
         </table>
       </div>
       <div class="btns-finalizar">
-        <q-form class="formulario-finalizar-venta">
+        <q-form
+          class="formulario-finalizar-venta"
+          @submit.prevent="confirmFinalizar"
+        >
           <q-btn
             :disabled="!idVentaCancel"
             icon="done"
@@ -647,8 +650,6 @@ export default {
         vaciarVariables();
         ventaAnterior.value = false;
         titulotabla.value = "Agregue productos para iniciar la venta";
-
-        //location.reload();
       },
 
       async finalizarVenta() {
