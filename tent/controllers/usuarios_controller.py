@@ -27,10 +27,13 @@ def abort_if_no_usuario(_key: str, _value: str) -> Usuario:
     return usuario
 
 
-def abort_if_not_authorized(usuario: Usuario, idUsuario=None) -> None:
-    if usuario.rol != ADMIN and (idUsuario is not None and usuario.idUsuario != idUsuario):
-        abort(
-            401, message=f"El usuario {usuario.nombre} no esta autorizado para realizar esta operacion")
+def abort_if_not_authorized(key: str, value, idUsuario=None) -> Usuario:
+    usuario = query_user_by(key, value)
+    if usuario is not None:
+        if usuario.rol == ADMIN or (idUsuario is not None and usuario.idUsuario == idUsuario):
+            return usuario
+    abort(
+        401, message=f"El usuario con {key} {value} no esta autorizado para realizar esta operacion")
 
 
 def abort_if_bad_login(usuario: str, contrasena: str) -> None:
@@ -68,7 +71,7 @@ class UserListManager(Resource):
     def get(self):
         args = pagination_arg_parser.parse_args()
 
-        _order_by = f"{args['sortby']} {args['order']}".strip()
+        _order_by = f"{args['sortby']} {args['order']}" if args['sortby'] else ""
         filtered_query = Usuario.query.order_by(text(_order_by))
         rowsNumber = filtered_query.count()
         all_users = filtered_query.paginate(

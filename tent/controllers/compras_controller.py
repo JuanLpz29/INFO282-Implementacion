@@ -182,7 +182,7 @@ class CompraListManager(Resource):
 
     def get(self):
         args = self.pagination_parser.parse_args()
-        _order_by = f"{args['sortby']} {args['order']}".strip()
+        _order_by = f"{args['sortby']} {args['order']}" if args['sortby'] else ""
         filtered_query = Compra.query.order_by(text(_order_by))
         rowsNumber = filtered_query.count()
         all_compras = filtered_query.paginate(

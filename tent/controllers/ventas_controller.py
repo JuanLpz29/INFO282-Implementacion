@@ -122,8 +122,8 @@ class VentaManager(Resource):
         nombre = args['nombre']
         venta = abort_if_no_venta_found(idVenta)
         abort_if_invalid_status(venta, valid_status=valid_status)
-        usuario = abort_if_no_usuario('nombre', nombre)
-        abort_if_not_authorized(usuario, idUsuario=venta.idUsuario)
+        usuario = abort_if_not_authorized(
+            'nombre', nombre, idUsuario=venta.idUsuario)
         return venta, usuario
 
     def pay_venta(self, idVenta):
