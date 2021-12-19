@@ -166,6 +166,7 @@ class VentaManager(Resource):
             pv.venta = venta
             qty = 1
 
+        print('cantidad', qty)
         actualizar_stock(producto=prod, cantidad=qty)
         venta.total += prod.valorItem * qty
         prod_info = producto_schema.dump(prod)
