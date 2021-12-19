@@ -193,8 +193,7 @@
         </table>
       </div>
       <div class="btns-finalizar">
-        <q-form
-          class="formulario-finalizar-venta"        >
+        <q-form class="formulario-finalizar-venta">
           <q-btn
             color="positive"
             label="Finalizar venta"
@@ -248,7 +247,13 @@
 
       <q-card-actions align="right">
         <q-btn flat label="No" color="negative" v-close-popup />
-        <q-btn flat label="Si" color="dark" v-close-popup @click="cancelarVenta" />
+        <q-btn
+          flat
+          label="Si"
+          color="dark"
+          v-close-popup
+          @click="cancelarVenta"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -264,12 +269,16 @@
 
       <q-card-actions align="right">
         <q-btn flat label="No" color="negative" v-close-popup />
-        <q-btn flat label="Si" color="dark" v-close-popup @click="finalizarVenta" />
+        <q-btn
+          flat
+          label="Si"
+          color="dark"
+          v-close-popup
+          @click="finalizarVenta"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
-
-
 </template>
 
 
@@ -279,7 +288,7 @@ import { ref, getCurrentInstance, watch } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import buscadorProductos from "../components/BuscadorProductos.vue";
-
+import updateUsername from "../plugins/updateUsername";
 const mycolumns = [
   {
     name: "nombre",
@@ -350,6 +359,7 @@ export default {
   components: { buscadorProductos },
 
   async setup() {
+    const { currentUser } = updateUsername();
     const loading = ref(false);
     const $q = useQuasar();
     // const barcode = ref(null);
@@ -360,7 +370,6 @@ export default {
     const total = ref(0);
     const idVenta = ref(null);
     const idVentaCancel = ref(null);
-    const usuario = ref("joselo");
     const myTab = ref(null);
     const producto = ref(null);
     const medio = ref("Efectivo");
@@ -421,7 +430,7 @@ export default {
       });
       if (!idVenta.value) {
         const nueva_venta = {
-          nombre: usuario.value,
+          nombre: currentUser.value,
           codigoBarra: codigo.value,
         };
         const infoVenta = await rqts
@@ -489,7 +498,7 @@ export default {
       inputcantidad,
       total,
       idVenta,
-      usuario,
+      currentUser,
       separator: ref("vertical"),
       pagination: ref({
         rowsPerPage: 0,
@@ -576,7 +585,7 @@ export default {
         }
         const req_args = {
           operation: "cancel",
-          nombre: usuario.value,
+          nombre: currentUser.value,
           idVenta: idToCancel,
         };
         const respuesta = await rqts
@@ -596,7 +605,7 @@ export default {
         });
         const req_args_confirm = {
           operation: "confirm",
-          nombre: usuario.value,
+          nombre: currentUser.value,
         };
         const respuesta_c = await rqts
           .putjson(`ventas/${idVenta.value}`, req_args_confirm)
@@ -606,7 +615,7 @@ export default {
         message: "";
         const req_args = {
           operation: "pay",
-          nombre: usuario.value,
+          nombre: currentUser.value,
           medio: medio.value,
         };
 
@@ -635,62 +644,62 @@ export default {
 
 <style lang="sass">
 label
-  width: 100%
+    width: 100%
 
 .first-container
-  display: grid
-  grid-template-columns: 50% 50%!important
+    display: grid
+    grid-template-columns: 50% 50%!important
 
     /* justify-content: space-between; */
 
 .operations-container
-  display: flex
-  justify-content: flex-end
+    display: flex
+    justify-content: flex-end
 
 .f-container
-  display: grid
-  grid-template-columns: 68% 32%
-  grid-gap: 20px
+    display: grid
+    grid-template-columns: 68% 32%
+    grid-gap: 20px
 
 .grid-child-element
-  margin: 10px
+    margin: 10px
 
 h4
-  margin: 0
-  margin-bottom: 50px
-  padding: 0
+    margin: 0
+    margin-bottom: 50px
+    padding: 0
 
 .grid-child-element
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
-  border-radius: 6px
-  padding: 20px
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
+    border-radius: 6px
+    padding: 20px
 
 .btns-finalizar
-  display: flex
-  flex-direction: column
-  position: absolute
-  bottom: 10px
-  right: 8%
+    display: flex
+    flex-direction: column
+    position: absolute
+    bottom: 10px
+    right: 8%
 
 .full-table
-  width: 100%
+    width: 100%
 
 .full-table > td
-  width: 50%
+    width: 50%
 
 .full-table td
-  text-align: left
+    text-align: left
 
 .full-table.vuelto
-  margin-top: 20px
+    margin-top: 20px
 
 .vuelto-container
-  margin-top: 30px
+    margin-top: 30px
 
 .label
-  color: $negative
-  font-weight: bold
+    color: $negative
+    font-weight: bold
 
 .selector-documento
-  margin-top: 10px
+    margin-top: 10px
 </style>

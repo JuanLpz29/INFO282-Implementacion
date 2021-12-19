@@ -5,44 +5,57 @@
         <q-toolbar-title class="text-primary"> La Tentación </q-toolbar-title>
       </q-toolbar>
 
-      <q-tabs align="left">
-        <q-route-tab to="/" label="Home" class="text-primary" />
-        <q-route-tab to="/app/compras" label="Compras" class="text-primary" />
-        <q-route-tab
-          to="/app/productos"
-          label="Productos"
-          class="text-primary"
-        />
-        <q-route-tab
-          to="/app/ventas/nueva"
-          label="Ventas"
-          class="text-primary"
-        />
+      <!-- <q-tabs align="left"> -->
+      <q-tabs>
+        <div v-if="currentUser" class="row" align="left">
+          <q-route-tab to="/" label="Home" class="text-primary" />
+          <q-route-tab to="/app/compras" label="Compras" class="text-primary" />
+          <q-route-tab
+            to="/app/productos"
+            label="Productos"
+            class="text-primary"
+          />
+          <q-route-tab
+            to="/app/ventas/nueva"
+            label="Ventas"
+            class="text-primary"
+          />
+        </div>
         <q-space />
-        <q-toggle
+        <!-- <q-toggle
           :label="`switch ${blueModel}`"
           v-model="blueModel"
           color="purple-12"
           false-value="off"
           true-value="ON"
           @update:model-value="modelUpdated"
-        />
-        <q-btn round flat icon="manage_accounts" class="right">
-          <q-menu auto-close :offset="[110, 0]">
+        /> -->
+        <!-- <q-tabs align="right"> -->
+        <q-item clickable class="right" @click="opciones">
+          <q-menu v-if="currentUser" auto-close :offset="[0, 0]">
             <q-list style="min-width: 150px">
               <q-item clickable>
-                <q-item-section>Mi cuenta</q-item-section>
+                <q-item-section>Mi cuenta (nada aun)</q-item-section>
               </q-item>
-              <q-item clickable>
+              <q-item clickable @click="logOutUser">
                 <q-item-section>Cerrar sesion</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
-        </q-btn>
+
+          <q-item-section avatar>
+            <q-icon round flat name="manage_accounts" style="font-size: 32px" />
+          </q-item-section>
+          <div v-if="currentUser">Hola, {{ currentUser }}!</div>
+          <div v-else>Iniciar sesion</div>
+        </q-item>
       </q-tabs>
     </q-header>
 
     <q-page-container style="padding-top: 40px">
+      <q-dialog v-model="fixed" transition-hide="rotate">
+        <nuevo-login @close-dialog="fixed = false" />
+      </q-dialog>
       <suspense>
         <template #default>
           <router-view />
@@ -57,24 +70,42 @@
 
 
 <script>
-import { ref } from "vue";
-import { useQuasar, setCssVar } from "quasar";
+import { ref, watch } from "vue";
+import updateUsername from "../plugins/updateUsername";
+import NuevoLogin from "../components/NuevoLogin.vue";
 export default {
+  components: { NuevoLogin },
   setup() {
-    const $q = useQuasar();
-    //$q.dark.set(true)
+    const { currentUser, setCurrentUser } = updateUsername();
+    const info = ref(null);
+    const fixed = ref(false);
+    // function updateOnSucc(user, pass) {
+    //   const succ = rqts.loginxd(info.user, info.pass);
+    //   console.log(succ);
+    // }
+    watch(info, (info, prevCount) => {
+      console.log("deweltaaaa");
+      if (typeof info == String) {
+        alert("error en las credenciales");
+      } else {
+        console.log("el usuario", info.nombre);
+        setCurrentUser(info.nombre);
+      }
+    });
     return {
-      blueModel: ref("ON"),
-      modelUpdated(value) {
-        if (value == "ON") {
-          console.log("SEXOOO");
-          setCssVar("primary", "#ec8bdc");
-          setCssVar("dark", "#051a21");
-          //   setCssVar("bg-file", "src/assets/bg2.png");
+      currentUser,
+      fixed,
+      info,
+      logOutUser() {
+        setCurrentUser("");
+      },
+      opciones() {
+        console.log(currentUser.value);
+        if (currentUser.value) {
+          console.log("opcion 1");
         } else {
-          console.log("off");
-          setCssVar("primary", "#ffffff");
-          setCssVar("dark", "#051a21");
+          console.log("opcion 2");
+          fixed.value = true;
         }
       },
     };

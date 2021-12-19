@@ -3,7 +3,7 @@
 import axios from 'axios';
 const apiUrl = 'http://146.83.216.218:8008/'
 const localUrl = 'http://127.0.0.1:5000/'
-const testing = false;
+const testing = true
 const TIMEOUT = 10000;
 var xd = {
     getUrl(isDebug) {
@@ -62,5 +62,24 @@ var rqts = {
             return error.response.data.message
         }
     },
+    async loginxd(user, pass) {
+        const login_info = {
+            nombre: user,
+            contraseña: pass,
+        };
+        const response = await rqts
+            .postjson(`usuarios/login/`, login_info)
+            .catch((e) => {
+                console.log(e);
+            });
+        console.log(response);
+        console.log(typeof response);
+        if (typeof response == String) {
+            console.log(response)
+            return null;
+        } else {
+            return response;
+        }
+    }
 }
 export default rqts
