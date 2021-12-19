@@ -62,10 +62,10 @@ const mycolumns = [
     headerStyle: "width: 35vh",
   },
   {
-    name: "categoria",
+    name: "precioVenta",
     align: "center",
-    label: "Categoria",
-    field: "categoria",
+    label: "Precio de venta",
+    field: "precioVenta",
     sortable: true,
     style: "width: 12vh",
     headerStyle: "width: 12vh",
