@@ -122,30 +122,30 @@ export default {
         };
         // modificar para notificar dependiendo si la creacion fue exitosa o falló
         const response = await rqts.postjson("productos/", producto);
-        if (response.agregado == true) {
+        if (response.added == true) {
           $q.notify({
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Agregado mi rey",
+            message: "Producto agregado ",
           });
         } else {
           $q.notify({
             color: "red-4",
             textColor: "white",
             icon: "error",
-            message: "Nose agrego umu",
+            message: "Error al agregar producto",
           });
         }
         console.log(response);
       },
       onReset() {
-        nombre.value = "Leche chocolatada colun 200ml";
+        nombre.value = null;
         descripcion.value = "";
-        stock.value = 6;
-        precioUnitario.value = 300;
-        precioVenta.value = 450;
-        codigo.value = 7802920777214;
+        stock.value = null;
+        precioUnitario.value = null;
+        precioVenta.value = null;
+        codigo.value = null;
       },
       oelarva() {
         $q.notify({
