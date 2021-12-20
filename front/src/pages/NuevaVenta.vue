@@ -218,21 +218,6 @@
             @click="confirmFinalizar = true"
           />
         </q-form>
-
-        <div class="cancelar-venta">
-          <q-btn
-            :disabled="!idVentaCancel"
-            icon="cancel"
-            label="Cancelar"
-            type="submit"
-            color="negative"
-            id="btn-cancelar"
-            @click="confirmCancelar = true"
-          />
-          <div v-if="ventaAnterior">
-            cancelar venta anterior (id {{ idVentaCancel }})
-          </div>
-        </div>
       </div>
     </div>
   </q-page>
