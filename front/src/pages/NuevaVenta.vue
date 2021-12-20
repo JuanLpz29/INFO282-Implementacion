@@ -175,7 +175,7 @@
       />
 
       <div v-if="medio == 'Efectivo'" class="vuelto-container">
-        <q-input outlined v-model="monto" placeholder="Efectivo recibido">
+        <q-input outlined v-model="monto" placeholder="Calcular vuelto...">
           <template v-slot:prepend>
             <q-icon name="money" />
           </template>
