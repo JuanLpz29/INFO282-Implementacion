@@ -9,7 +9,7 @@ from tent.models.proveedor import Proveedor
 
 class CompraSchema(ma.Schema):
     class Meta:
-        fields = ('idCompra', 'idProveedor', 'montoTotal',
+        fields = ('idCompra', 'idProveedor', 'folio', 'montoTotal',
                   'montoNeto', 'fecha', 'tipoDocumento')
 
 
