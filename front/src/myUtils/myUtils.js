@@ -19,10 +19,13 @@ var xd = {
 }
 
 var rqts = {
-    async get(endpoint, timeout = TIMEOUT, debug = false) {
+    async get(endpoint, params = null, timeout = TIMEOUT, debug = false) {
         const url = xd.getUrl(debug)
         try {
-            const items = await axios.get(url + endpoint, { timeout: timeout })
+            // quizas axios maneje el params null y no sea encesario el ternero
+            const items = params ?
+                await axios.get(url + endpoint, { params: params }, { timeout: timeout }) :
+                await axios.get(url + endpoint, { timeout: timeout })
             return items.data
         }
         catch (error) {
@@ -46,9 +49,6 @@ var rqts = {
                 message: error.response.data.message
             }
         }
-
-
-
     },
     async postjson(endpoint, jsondata, timeout = TIMEOUT, debug = false) {
         const url = xd.getUrl(debug)
@@ -98,6 +98,22 @@ var rqts = {
         } else {
             return response;
         }
+    },
+
+    async getPaginatedResults(resource, page, filter, rowsPerPage, sortBy, order) {
+
+        // Equivalent to `axios.get('https://httpbin.org/get?answer=42')`
+        // const res = await axios.get('https://httpbin.org/get', { params: { answer: 42 } });
+        const params = {
+            page: page,
+            filter: filter,
+            perpage: rowsPerPage,
+            sortby: sortBy,
+            order: order
+        }
+        const response = await rqts.get(resource + '/', params)
+        return response
     }
+
 }
 export default rqts

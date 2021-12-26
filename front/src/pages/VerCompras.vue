@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-table
       title="Compras"
-      :rows="items"
+      :rows="rows"
       :columns="columns"
       row-key="name"
       :filter="filter"
@@ -11,6 +11,9 @@
       style="table-layout: fixed"
       wrap-cells
       class="text-primary"
+      @request="onRequest"
+      :loading="loading"
+      binary-state-sort
     >
       <template v-slot:top-right>
         <div class="bg-white rounded-borders">
@@ -53,7 +56,7 @@
       </template>
     </q-table>
 
-    <q-dialog v-model="fixed" transition-hide="rotate">
+    <q-dialog :square="true" v-model="fixed" transition-hide="rotate">
       <q-card style="max-width: 90vw">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Detalles de la compra</div>
@@ -76,55 +79,66 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useQuasar } from "quasar";
+import { ref, onMounted } from "vue";
 import rqts from "../myUtils/myUtils";
 import DetallesCompra from "../components/DetallesCompra.vue";
 
 const columns = [
+  //   {
+  //     name: "idCompra",
+  //     required: true,
+  //     label: "Id de la Compra",
+  //     align: "center",
+  //     field: "idCompra",
+  //     sortable: true,
+  //     headerStyle: "width: 10vh",
+  //   },
   {
-    name: "idCompra",
+    name: "folio",
     required: true,
-    label: "Id de la Compra",
+    label: "Folio",
     align: "center",
-    field: "idCompra",
+    field: "folio",
     sortable: true,
     headerStyle: "width: 10vh",
   },
   {
     name: "idProveedor",
     align: "center",
-    label: "Id del proveedor",
+    label: "Proveedor",
     field: "idProveedor",
     sortable: true,
+    headerStyle: "width: 19vh",
   },
   {
     name: "tipoDocumento",
     align: "center",
-    label: "Tipo del Documento",
+    label: "Tipo de Documento",
     field: "tipoDocumento",
     sortable: true,
   },
   {
     name: "montoNeto",
     align: "center",
-    label: "monto Neto de la compra",
+    label: "Monto Neto",
     format: (val, row) => `$${val.toLocaleString()}`,
     field: "montoNeto",
     sortable: true,
+    headerStyle: "width: 20vh",
   },
   {
     name: "montoTotal",
     align: "center",
-    label: "Monto Total de la compra",
+    label: "Monto Total",
     field: "montoTotal",
     format: (val, row) => `$${val.toLocaleString()}`,
     sortable: true,
+    headerStyle: "width: 20vh",
   },
   {
     name: "fecha",
     align: "center",
-    label: "Fecha de la compra",
+    label: "Fecha",
     field: "fecha",
     format: (val, row) => `${val.split("-").reverse().join("-")}`,
     sortable: true,
@@ -133,7 +147,7 @@ const columns = [
     name: "detalles",
     align: "center",
     label: "Ver detalles",
-    headerStyle: "font-weight: 600",
+    headerStyle: "width: 12vh; font-weight: 600",
     // field: "",
   },
 ];
@@ -141,27 +155,59 @@ const columns = [
 export default {
   components: { DetallesCompra },
   async setup() {
-    const $q = useQuasar();
-    $q.loading.show({
-      message: "Cargando...",
+    const loading = ref(false);
+    const rows = ref([]);
+    const filter = ref("");
+    const pagination = ref({
+      sortBy: "",
+      descending: false,
+      page: 1,
+      rowsPerPage: 5,
+      rowsNumber: 10,
     });
-    const response = await rqts.get("compras/").catch((e) => {
-      console.log(e);
-    });
-    $q.loading.hide();
-    const items = response.items;
-    if (typeof items == "undefined") {
-      console.log("XDDDDDDD");
+
+    async function onRequest(props) {
+      loading.value = true;
+      const { page, rowsPerPage, descending, sortBy } = props.pagination;
+      const filter = props.filter ? props.filter : "";
+      const order = descending ? "DESC" : "ASC";
+      const response = await rqts.getPaginatedResults(
+        "compras",
+        page,
+        filter,
+        rowsPerPage,
+        sortBy,
+        order
+      );
+      console.log(response);
+      const items = response.items;
+      console.log(items);
+      // clear out existing data and add new
+      rows.value.splice(0, rows.value.length, ...items);
+      pagination.value.rowsNumber = response.rowsNumber;
+      // don't forget to update local pagination object
+      pagination.value.page = page;
+      pagination.value.rowsPerPage = rowsPerPage;
+      pagination.value.sortBy = sortBy;
+      pagination.value.descending = descending;
+      loading.value = false;
     }
-    console.log(items.items);
+
+    onMounted(() => {
+      // get initial data from server (1st page)
+      onRequest({
+        pagination: pagination.value,
+        filter: undefined,
+      });
+    });
 
     return {
       columns,
-      items,
-      filter: ref(""),
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      rows,
+      filter,
+      pagination,
+      loading,
+      onRequest,
       fixed: ref(false),
       msg: ref(""),
       details: ref(false),
