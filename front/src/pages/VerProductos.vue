@@ -46,7 +46,6 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 
 const mycolumns = [
@@ -62,23 +61,24 @@ const mycolumns = [
     headerStyle: "width: 35vh",
   },
   {
-    name: "precioVenta",
-    align: "center",
-    label: "Precio de venta",
-    field: "precioVenta",
-    sortable: true,
-    style: "width: 12vh",
-    headerStyle: "width: 12vh",
-    align: "center",
-  },
-
-  {
     name: "stock",
     label: "Stock",
     field: "stock",
     sortable: true,
     style: "width: 7vh",
     headerStyle: "width: 7vh",
+    align: "center",
+  },
+  {
+    name: "precioVenta",
+    align: "center",
+    label: "Precio de venta",
+    field: "precioVenta",
+    format: (val) =>
+      isNaN(parseInt(val)) ? `$0` : `$${parseInt(val).toLocaleString()}`,
+    sortable: true,
+    style: "width: 12vh",
+    headerStyle: "width: 12vh",
     align: "center",
   },
 
@@ -105,26 +105,13 @@ export default {
       rowsNumber: 10,
     });
 
-    async function fetchFromServer(page, filter, rowsPerPage, sortBy, order) {
-      // buscar una forma mejor
-      const reqUrl = `?page=${page}&filter=${filter}&perpage=${rowsPerPage}&sortby=${sortBy}&order=${order}`;
-      const items = await rqts.get(`productos/${reqUrl}`).catch((e) => {
-        console.log(e);
-      });
-
-      if (typeof items == "undefined") {
-        console.log("XDDDDDDD");
-      }
-      return items;
-    }
-
     async function onRequest(props) {
       loading.value = true;
       const { page, rowsPerPage, descending, sortBy } = props.pagination;
       const filter = props.filter ? props.filter : "";
       const order = descending ? "DESC" : "ASC";
-      console.log(sortBy);
-      const response = await fetchFromServer(
+      const response = await rqts.getPaginatedResults(
+        "productos",
         page,
         filter,
         rowsPerPage,

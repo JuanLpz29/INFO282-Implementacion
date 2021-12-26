@@ -46,7 +46,9 @@
           <q-item-section avatar>
             <q-icon round flat name="manage_accounts" style="font-size: 32px" />
           </q-item-section>
-          <div style="align-self: center;" v-if="currentUser">Hola, {{ currentUser }}!</div>
+          <div style="align-self: center" v-if="currentUser">
+            Hola, {{ currentUser }}!
+          </div>
           <div v-else>Iniciar sesion</div>
         </q-item>
       </q-tabs>
@@ -56,14 +58,14 @@
       <q-dialog v-model="fixed" transition-hide="rotate">
         <nuevo-login @close-dialog="fixed = false" />
       </q-dialog>
-      <suspense>
-        <template #default>
-          <router-view v-if="currentUser" />
-        </template>
-        <template #fallback>
+      <!-- <suspense> -->
+      <!-- <template #default> -->
+      <router-view v-if="currentUser" />
+      <!-- </template> -->
+      <!-- <template #fallback>
           <div>Loading...</div>
         </template>
-      </suspense>
+      </suspense> -->
     </q-page-container>
   </q-layout>
 </template>
