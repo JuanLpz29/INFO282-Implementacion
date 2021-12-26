@@ -1,61 +1,86 @@
 <template>
   <q-card class="my-card" flat bordered>
     <q-card-section horizontal>
-      <q-item-section style="padding: 20px 30px">
-        <q-item-label> {{ infoCompra.tipoDocumento }}</q-item-label>
-        <q-item-label caption> {{ infoCompra.fecha }} </q-item-label>
-      </q-item-section>
-
+      <q-item class="col-5">
+        <q-item-section q-pa-md style="text-align: center">
+          <q-item-label> {{ infoCompra.tipoDocumento }}</q-item-label>
+          <q-item-label> Folio: {{ infoCompra.folio }}</q-item-label>
+          <q-item-label caption> {{ infoCompra.fecha }} </q-item-label>
+        </q-item-section>
+      </q-item>
       <!-- <q-separator vertical /> -->
-      <q-item>
-        <q-item-section avatar>
-          <q-avatar style="padding-left: 50px; margin: 15px 15px">
+      <q-item class="col" style="padding-left: 5vh">
+        <q-item-section avatar q-pa-sm>
+          <q-avatar>
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/1/19/CCU_LOGO.png"
             />
           </q-avatar>
         </q-item-section>
-
-        <q-item-section style="padding: 20px 20px">
+      </q-item>
+      <q-item class="col-5">
+        <q-item-section q-pa-md style="text-align: center">
           <q-item-label> {{ nombreProveedor }}</q-item-label>
           <q-item-label caption> {{ infoProveedor.rut }} </q-item-label>
         </q-item-section>
       </q-item>
     </q-card-section>
 
+    <q-card-section horizontal v-if="registrada">
+      <q-item-section q-pa-md style="text-align: center">
+        <q-item-label caption>
+          La compra ya se encuentra registrada en el sistema.
+        </q-item-label>
+      </q-item-section>
+    </q-card-section>
     <q-separator />
 
-    <q-card-section horizontal>
-      <q-item-section style="padding: 20px 20px; text-align: center">
-        <q-item-label caption> Monto neto: ${{ montoNeto }} </q-item-label>
-        <q-item-label> Monto total: ${{ montoTotal }}</q-item-label>
+    <q-card-section horizontal class="q-pa-md" style="text-align: center">
+      <q-item-section>
+        <q-item-label caption>
+          Monto neto: ${{ montoNeto.toLocaleString() }}
+        </q-item-label>
       </q-item-section>
-      <q-card-section> </q-card-section>
+      <q-item-section>
+        <q-item-label caption> IVA: ${{ iva.toLocaleString() }} </q-item-label>
+      </q-item-section>
+      <q-item-section v-if="impAdicional">
+        <q-item-label caption>
+          Impuestos adicionales: ${{ impAdicional.toLocaleString() }}
+        </q-item-label>
+      </q-item-section>
     </q-card-section>
+    <q-item-section class="q-pa-sm" style="text-align: center">
+      <q-item-label> Monto total: ${{ montoTotal }}</q-item-label>
+    </q-item-section>
   </q-card>
 </template>
 
 <script>
-import { ref } from "vue";
 export default {
   props: {
     infoCompra: Object,
     infoProveedor: Object,
+    registrada: Boolean,
   },
 
   setup(props) {
-    let nombreProveedor;
-    if (props.infoProveedor.razonSocial) {
-      nombreProveedor = props.infoProveedor.razonSocial;
-    } else {
-      nombreProveedor = props.infoProveedor.proveedor;
-    }
+    const registrada = props.registrada;
+    const nombreProveedor = props.infoProveedor.razonSocial;
+    const montoNeto = parseInt(props.infoCompra.montoNeto);
+    const montoTotal = parseInt(props.infoCompra.montoTotal);
+    const iva = Math.round(montoNeto * 0.19);
+    const _impAdicional = montoTotal - montoNeto - iva;
+    const impAdicional = _impAdicional > 30 ? _impAdicional : null;
     return {
+      registrada,
       nombreProveedor,
-      infoCompra: ref(props.infoCompra),
-      infoProveedor: ref(props.infoProveedor),
-      montoTotal: ref(parseInt(props.infoCompra.montoTotal).toLocaleString()),
-      montoNeto: ref(parseInt(props.infoCompra.montoNeto).toLocaleString()),
+      infoCompra: props.infoCompra,
+      infoProveedor: props.infoProveedor,
+      montoTotal,
+      montoNeto,
+      iva,
+      impAdicional,
     };
   },
 };
@@ -63,5 +88,5 @@ export default {
 
 <style lang="sass" scoped>
 .my-card
-  width: min(500px, 60vh)
+    width: 100%
 </style>

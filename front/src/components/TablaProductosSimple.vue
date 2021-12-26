@@ -1,6 +1,6 @@
 <template>
   <!-- <q-page style="min-height: 0vh; padding-left: 0px"> -->
-  <div class="q-pa-sm">
+  <div>
     <q-table
       title="Productos"
       :rows="items"
@@ -43,59 +43,15 @@
 
 <script>
 import { ref } from "vue";
-const columns = [
-  {
-    name: "nombre",
-    required: true,
-    label: "Un producto cualquiera",
-    align: "left",
-    field: (row) => row.nombre,
-    format: (val) => `${val}`,
-    sortable: true,
-    style: "width: 35vh",
-    headerStyle: "width: 35vh",
-  },
-  {
-    name: "precioVenta",
-    align: "center",
-    label: "Precio venta",
-    field: "precioVenta",
-    sortable: true,
-    style: "width: 12vh",
-    headerStyle: "width: 20vh",
-    align: "center",
-  },
-
-  {
-    name: "stock",
-    label: "Stock",
-    field: "stock",
-    sortable: true,
-    style: "width: 7vh",
-    headerStyle: "width: 7vh",
-    align: "center",
-  },
-
-  {
-    name: "descripcion",
-    label: "Descripcion",
-    field: "descripcion",
-    style: "width: 40vh",
-    headerStyle: "width: 40vh",
-    align: "left",
-  },
-];
 
 export default {
   props: {
     items: Array,
-    esVenta: Boolean,
+    columns: Array,
   },
 
   setup(props) {
-    if (props.esVenta) {
-      columns[2].label = "Cantidad";
-    }
+    const columns = props.columns;
     return {
       columns,
       items: ref(props.items),

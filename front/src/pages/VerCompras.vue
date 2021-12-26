@@ -56,25 +56,25 @@
       </template>
     </q-table>
 
-    <q-dialog :square="true" v-model="fixed" transition-hide="rotate">
-      <q-card style="max-width: 90vw">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Detalles de la compra</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
+    <suspense>
+      <template #default>
+        <q-dialog :square="true" v-model="fixed" transition-hide="rotate">
+          <q-card style="max-width: 90vw">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Detalles de la compra</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
 
-        <q-separator />
-        <q-card-section style="max-height: 80vh">
-          <suspense>
-            <template #default>
+            <q-separator />
+            <q-card-section style="max-height: 80vh">
               <detalles-compra :idCompra="idCompra" />
-            </template>
-            <template #fallback> </template>
-          </suspense>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+      </template>
+      <template #fallback> Loading... </template>
+    </suspense>
   </div>
 </template>
 
