@@ -2,7 +2,7 @@
   <q-page style="min-height: 0; padding-top: 25">
     <!-- <div class="q-pa-md"> -->
     <q-table
-      title="los producctosss"
+      title="Productos de la Compra"
       :rows="items"
       :columns="mycolumns"
       :filter="filter"
@@ -168,7 +168,7 @@ const mycolumns = [
   {
     name: "nombre",
     required: true,
-    label: "Un producto cualquiera",
+    label: "Nombre",
     align: "left",
     field: (row) => row.nombre,
     format: (val) => `${val}`,

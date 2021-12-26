@@ -48,6 +48,7 @@
           :key="info"
           :infoCompra="info"
           :infoProveedor="proveedor"
+          :registrada="registrada"
         />
       </q-page-container>
     </div>
@@ -56,7 +57,7 @@
         v-if="productos"
         style="padding-top: 25px; padding-left: 25px"
       >
-        <productos-compra :items="productos" />
+        <productos-subir-compra :items="productos" />
       </q-page-container>
       <div v-if="productos !== null" class="row justify-end">
         <q-btn
@@ -77,11 +78,11 @@
 import { ref } from "vue";
 import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
-import ProductosCompra from "../components/ProductosCompra.vue";
+import ProductosSubirCompra from "../components/ProductosSubirCompra.vue";
 import InformacionCompra from "../components/InformacionCompra.vue";
 
 export default {
-  components: { ProductosCompra, InformacionCompra },
+  components: { ProductosSubirCompra, InformacionCompra },
   async setup() {
     const $q = useQuasar();
     return {
