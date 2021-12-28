@@ -22,13 +22,19 @@
           <div class="cancelar-venta">
             <div class="formulario-cancelar">
               <q-btn
+                ref="cancelBtn"
                 :disabled="!idVentaCancel"
                 icon="cancel"
                 label="Cancelar Venta"
                 type="submit"
                 color="negative"
                 id="btn-cancelar"
-                @click="confirmCancelar = true"
+                @click="
+                  () => {
+                    confirmCancelar = true;
+                    focusOnCodeInput();
+                  }
+                "
               />
 
               <!-- confirmCancelar = true; -->
@@ -45,7 +51,12 @@
               type="submit"
               color="dark"
               id="btn-cancelar"
-              @click="focusOnCodeInput"
+              @click="
+                () => {
+                  buscar = true;
+                  focusOnCodeInput();
+                }
+              "
             ></q-btn>
           </div>
         </div>
@@ -225,7 +236,12 @@
       <div class="btns-finalizar">
         <q-form
           class="formulario-finalizar-venta"
-          @submit.prevent="confirmFinalizar = true"
+          @submit.prevent="
+            () => {
+              confirmFinalizar = true;
+              focusOnCodeInput();
+            }
+          "
         >
           <q-btn
             :disabled="!idVentaCancel"
@@ -235,7 +251,12 @@
             label="Finalizar venta"
             :disable="total == false"
             type="submit"
-            @click="confirmFinalizar = true"
+            @click="
+              () => {
+                confirmFinalizar = true;
+                focusOnCodeInput();
+              }
+            "
           />
         </q-form>
       </div>
@@ -382,10 +403,13 @@ export default {
       console.log("focuseando");
       const codeInput = this.$refs.kek;
       codeInput.focus();
-      this.buscar = true;
     },
-    async blurInput(inputElement) {
+    blurInput(inputElement) {
       inputElement.target.blur();
+    },
+    blurCancelar() {
+      const codeInput = this.$refs.kek;
+      codeInput.focus();
     },
   },
 
