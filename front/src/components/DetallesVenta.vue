@@ -41,6 +41,8 @@ const columns = [
     align: "center",
     label: "Precio venta",
     field: "precioVenta",
+    format: (val) =>
+      isNaN(parseInt(val)) ? `$0` : `$${parseInt(val).toLocaleString()}`,
     sortable: true,
     style: "width: 25vh",
     headerStyle: "width: 22vh",
@@ -51,6 +53,8 @@ const columns = [
     align: "center",
     label: "Subtotal",
     field: (row) => row.precioVenta * row.cantidad,
+    format: (val) =>
+      isNaN(parseInt(val)) ? `$0` : `$${parseInt(val).toLocaleString()}`,
     sortable: true,
     style: "width: 25vh",
     headerStyle: "width: 22vh",
