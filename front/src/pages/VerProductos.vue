@@ -101,7 +101,7 @@ export default {
       sortBy: "",
       descending: false,
       page: 1,
-      rowsPerPage: 10,
+      rowsPerPage: 7,
       rowsNumber: 10,
     });
 

@@ -1,22 +1,28 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
-function createWindow() {
+function createWindow(production) {
     const win = new BrowserWindow({
-        // autoHideMenuBar: true,
+        autoHideMenuBar: true,
         width: 1200,
         height: 800,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
+            webSecurity: true,
         },
     });
 
     win.loadFile("dist/index.html");
-    win.webContents.openDevTools()
+    if (production) {
+        win.webPreferences['devTools'] = false
+    }
+    else {
+        win.webContents.openDevTools()
+    }
 }
 
 app.whenReady().then(() => {
-    createWindow();
+    createWindow(app.isPackaged);
 
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) {
