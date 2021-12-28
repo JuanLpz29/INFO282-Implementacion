@@ -5,11 +5,7 @@
       <informacion-compra :infoCompra="info" :infoProveedor="proveedor" />
     </q-page-container>
     <q-page-container class="q-pa-md" style="padding-left: 16px">
-      <tabla-productos-simple
-        :columns="columns"
-        :items="productos"
-        :esVenta="false"
-      />
+      <tabla-productos-simple :columns="columns" :items="productos" />
     </q-page-container>
   </q-page>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <q-page style="min-height: 60vh">
     <q-table
       title="Compras"
       :rows="rows"
@@ -58,10 +58,10 @@
 
     <suspense>
       <template #default>
-        <q-dialog :square="true" v-model="fixed" transition-hide="rotate">
+        <q-dialog v-model="fixed" transition-hide="rotate">
           <q-card style="max-width: 90vw">
             <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">Detalles de la compra</div>
+              <div class="text-h6">Detalles de la venta</div>
               <q-space />
               <q-btn icon="close" flat round dense v-close-popup />
             </q-card-section>
@@ -75,7 +75,7 @@
       </template>
       <template #fallback> Loading... </template>
     </suspense>
-  </div>
+  </q-page>
 </template>
 
 <script>
@@ -108,7 +108,7 @@ const columns = [
     label: "Proveedor",
     field: "idProveedor",
     sortable: true,
-    headerStyle: "width: 19vh",
+    headerStyle: "width: 30vh",
   },
   {
     name: "tipoDocumento",
@@ -116,6 +116,7 @@ const columns = [
     label: "Tipo de Documento",
     field: "tipoDocumento",
     sortable: true,
+    headerStyle: "width: 25vh",
   },
   {
     name: "montoNeto",
@@ -124,7 +125,7 @@ const columns = [
     format: (val, row) => `$${val.toLocaleString()}`,
     field: "montoNeto",
     sortable: true,
-    headerStyle: "width: 20vh",
+    headerStyle: "width: 12vh",
   },
   {
     name: "montoTotal",
@@ -133,7 +134,7 @@ const columns = [
     field: "montoTotal",
     format: (val, row) => `$${val.toLocaleString()}`,
     sortable: true,
-    headerStyle: "width: 20vh",
+    headerStyle: "width: 12vh",
   },
   {
     name: "fecha",
@@ -142,6 +143,7 @@ const columns = [
     field: "fecha",
     format: (val, row) => `${val.split("-").reverse().join("-")}`,
     sortable: true,
+    headerStyle: "width: 12vh",
   },
   {
     name: "detalles",

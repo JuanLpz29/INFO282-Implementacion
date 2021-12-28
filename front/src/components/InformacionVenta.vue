@@ -1,15 +1,39 @@
 <template>
   <q-card class="my-card" flat bordered>
     <q-card-section horizontal>
-      <q-item-section style="padding: 20px 30px">
-        <q-item-label> {{ infoVenta.total }}</q-item-label>
-        <q-item-label caption> {{ infoVenta.fecha ?? "fecha" }} </q-item-label>
-      </q-item-section>
+      <q-item class="col">
+        <q-item-section q-pa-md style="text-align: center">
+          <q-item-label>
+            Estado:
+            <span class="text-bold"> {{ infoVenta.estado }} </span>
+          </q-item-label>
+          <q-item-label>
+            Fecha:
+            <span class="text-bold"> {{ fecha }} </span>
+          </q-item-label>
+          <q-item-label>
+            Hora:
+            <span class="text-bold"> {{ hora }} </span>
+          </q-item-label>
+        </q-item-section>
+      </q-item>
 
-      <!-- <q-separator vertical /> -->
-      <q-item>
-        <q-item-section avatar>
-          <q-avatar style="padding-left: 50px; margin: 15px 15px">
+      <q-item v-if="infoVenta.estado == 'Pagada'" class="col">
+        <q-item-section q-pa-md style="text-align: center">
+          <q-item-label>
+            Medio de pago:
+            <span class="text-bold"> {{ infoVenta.medioDePago }} </span>
+          </q-item-label>
+          <q-item-label>
+            Documento emitido:
+            <span class="text-bold"> (falta en el schema) </span>
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+
+      <q-item bordered class="col" style="padding-left: 5vh">
+        <q-item-section avatar q-pa-sm>
+          <q-avatar>
             <img
               src="https://e7.pngegg.com/pngimages/680/985/png-clipart-kirito-asuna-sword-art-online-drawing-anime-asuna-black-hair-computer-wallpaper.png"
             />
@@ -27,7 +51,9 @@
 
     <q-card-section horizontal>
       <q-item-section style="padding: 20px 20px; text-align: center">
-        <q-item-label> Monto total: ${{ montoTotal }}</q-item-label>
+        <q-item-label class="text-bold text-subtitle1">
+          Monto total: ${{ montoTotal }}</q-item-label
+        >
       </q-item-section>
       <q-card-section> </q-card-section>
     </q-card-section>
@@ -44,10 +70,18 @@ export default {
   },
 
   setup(props) {
+    console.log(props.infoVenta);
+    console.log(props.infoUsuario);
+    const dt = props.infoVenta.fecha;
+    const dtParsed = new Date(Date.parse(dt + "Z")).toLocaleString("es-CL");
+    let fecha, hora;
+    [fecha, hora] = dtParsed.split(" ");
     return {
-      infoVenta: ref(props.infoVenta),
-      infoUsuario: ref(props.infoUsuario),
-      montoTotal: ref(parseInt(props.infoVenta.total).toLocaleString()),
+      fecha,
+      hora,
+      infoVenta: props.infoVenta,
+      infoUsuario: props.infoUsuario,
+      montoTotal: parseInt(props.infoVenta.total).toLocaleString(),
     };
   },
 };
@@ -55,5 +89,5 @@ export default {
 
 <style lang="sass" scoped>
 .my-card
-    width: min(500px, 60vh)
+    width: 100%
 </style>

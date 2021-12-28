@@ -1,11 +1,11 @@
 <template>
-  <!-- <div class="q-pa-md"> -->
   <q-page class="f-container" style="min-height: 60vh">
     <div class="grid-child-element">
       <div class="first-container">
         <div class="inner-container">
           <q-form class="q-pa-md formulario-codigo" @submit.prevent="onSubmit">
             <q-input
+              ref="kek"
               style="width: 300px"
               rounded
               label="Ingrese codigo de barra"
@@ -30,8 +30,10 @@
                 id="btn-cancelar"
                 @click="confirmCancelar = true"
               />
+
+              <!-- confirmCancelar = true; -->
             </div>
-            <div v-if="ventaAnterior">
+            <div v-if="idVentaCancel">
               cancelar venta anterior (id {{ idVentaCancel }})
             </div>
           </div>
@@ -43,7 +45,7 @@
               type="submit"
               color="dark"
               id="btn-cancelar"
-              @click="() => (buscar = true)"
+              @click="focusOnCodeInput"
             ></q-btn>
           </div>
         </div>
@@ -82,7 +84,30 @@
                 {{ col.value }}
               </template>
               <template v-else-if="col.name === 'cantidad'">
-                {{ col.value }}
+                <q-input
+                  input-class="text-center"
+                  style="font-size: 20px"
+                  outlined
+                  v-model.number="props.row.cantidad"
+                  :rules="[
+                    (val) => !!val || val == 0 || '* Required',
+                    (val) =>
+                      !isNaN(val) || 'jefesito Please metale un numerito',
+                    (val) => val >= 0 || 'oiga master pongale cantidad > 0',
+                    (val) =>
+                      val <= props.row.stock || 'tepa saste' + props.row.stock,
+                  ]"
+                  @keypress.enter="(val) => blurInput(val)"
+                  @blur="actualizar(props.row, props.row.cantidad)"
+                  :hint="'Stock: ' + props.row.stock"
+                >
+                  <!-- <template v-slot> Stock: {{ props.row.stock }}. </template> -->
+                  <!-- :rules="[
+                            val => isNaN(val) || 'Debe ingresar un número',
+                            (val, props.row) => val > props.row.stock || 'tepa saste' + props.row.stock
+                            ]" -->
+                  <!-- :suffix="'/' + props.row.stock" -->
+                </q-input>
                 <!-- <q-popup-edit
                   v-model.number="props.row.cantidad"
                   buttons
@@ -91,10 +116,10 @@
                   @hide="cantidadRangeValidation"
                   @save="actualizar(props.row)"
                 > -->
-                <q-popup-edit
+                <!-- <q-popup-edit
                   v-model.number="props.row.cantidad"
                   buttons
-                  :validate="(val) => val >= 0 && val < 100"
+                  :validate="(val, row) => val >= 0 && val < row.stock"
                   @save="
                     (val, previous) => actualizar(props.row, val, previous)
                   "
@@ -111,13 +136,13 @@
                       :rules="[
                         (val) =>
                           scope.validate(scope.value) ||
-                          'Debe ingresar una cantidad entre 0 y 100',
+                          'Debe ingresar una cantidad valida',
                       ]"
                       @keyup.enter="scope.set"
                       hint="Elija una nueva cantidad de producto"
                     />
                   </template>
-                </q-popup-edit>
+                </q-popup-edit> -->
               </template>
 
               <template v-else>
@@ -126,7 +151,7 @@
                   color="negative"
                   :disable="loading"
                   label="X"
-                  @click="actualizar(props.row, 0, props.row.cantidad)"
+                  @click="actualizar(props.row, 0)"
                 />
               </template>
             </q-td>
@@ -184,28 +209,23 @@
         <table class="full-table vuelto">
           <tbody>
             <tr>
-              <td><h4>Vuelto:</h4></td>
+              <td><h4 style="padding-top: 15px">Vuelto:</h4></td>
               <td>
-                <h4>
+                <h4 style="padding-top: 15px">
                   ${{
                     (monto - total > 0 ? monto - total : 0).toLocaleString()
                   }}
                 </h4>
               </td>
             </tr>
-            <!-- <tr>
-            <td><h4>Vuelto:</h4></td>
-            <td>
-              <h4>{{ total }}</h4>
-            </td>
-          </tr> -->
           </tbody>
         </table>
       </div>
+      <div v-else><br /></div>
       <div class="btns-finalizar">
         <q-form
           class="formulario-finalizar-venta"
-          @submit.prevent="confirmFinalizar"
+          @submit.prevent="confirmFinalizar = true"
         >
           <q-btn
             :disabled="!idVentaCancel"
@@ -296,8 +316,8 @@ const mycolumns = [
     align: "left",
     field: (row) => row.nombre,
     format: (val) => `${val}`,
-    style: "width: 35vh",
-    headerStyle: "width: 35vh",
+    style: "width: 34vh",
+    headerStyle: "width: 34vh",
   },
 
   {
@@ -305,17 +325,17 @@ const mycolumns = [
     label: "Precio",
     field: "valorItem",
     format: (val, row) => `$${val.toLocaleString()}`,
-    style: "width: 40vh",
-    headerStyle: "width: 40vh",
-    align: "left",
+    style: "width: 18vh",
+    headerStyle: "font-weight: 600; width: 18vh",
+    align: "center",
   },
 
   {
     name: "cantidad",
     label: "Cantidad",
     field: "cantidad",
-    style: "width: 7vh",
-    headerStyle: "width: 7vh",
+    style: "width: 18vh",
+    headerStyle: "font-weight: 600; width: 18vh",
     align: "center",
   },
 
@@ -324,16 +344,16 @@ const mycolumns = [
     label: "Subtotal",
     field: "subtotal",
     format: (val) => `$${val.toLocaleString()}`,
-    style: "width: 40vh",
-    headerStyle: "width: 40vh",
-    align: "left",
+    style: "width: 18vh",
+    headerStyle: "font-weight: 600; width: 18vh",
+    align: "center",
   },
   {
     name: "eliminar",
     align: "center",
     label: "Eliminar",
-    headerStyle: "font-weight: 600",
-    // field: "",
+    headerStyle: "font-weight: 600; width: 10vh",
+    style: "width: 10vh",
   },
 ];
 const codes = [
@@ -356,6 +376,18 @@ Array.prototype.random = function () {
 // QTable needs to know the total number of rows available in order to correctly render the pagination links. Should filtering cause the rowsNumber to change then it must be modified dynamically.
 export default {
   components: { buscadorProductos },
+
+  methods: {
+    focusOnCodeInput() {
+      console.log("focuseando");
+      const codeInput = this.$refs.kek;
+      codeInput.focus();
+      this.buscar = true;
+    },
+    async blurInput(inputElement) {
+      inputElement.target.blur();
+    },
+  },
 
   async setup() {
     const { currentUser, currentUserId } = updateUsername();
@@ -382,8 +414,10 @@ export default {
     function vaciarVariables() {
       rows.value = [];
       total.value = 0;
+      monto.value = null;
       idVenta.value = null;
       idVentaCancel.value = null;
+      console.log(monto.value);
     }
 
     function verExistencia(codigo) {
@@ -395,7 +429,6 @@ export default {
       });
       return existe;
     }
-
     function addRow(row) {
       titulotabla.value = "Venta en curso";
       //   si hay al menos un producto ver si es que el que se quiere agregar es el mismo
@@ -437,6 +470,7 @@ export default {
         nombre: currentUser.value,
         codigoBarra: codigo.value,
       };
+      // loading.value = true;
       $q.loading.show({
         message: "Cargando...",
       });
@@ -447,6 +481,7 @@ export default {
           console.log(e);
         });
       $q.loading.hide();
+      // loading.value = true;
       const ok = checkAndAdd(infoVenta);
       if (ok == true) {
         idVenta.value = infoVenta.venta.idVenta;
@@ -460,20 +495,19 @@ export default {
         cantidad: 1,
         codigoBarra: codigo.value,
       };
-      $q.loading.show({
-        message: "Cargando...",
-      });
+      loading.value = true;
+
       const infoVenta = await rqts
         .putjson(`ventas/${idVenta.value}`, updateArgs)
         .catch((e) => {
           console.log(e);
         });
-      $q.loading.hide();
       checkAndAdd(infoVenta);
+      loading.value = false;
     }
 
     function checkAndAdd(infoVenta) {
-      console.log("checkeando", infoVenta);
+      console.log("producto a actualizar", infoVenta.producto);
       if (infoVenta.venta) {
         total.value = infoVenta.venta.total;
         addRow(infoVenta.producto);
@@ -509,16 +543,34 @@ export default {
       app.appContext.config.globalProperties.$barcodeScanner;
     barcodeScanner.init(onBarcodeScanned);
     watch(producto, (producto, prevCount) => {
-      console.log("xzd", producto);
       codigo.value = producto.codigoBarra;
       onSubmit();
     });
 
     watch(currentUser, (currentUser, prevCount) => {
-      console.log("xzd", currentUser);
       alert("bye");
       vaciarVariables();
     });
+    async function cancelarVenta() {
+      $q.loading.show({
+        message: "Cargando...",
+      });
+      console.log("idVentaCancel", idVentaCancel.value);
+
+      const req_args = {
+        operation: "cancel",
+        nombre: currentUser.value,
+      };
+      const respuesta = await rqts
+        .putjson(`ventas/${idVentaCancel.value}`, req_args)
+        .catch((e) => {
+          console.log(e);
+        });
+      $q.loading.hide();
+      vaciarVariables();
+      ventaAnterior.value = false;
+      titulotabla.value = "Agregue productos para iniciar la venta";
+    }
 
     async function setIdToCancel() {
       if (currentUserId.value) {
@@ -527,6 +579,7 @@ export default {
         if (resp.idVentaActiva) {
           idVentaCancel.value = resp.idVentaActiva;
           ventaAnterior.value = resp.idVentaActiva;
+          cancelarVenta();
         }
       }
     }
@@ -553,7 +606,7 @@ export default {
         rowsPerPage: 0,
       }),
       buscar: ref(false),
-      selectMedio: ["Efectivo", "Debito", "Credito", "Fiado"],
+      selectMedio: ["Efectivo", "Debito", "Credito"],
       tipoDeDocumento: ["Boleta", "Factura", "Guia de despacho"],
       onSubmit,
       idVentaCancel,
@@ -567,6 +620,7 @@ export default {
       ventaAnterior,
       confirmFinalizar: ref(false),
       confirmCancelar: ref(false),
+      cancelarVenta,
       cantidadRangeValidation(val) {
         if (val < 0 || val > 100) {
           errorCantidad.value = true;
@@ -578,16 +632,13 @@ export default {
         return true;
       },
 
-      async actualizar(row, val, prev) {
-        $q.loading.show({
-          message: "Cargando...",
-        });
-        console.log("CANTIDAD", row.cantidad);
-        if (isNaN(val) || val < 0) {
-          row.cantidad = prev;
+      async actualizar(row, val) {
+        if (isNaN(val) || val < 0 || val > row.stock) {
+          row.cantidad = 1;
         } else {
           row.cantidad = val;
         }
+        console.log("actualizar con val: ", row.cantidad);
         const req_args = {
           operation: "update",
           cantidad: row.cantidad,
@@ -599,7 +650,6 @@ export default {
           .catch((e) => {
             console.log(e);
           });
-        $q.loading.hide();
         const idx = verExistencia(items.producto.codigoBarra);
         if (val == 0) {
           this.removeRow(idx);
@@ -614,27 +664,6 @@ export default {
           ...rows.value.slice(0, index),
           ...rows.value.slice(index + 1),
         ];
-      },
-
-      async cancelarVenta() {
-        $q.loading.show({
-          message: "Cargando...",
-        });
-        console.log("idVentaCancel", idVentaCancel.value);
-
-        const req_args = {
-          operation: "cancel",
-          nombre: currentUser.value,
-        };
-        const respuesta = await rqts
-          .putjson(`ventas/${idVentaCancel.value}`, req_args)
-          .catch((e) => {
-            console.log(e);
-          });
-        $q.loading.hide();
-        vaciarVariables();
-        ventaAnterior.value = false;
-        titulotabla.value = "Agregue productos para iniciar la venta";
       },
 
       async finalizarVenta() {
@@ -726,7 +755,7 @@ h4
     text-align: left
 
 .vuelto-container
-    margin-top: 30px
+    margin-top: 20px
 
 .label
     color: $negative
@@ -743,7 +772,7 @@ form.q-form.formulario-finalizar-venta
     padding: 10px
 
 .vuelto h4
-    font-size: 22px
+    font-size: 20px
 
 .formulario-cancelar
     margin-right: 10px

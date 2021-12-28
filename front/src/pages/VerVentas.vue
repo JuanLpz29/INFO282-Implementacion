@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <q-page style="min-height: 60vh">
     <q-table
       title="Ventas"
       :rows="rows"
@@ -38,72 +38,72 @@
         </q-tr>
       </template>
     </q-table>
-    <q-dialog v-model="fixed" transition-hide="rotate">
-      <q-card style="max-width: 90vw">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Detalles de la compra</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
 
-        <q-separator />
-        <q-card-section style="max-height: 80vh">
-          <suspense>
-            <template #default>
+    <suspense>
+      <template #default>
+        <q-dialog v-model="fixed" transition-hide="rotate">
+          <q-card style="max-width: 90vw">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Detalles de la compra</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
+
+            <q-separator />
+            <q-card-section style="max-height: 80vh">
               <detalles-venta :idVenta="idVenta" />
-            </template>
-            <template #fallback> </template>
-          </suspense>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-  </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+      </template>
+      <template #fallback> Loading... </template>
+    </suspense>
+  </q-page>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
-import { useQuasar } from "quasar";
 import rqts from "../myUtils/myUtils";
 import DetallesVenta from "../components/DetallesVenta.vue";
 
 const columns = [
+  //   {
+  //     name: "idVenta",
+  //     required: true,
+  //     label: "Id de la Venta",
+  //     align: "center",
+  //     field: "idVenta",
+  //     sortable: true,
+  //     headerStyle: "width: 10vh",
+  //   },
   {
-    name: "idVenta",
-    required: true,
-    label: "Id de la Venta",
+    name: "fecha",
     align: "center",
-    field: "idVenta",
-    sortable: true,
-    headerStyle: "width: 10vh",
-  },
-  {
-    name: "idUsuario",
-    align: "center",
-    label: "Id del usuario",
-    field: "idUsuario",
+    label: "Fecha",
+    field: "fecha",
+    format: (val) => new Date(Date.parse(val + "Z")).toLocaleString("es-CL"),
     sortable: true,
   },
   {
     name: "estado",
     align: "center",
-    label: "Estado de la venta",
+    label: "Estado",
     field: "estado",
     sortable: true,
   },
   {
     name: "total",
     align: "center",
-    label: "Monto Total de la venta",
+    label: "Total",
     field: "total",
     format: (val, row) => `$${val.toLocaleString()}`,
     sortable: true,
   },
   {
-    name: "fecha",
+    name: "idUsuario",
     align: "center",
-    label: "Fecha",
-    field: "fecha",
-    //   format: (val, row) => `${val.split("-").reverse().join("-")}`,
+    label: "Usuario",
+    field: "idUsuario",
     sortable: true,
   },
   {
@@ -122,33 +122,20 @@ export default {
     const rows = ref([]);
     const filter = ref("");
     const pagination = ref({
-      sortBy: "",
-      descending: false,
+      sortBy: "fecha",
+      descending: true,
       page: 1,
       rowsPerPage: 10,
       rowsNumber: 10,
     });
-
-    async function fetchFromServer(page, filter, rowsPerPage, sortBy, order) {
-      // buscar una forma mejor
-      const reqUrl = `?page=${page}&filter=${filter}&per_page=${rowsPerPage}&sortby=${sortBy}&order=${order}`;
-      const items = await rqts.get(`ventas/${reqUrl}`).catch((e) => {
-        console.log(e);
-      });
-
-      if (typeof items == "undefined") {
-        console.log("XDDDDDDD");
-      }
-      return items;
-    }
 
     async function onRequest(props) {
       loading.value = true;
       const { page, rowsPerPage, descending, sortBy } = props.pagination;
       const filter = props.filter ? props.filter : "";
       const order = descending ? "DESC" : "ASC";
-      console.log(sortBy);
-      const response = await fetchFromServer(
+      const response = await rqts.getPaginatedResults(
+        "ventas",
         page,
         filter,
         rowsPerPage,

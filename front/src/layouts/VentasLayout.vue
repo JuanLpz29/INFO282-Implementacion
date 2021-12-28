@@ -21,18 +21,17 @@
         <q-list padding>
           <q-item clickable v-ripple to="/app/ventas/nueva">
             <q-item-section avatar>
-              <q-icon color="info"  name="receipt_long" />
+              <q-icon color="info" name="point_of_sale" />
             </q-item-section>
 
             <q-item-section>
-              
               <p class="centered text-info">Nueva venta</p>
             </q-item-section>
           </q-item>
 
           <q-item active clickable v-ripple to="/app/ventas/ver">
             <q-item-section avatar>
-              <q-icon color="info" name="upload_file" />
+              <q-icon color="info" name="receipt" />
             </q-item-section>
 
             <q-item-section>
@@ -46,7 +45,7 @@
       </q-drawer>
 
       <q-page-container>
-        <q-page padding style="padding-top: 4vh; min-height: 80vh">
+        <q-page padding style="padding-top: 2vh; min-height: 80vh">
           <suspense>
             <template #default>
               <router-view />

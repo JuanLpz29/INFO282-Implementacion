@@ -52,7 +52,7 @@ const mycolumns = [
   {
     name: "nombre",
     required: true,
-    label: "Un producto cualquiera",
+    label: "Nombre",
     align: "left",
     field: (row) => row.nombre,
     format: (val) => `${val}`,
@@ -84,7 +84,7 @@ const mycolumns = [
 
   {
     name: "descripcion",
-    label: "Descripcion",
+    label: "Descripción",
     field: "descripcion",
     style: "width: 40vh",
     headerStyle: "width: 40vh",
