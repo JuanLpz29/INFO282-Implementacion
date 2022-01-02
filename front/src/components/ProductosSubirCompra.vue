@@ -49,10 +49,15 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="precioVenta" :props="props">
-            {{ props.row.precioVenta }}
+          <q-td key="precioUnitario" :props="props">
+            ${{ props.row.precioUnitario.toLocaleString() }}
+          </q-td>
+
+          <q-td key="stock" :props="props">
+            {{ props.row.stock }}
+            <span v-if="props.row.formato"> {{ props.row.formato }}</span>
             <q-popup-edit
-              v-model="props.row.precioVenta"
+              v-model="props.row.stock"
               :validate="(val) => val > 0"
               :cover="false"
               :offset="[-10, -10]"
@@ -63,11 +68,11 @@
                   dense
                   v-model="scope.value"
                   :model-value="scope.value"
-                  hint="Ingrese precio de venta"
+                  hint="Cantidad a ingresar"
                   :rules="[
                     (val) =>
                       scope.validate(scope.value) ||
-                      'Debe ingresar un precio mayor que cero',
+                      'Debe ingresar una cantidad mayor que cero',
                   ]"
                 >
                   <template v-slot:after>
@@ -96,10 +101,14 @@
             </q-popup-edit>
           </q-td>
 
-          <q-td key="stock" :props="props">
-            {{ props.row.stock }}
+          <q-td key="valorItem" :props="props">
+            ${{ props.row.valorItem.toLocaleString() }}
+          </q-td>
+
+          <q-td key="precioVenta" :props="props">
+            ${{ props.row.precioVenta.toLocaleString() }}
             <q-popup-edit
-              v-model="props.row.stock"
+              v-model="props.row.precioVenta"
               :validate="(val) => val > 0"
               :cover="false"
               :offset="[-10, -10]"
@@ -110,11 +119,11 @@
                   dense
                   v-model="scope.value"
                   :model-value="scope.value"
-                  hint="Cantidad a ingresar"
+                  hint="Ingrese precio de venta"
                   :rules="[
                     (val) =>
                       scope.validate(scope.value) ||
-                      'Debe ingresar una cantidad mayor que cero',
+                      'Debe ingresar un precio mayor que cero',
                   ]"
                 >
                   <template v-slot:after>
@@ -176,6 +185,39 @@ const mycolumns = [
     style: "width: 35vh",
     headerStyle: "width: 35vh",
   },
+
+  {
+    name: "precioUnitario",
+    align: "center",
+    label: "Precio Unitario",
+    field: "precioUnitario",
+    format: (val) => `${parseInt(val).toLocaleString()}`,
+    sortable: true,
+    style: "width: 12vh",
+    headerStyle: "width: 12vh",
+    align: "center",
+  },
+  {
+    name: "stock",
+    label: "Cantidad",
+    field: "stock",
+    sortable: true,
+    style: "width: 7vh",
+    headerStyle: "width: 7vh",
+    align: "center",
+  },
+  {
+    name: "valorItem",
+    align: "center",
+    label: "Valor Item",
+    field: "valorItem",
+    format: (val) => `${parseInt(val).toLocaleString()}`,
+    sortable: true,
+    style: "width: 12vh",
+    headerStyle: "width: 12vh",
+    align: "center",
+  },
+
   {
     name: "precioVenta",
     align: "center",
@@ -184,16 +226,6 @@ const mycolumns = [
     sortable: true,
     style: "width: 12vh",
     headerStyle: "width: 12vh",
-    align: "center",
-  },
-
-  {
-    name: "stock",
-    label: "Stock",
-    field: "stock",
-    sortable: true,
-    style: "width: 7vh",
-    headerStyle: "width: 7vh",
     align: "center",
   },
 

@@ -112,48 +112,7 @@
                   @blur="actualizar(props.row, props.row.cantidad)"
                   :hint="'Stock: ' + props.row.stock"
                 >
-                  <!-- <template v-slot> Stock: {{ props.row.stock }}. </template> -->
-                  <!-- :rules="[
-                            val => isNaN(val) || 'Debe ingresar un número',
-                            (val, props.row) => val > props.row.stock || 'tepa saste' + props.row.stock
-                            ]" -->
-                  <!-- :suffix="'/' + props.row.stock" -->
                 </q-input>
-                <!-- <q-popup-edit
-                  v-model.number="props.row.cantidad"
-                  buttons
-                  v-slot="scope"
-                  :validate="cantidadRangeValidation"
-                  @hide="cantidadRangeValidation"
-                  @save="actualizar(props.row)"
-                > -->
-                <!-- <q-popup-edit
-                  v-model.number="props.row.cantidad"
-                  buttons
-                  :validate="(val, row) => val >= 0 && val < row.stock"
-                  @save="
-                    (val, previous) => actualizar(props.row, val, previous)
-                  "
-                >
-                  <template v-slot="scope">
-                    <q-input
-                      type="number"
-                      v-model="scope.value"
-                      :model-value="scope.value"
-                      dense
-                      autofocus
-                      counter
-                      reactive-rules
-                      :rules="[
-                        (val) =>
-                          scope.validate(scope.value) ||
-                          'Debe ingresar una cantidad valida',
-                      ]"
-                      @keyup.enter="scope.set"
-                      hint="Elija una nueva cantidad de producto"
-                    />
-                  </template>
-                </q-popup-edit> -->
               </template>
 
               <template v-else>
@@ -630,8 +589,8 @@ export default {
         rowsPerPage: 0,
       }),
       buscar: ref(false),
-      selectMedio: ["Efectivo", "Debito", "Credito"],
-      tipoDeDocumento: ["Boleta", "Factura", "Guia de despacho"],
+      selectMedio: ["Efectivo", "Débito", "Crédito"],
+      tipoDeDocumento: ["Boleta", "Factura", "Guía de despacho"],
       onSubmit,
       idVentaCancel,
       errorMessageCantidad,
@@ -707,7 +666,8 @@ export default {
         const req_args = {
           operation: "pay",
           nombre: currentUser.value,
-          medio: medio.value,
+          medioDePago: medio.value,
+          tipoDocumento: documento.value
         };
 
         const respuesta = await rqts

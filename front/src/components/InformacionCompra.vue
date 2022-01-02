@@ -5,7 +5,9 @@
         <q-item-section q-pa-md style="text-align: center">
           <q-item-label> {{ infoCompra.tipoDocumento }}</q-item-label>
           <q-item-label> Folio: {{ infoCompra.folio }}</q-item-label>
-          <q-item-label caption> {{ infoCompra.fecha }} </q-item-label>
+          <q-item-label caption>
+            {{ infoCompra.fecha.split("-").reverse().join("-") }}
+          </q-item-label>
         </q-item-section>
       </q-item>
       <!-- <q-separator vertical /> -->
@@ -51,7 +53,9 @@
       </q-item-section>
     </q-card-section>
     <q-item-section class="q-pa-sm" style="text-align: center">
-      <q-item-label> Monto total: ${{ montoTotal }}</q-item-label>
+      <q-item-label>
+        Monto total: ${{ montoTotal.toLocaleString() }}</q-item-label
+      >
     </q-item-section>
   </q-card>
 </template>
@@ -88,5 +92,5 @@ export default {
 
 <style lang="sass" scoped>
 .my-card
-    width: 100%
+  width: 100%
 </style>
