@@ -3,10 +3,7 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
 import re
-import numpy as np
 import os
-
-NAN = np.nan
 
 
 def get_name(dict_nombres, barcode, desc) -> str:
@@ -34,6 +31,7 @@ def get_final_df(df: pd.DataFrame) -> pd.DataFrame:
         df.at[i, 'nombre'] = name
     return df.rename(columns={"qty": "stock",
                               "P.U.": "precioUnitario",
+                              "Valor Item": "valorItem",
                               "imp_adicional": "impAdicional"})
 
 
@@ -167,10 +165,12 @@ class DTE:
             total = i.find("{http://www.sii.cl/SiiDte}MontoItem").text
             imp_code = i.find("{http://www.sii.cl/SiiDte}CodImpAdic")
             desc = i.find("{http://www.sii.cl/SiiDte}DescuentoPct")
+            # manejar tambien los UnmdRef
+            frmt = i.find("{http://www.sii.cl/SiiDte}UnmdItem")
             imp_text = valores_impuestos[imp_code.text] if imp_code is not None else str(
                 0)
             ea_code = i.findall("{http://www.sii.cl/SiiDte}CdgItem")
-            prod_code = NAN
+            prod_code = None  # antes era NAN
             _codes = dict()
             if ea_code is not None:
                 for cd in ea_code:
@@ -183,19 +183,18 @@ class DTE:
             desc_text = desc.text if desc is not None else str(0)
             qtytext = qty.text if qty is not None else str(1)
             ratetext = rate.text if rate is not None else total
-
-            # print (
-            #    "qty = " + qtytext + ", rate = " + ratetext + ", description = " + description + ", total = " + total)
-
-            # "warehouse": "Bodega Generica - T",
+            formato = frmt.text if frmt is not None else None
 
             self.items.append(
-                {"qty": qtytext,
-                 "rate": ratetext,
-                 "imp_adicional": imp_text,
-                 "descuento": desc_text,
-                 "descripcion": description,
-                 "codigoBarra": prod_code}
+                {
+                    "qty": qtytext,
+                    "rate": ratetext,
+                    "imp_adicional": imp_text,
+                    "descuento": desc_text,
+                    "descripcion": description,
+                    "codigoBarra": prod_code,
+                    "formato": formato
+                }
             )
 
     def parse_referencias(self):
@@ -368,7 +367,7 @@ class DTE:
                             df["rate"].astype(float)).astype(int)
         df = df[["descripcion",
                  "descuento", "imp_adicional",
-                "qty", "P.U.", "Valor Item", "codigoBarra"]]
+                "qty", "P.U.", "Valor Item", "codigoBarra", "formato"]]
         # if len(df) >= 13:
         #     df = df.reindex(df.index.tolist() + list(range(len(df), 25))
         #                     ).replace(np.nan, 0, regex=True)

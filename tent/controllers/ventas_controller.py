@@ -125,8 +125,10 @@ class VentaManager(Resource):
         venta, usuario = self.check_conditions_for_status_update(
             idVenta, CONFIRMADA)
         args = self.payment_parser.parse_args()
-        medio = args['medio']
+        medio = args['medioDePago']
+        tipoDocumento = args['tipoDocumento']
         venta.medioDePago = medio
+        venta.tipoDocumento = tipoDocumento
         venta.estado = PAGADA
         db.session.add(usuario)
         db.session.commit()
@@ -233,10 +235,15 @@ class VentaManager(Resource):
                                                required=True,
                                                )
         self.payment_parser = self.update_status_parser.copy()
-        self.payment_parser.add_argument('medio', type=str,
+        self.payment_parser.add_argument('medioDePago', type=str,
                                          location=self.args_loc,
                                          choices=['Efectivo',
-                                                  'Debito', 'Credito'],
+                                                  'Débito', 'Crédito'],
+                                         required=True)
+        self.payment_parser.add_argument('tipoDocumento', type=str,
+                                         location=self.args_loc,
+                                         choices=['Boleta',
+                                                  'Factura', 'Guía de despacho'],
                                          required=True)
 
 

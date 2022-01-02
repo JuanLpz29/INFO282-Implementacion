@@ -13,7 +13,7 @@ NO_FINALIZADA = "No Finalizada"
 
 class VentaSchema(ma.Schema):
     class Meta:
-        fields = ('idVenta',
+        fields = ('idVenta', 'tipoDocumento',
                   'idUsuario', 'medioDePago', 'estado',
                   'fecha', 'montoNeto', 'iva', 'total')
 

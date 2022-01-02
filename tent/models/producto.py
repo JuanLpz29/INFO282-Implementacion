@@ -35,24 +35,22 @@ class Producto(db.Model):
     def __init__(self, nombre, stock, precioVenta, barcode, _dict=None):
         self.nombre = nombre
         self.stock = stock
-        if precioVenta is not None:
-            self.valorItem = int(precioVenta)
-        else:
+        if precioVenta is None:
             self.precioVenta = round(
                 int(_dict.get('precioUnitario') * 1.3) / 10) * 10
-            self.valorItem = self.precioVenta
         if barcode is not None:
             if isinstance(barcode, str) or not isnan(barcode):
                 self.codigoBarra = str(barcode)
         for key, value in _dict.items():
-            setattr(self, key, value)
+            if getattr(self, key, None) is None:
+                setattr(self, key, value)
 
     @classmethod
     def from_dict(cls, prod_dict):
         return cls(
-            prod_dict['nombre'],
-            int(prod_dict['stock']),
-            prod_dict.get('precioVenta'),
+            nombre=prod_dict['nombre'],
+            stock=int(prod_dict['stock']),
+            precioVenta=prod_dict.get('precioVenta'),
             barcode=prod_dict.get("codigoBarra"),
             _dict=prod_dict
         )

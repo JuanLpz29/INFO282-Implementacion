@@ -17,6 +17,7 @@ from tent.utils.parsers import pagination_arg_parser
 from sqlalchemy.sql.expression import and_, text
 from werkzeug.datastructures import FileStorage
 from typing import Tuple
+from pprint import pprint
 
 
 compra_schema = CompraSchema()
@@ -144,9 +145,11 @@ class CompraListManager(Resource):
     def process_file(self):
         args = self.post_document_parser.parse_args()
         file = args['file']
+        # abort if invalid file
         if file and _allowed_file(file.filename):
             xml_compras = (file.read().decode())
             cmp = DTE(xml_compras)
+            # pprint(cmp.get_productos_compra())
             prods, _comp = check_and_dump_products(
                 cmp.datos_dict, cmp.productos_compra)
             registrada = True if _comp is not None else False
