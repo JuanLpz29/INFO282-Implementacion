@@ -2,7 +2,7 @@
 
 ## Ramas del proyecto:
 
-* Front: Vuejs + Quasar 
+* **Front:** Vuejs + Quasar 
 
 * Backend: Flask API basado en el repo https://github.com/shravanc/flask_api_mvc
 
