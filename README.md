@@ -4,7 +4,7 @@
 
 * **Front:** Vuejs + Quasar 
 
-* Backend: Flask API basado en el repo https://github.com/shravanc/flask_api_mvc
+* **Backend:** Flask API basado en el repo https://github.com/shravanc/flask_api_mvc
 
 
 ## Como correr el Backend de manera local: 
