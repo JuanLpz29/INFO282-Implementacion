@@ -1,6 +1,6 @@
 # tent
 
-### Repositorio (branch gokussj4) que contiene el servidor Flask del proyecto Gestión Botillera. Desarrollado para la asignatura Taller Ingeniería de software INFO282, Universidad Austral de Chile.
+### Repositorio (branch backend) que contiene el servidor Flask del proyecto Gestión Botillería. Desarrollado para la asignatura Taller Ingeniería de software INFO282, Universidad Austral de Chile.
 
 Tiene también el Jenkinsfile y archivos de configuración para CI/CD
 
@@ -22,10 +22,8 @@ flask run
 
 **Ver Productos**
 ----
-  Retorna un arreglo de JSON con (los primeros) 30 productos
+  Retorna un arreglo de JSON con (los primeros) 10 productos
   
-  *Pendiente*: modificar endpoind para retornar páginas 
-
 * **URL**
 
   /productos/
@@ -36,7 +34,17 @@ flask run
   
 *  **URL Params**
 
-    `None`
+    **Optional:**
+
+    ```page=[integer]```
+
+    ```perpage=[integer]```
+
+    ```filter=[string]```
+
+    ```sortby=[string]```
+
+    ```order=[string]```
 
 * **Success Response:**
 
@@ -47,10 +55,8 @@ flask run
  
 * **Error Response:**
 
-*pendiente*
-
   * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "You are unauthorized to make this request." }`
+    **Content:** `{ error : "Login required" }`
 
 * **Sample Call:**
 
@@ -94,11 +100,12 @@ flask run
     **Content:** `{ error : "no se encontro producto" }`
 
   OR
-  
-  *pendiente*
+
+* **Error Response:**
 
   * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "You are unauthorized to make this request." }`
+    **Content:** `{ error : "Login required" }`
+
 
 * **Sample Call:**
  
