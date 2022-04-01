@@ -29,6 +29,7 @@ class Proveedor(db.Model):
 
     @classmethod
     def from_dict(cls, datos):
+        print(datos)
         return cls(datos['rut'],
-                   datos['proveedor'],
+                   datos['razonSocial'],
                    datos['comuna'],)  # etc
