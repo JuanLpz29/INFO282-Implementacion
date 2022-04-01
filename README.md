@@ -10,6 +10,9 @@ Tiene también el Jenkinsfile y archivos de configuración para CI/CD
 
 * Github implementación https://github.com/matiasbarram/info282-implementacion
 
+## Actualmente desplegada en pythonanywhere
+
+https://hiawvp.pythonanywhere.com/
 
 
 ```
