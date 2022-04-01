@@ -7,7 +7,7 @@ def test_get_ventas(client):
 
 
 def test_get_venta_id(client):
-    response = client.get('/ventas/1')
+    response = client.get('/ventas/12')
     assert response.status_code == 200
 
 
