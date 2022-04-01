@@ -3,8 +3,10 @@
 ## Ramas del proyecto:
 
 * **Front:** Vuejs + Quasar 
+  - preview url: https://tent74.netlify.app/#/
 
 * **Backend:** Flask API basado en el repo https://github.com/shravanc/flask_api_mvc
+  - preview url: https://hiawvp.pythonanywhere.com/
 
 
 ## Como correr el Backend de manera local: 
