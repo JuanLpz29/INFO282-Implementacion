@@ -47,6 +47,20 @@ def abort_if_has_venta_en_curso(idUsuario: int) -> Venta:
             409, message=f"idUsuario {idUsuario} ya tiene una venta en curso idVenta:{venta.idVenta}")
 
 
+def abort_if_no_identifier(idProducto: int, codigoBarra: str):
+    if idProducto:
+        return ('idProducto', idProducto)
+    if codigoBarra:
+        return ('codigoBarra', codigoBarra)
+    abort(400, message=f"La solicitud debe incluir un codigoBarra o idProducto")
+
+
+def abort_if_insufficient_stock(prod: Producto, cantidad: int):
+    if cantidad > prod.stock:
+        abort(
+            403, message=f"El producto {prod.nombre} no tiene suficiente stock ({prod.stock})")
+
+
 def abort_if_invalid_status(venta: Venta, valid_status=EN_CURSO) -> None:
     if venta.estado != valid_status:
         abort(
@@ -147,33 +161,32 @@ class VentaManager(Resource):
 
     def update_venta(self, idVenta):
         args = self.update_prods_parser.parse_args()
-        barcode, _set, cantidad = args['codigoBarra'], args['set'], args['cantidad']
         venta = abort_if_no_venta_found(idVenta)
         abort_if_invalid_status(venta, valid_status=EN_CURSO)
+        # se puede utilizar el id del producto o su codigo de barras
+        barcode, idProducto = args['codigoBarra'], args['idProducto']
+        identifier, value = abort_if_no_identifier(idProducto, barcode)
+        _set, cantidad = args['set'], args['cantidad']
         prod = abort_if_no_producto_found('codigoBarra', barcode)
         pv = self.pv_query_one(idVenta, prod.idProducto)
 
         if pv:
-            # aqui se puede validar que la venta no este solicitando
-            # mas productos de los que hay en el inventario
-            # mientras el inventario no se haya estabilizado por completo se
-            # agregan te todas formas y el stock se deja >= 0
             qty = cantidad - pv.cantidad if _set else cantidad
             pv.cantidad += qty
-        # si no, se agrega uno a la venta
         else:
-            pv = ProductoVenta(cantidad=1)
+            qty = 1
+            pv = ProductoVenta(cantidad=qty)
             pv.producto = prod
-            pv.precio = prod.valorItem
+            pv.precio = prod.precioVenta
             pv.venta = venta
             qty = 1
 
-        print('cantidad', qty)
+        abort_if_insufficient_stock(prod, qty)
         actualizar_stock(producto=prod, cantidad=qty)
-        venta.total += prod.valorItem * qty
+        venta.total += prod.precioVenta * qty
         prod_info = producto_schema.dump(prod)
         prod_info['cantidad'] = pv.cantidad
-        prod_info['subtotal'] = pv.cantidad * prod.valorItem
+        prod_info['subtotal'] = pv.cantidad * prod.precioVenta
         # verificar que efectivamente se quita de la venta un producto
         # con cantidad 0
         if pv.cantidad == 0:
@@ -216,13 +229,16 @@ class VentaManager(Resource):
                                                'nullify'])
 
         # actualizar la venta en curso
-        self.update_prods_parser.add_argument('cantidad', type=int,
-                                              location=self.args_loc,
-                                              default=1,
-                                              )
         self.update_prods_parser.add_argument('codigoBarra', type=str,
                                               location=self.args_loc,
                                               required=True,
+                                              )
+        self.update_prods_parser.add_argument('idProducto', type=int,
+                                              location=self.args_loc,
+                                              default=0)
+        self.update_prods_parser.add_argument('cantidad', type=int,
+                                              location=self.args_loc,
+                                              default=1,
                                               )
         self.update_prods_parser.add_argument('set', type=bool,
                                               location=self.args_loc,
@@ -260,6 +276,10 @@ class VentaListManager(Resource):
                                       location=['args', 'form', 'json'],
                                       default='')
 
+        self.post_parser.add_argument('idProducto', type=int,
+                                      location=['args', 'form', 'json'],
+                                      default=0)
+
     def get(self):
         args = self.pagination_parser.parse_args()
         _order_by = f"{args['sortby']} {args['order']}" if args['sortby'] else ""
@@ -273,25 +293,28 @@ class VentaListManager(Resource):
 
     def post(self):
         args = self.post_parser.parse_args()
-        nombre, barcode = args['nombre'], args['codigoBarra']
+        nombre = args['nombre']
         usuario = abort_if_no_usuario('nombre', nombre)
+        # solo 1 venta activa por usuario
         abort_if_has_venta_en_curso(usuario.idUsuario)
-        abort_if_no_producto_found('codigoBarra', barcode)
+        # se puede utilizar el id del producto o su codigo de barras
+        barcode, idProducto = args['codigoBarra'], args['idProducto']
+        identifier, value = abort_if_no_identifier(idProducto, barcode)
+        prod = abort_if_no_producto_found(identifier, value)
+        cantidad = 1
+        abort_if_insufficient_stock(prod, cantidad)
         venta = Venta(usuario.idUsuario)
         usuario.ventas.append(venta)
-        prod = actualizar_stock(barcode=barcode)
-        if prod:
-            pv = ProductoVenta(cantidad=1, precio=prod.valorItem)
-            pv.producto = prod
-            pv.venta = venta
-            venta.total = prod.valorItem
-            prod_info = producto_schema.dump(prod)
-            prod_info['cantidad'] = pv.cantidad
-            prod_info['subtotal'] = pv.cantidad * prod.valorItem
-        else:
-            # front debe registrarlo
-            # prod_info = None
-            prod_info = 'bruh'
+
+        prod = actualizar_stock(producto=prod, cantidad=cantidad)
+        pv = ProductoVenta(cantidad=1, precio=prod.precioVenta)
+        pv.producto = prod
+        pv.venta = venta
+        venta.total = prod.precioVenta
+        prod_info = producto_schema.dump(prod)
+        prod_info['cantidad'] = pv.cantidad
+        prod_info['subtotal'] = pv.cantidad * prod.precioVenta
+
         db.session.add(usuario)
         db.session.commit()
         return jsonify(venta=venta_schema.dump(venta),
