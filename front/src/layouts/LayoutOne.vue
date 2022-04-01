@@ -1,9 +1,9 @@
 <template>
   <q-layout view="hHh LpR fFf" style="min-height: 0px">
     <q-header bordered class="bg-dark texto" height-hint="120">
-      <q-toolbar>
+      <!-- <q-toolbar>
         <q-toolbar-title class="text-info"> La Tentación </q-toolbar-title>
-      </q-toolbar>
+      </q-toolbar> -->
 
       <!-- <q-tabs align="left"> -->
       <q-tabs>
@@ -22,15 +22,7 @@
           />
         </div>
         <q-space />
-        <!-- <q-toggle
-          :label="`switch ${blueModel}`"
-          v-model="blueModel"
-          color="purple-12"
-          false-value="off"
-          true-value="ON"
-          @update:model-value="modelUpdated"
-        /> -->
-        <!-- <q-tabs align="right"> -->
+
         <q-item clickable class="right" @click="opciones">
           <q-menu v-if="currentUser" auto-close :offset="[0, 0]">
             <q-list style="min-width: 150px">
@@ -54,7 +46,7 @@
       </q-tabs>
     </q-header>
 
-    <q-page-container style="padding-top: 40px">
+    <q-page-container style="padding-top: 16px">
       <q-dialog v-model="fixed" transition-hide="rotate">
         <nuevo-login @close-dialog="fixed = false" />
       </q-dialog>

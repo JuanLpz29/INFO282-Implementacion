@@ -56,13 +56,14 @@
           <q-td key="stock" :props="props">
             {{ props.row.stock }}
             <span v-if="props.row.formato"> {{ props.row.formato }}</span>
-            <q-popup-edit
+            <!-- <q-popup-edit
               v-model="props.row.stock"
               :validate="(val) => val > 0"
               :cover="false"
               :offset="[-10, -10]"
             >
               <template v-slot="scope">
+
                 <q-input
                   autofocus
                   dense
@@ -75,6 +76,7 @@
                       'Debe ingresar una cantidad mayor que cero',
                   ]"
                 >
+
                   <template v-slot:after>
                     <q-btn
                       flat
@@ -97,8 +99,9 @@
                     />
                   </template>
                 </q-input>
+
               </template>
-            </q-popup-edit>
+            </q-popup-edit> -->
           </q-td>
 
           <q-td key="valorItem" :props="props">
@@ -106,50 +109,52 @@
           </q-td>
 
           <q-td key="precioVenta" :props="props">
-            ${{ props.row.precioVenta.toLocaleString() }}
-            <q-popup-edit
-              v-model="props.row.precioVenta"
-              :validate="(val) => val > 0"
-              :cover="false"
-              :offset="[-10, -10]"
-            >
-              <template v-slot="scope">
-                <q-input
-                  autofocus
-                  dense
-                  v-model="scope.value"
-                  :model-value="scope.value"
-                  hint="Ingrese precio de venta"
-                  :rules="[
-                    (val) =>
-                      scope.validate(scope.value) ||
-                      'Debe ingresar un precio mayor que cero',
-                  ]"
-                >
-                  <template v-slot:after>
-                    <q-btn
-                      flat
-                      dense
-                      color="negative"
-                      icon="cancel"
-                      @click.stop="scope.cancel"
-                    />
+            <q-badge color="light-blue-3">
+              ${{ props.row.precioVenta.toLocaleString() }}
+              <q-popup-edit
+                v-model="props.row.precioVenta"
+                :validate="(val) => val > 0"
+                :cover="false"
+                :offset="[-10, -10]"
+              >
+                <template v-slot="scope">
+                  <q-input
+                    autofocus
+                    dense
+                    v-model="scope.value"
+                    :model-value="scope.value"
+                    hint="Ingrese precio de venta"
+                    :rules="[
+                      (val) =>
+                        scope.validate(scope.value) ||
+                        'Debe ingresar un precio mayor que cero',
+                    ]"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        flat
+                        dense
+                        color="negative"
+                        icon="cancel"
+                        @click.stop="scope.cancel"
+                      />
 
-                    <q-btn
-                      flat
-                      dense
-                      color="positive"
-                      icon="check_circle"
-                      @click.stop="scope.set"
-                      :disable="
-                        scope.validate(scope.value) === false ||
-                        scope.initialValue === scope.value
-                      "
-                    />
-                  </template>
-                </q-input>
-              </template>
-            </q-popup-edit>
+                      <q-btn
+                        flat
+                        dense
+                        color="positive"
+                        icon="check_circle"
+                        @click.stop="scope.set"
+                        :disable="
+                          scope.validate(scope.value) === false ||
+                          scope.initialValue === scope.value
+                        "
+                      />
+                    </template>
+                  </q-input>
+                </template>
+              </q-popup-edit>
+            </q-badge>
           </q-td>
 
           <q-td key="descripcion" :props="props">

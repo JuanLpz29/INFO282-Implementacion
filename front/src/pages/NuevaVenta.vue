@@ -105,12 +105,10 @@
                     (val) =>
                       !isNaN(val) || 'jefesito Please metale un numerito',
                     (val) => val >= 0 || 'oiga master pongale cantidad > 0',
-                    (val) =>
-                      val <= props.row.stock || 'tepa saste' + props.row.stock,
                   ]"
                   @keypress.enter="(val) => blurInput(val)"
                   @blur="actualizar(props.row, props.row.cantidad)"
-                  :hint="'Stock: ' + props.row.stock"
+                  :hint="'Stock restante: ' + props.row.stock"
                 >
                 </q-input>
               </template>
@@ -301,9 +299,9 @@ const mycolumns = [
   },
 
   {
-    name: "valorItem",
+    name: "precioVenta",
     label: "Precio",
-    field: "valorItem",
+    field: "precioVenta",
     format: (val, row) => `$${val.toLocaleString()}`,
     style: "width: 18vh",
     headerStyle: "font-weight: 600; width: 18vh",
@@ -604,19 +602,9 @@ export default {
       confirmFinalizar: ref(false),
       confirmCancelar: ref(false),
       cancelarVenta,
-      cantidadRangeValidation(val) {
-        if (val < 0 || val > 100) {
-          errorCantidad.value = true;
-          errorMessageCantidad.value = "Debe ser entre 0 y 100";
-          return false;
-        }
-        errorCantidad.value = false;
-        errorMessageCantidad.value = "";
-        return true;
-      },
 
       async actualizar(row, val) {
-        if (isNaN(val) || val < 0 || val > row.stock) {
+        if (isNaN(val) || val < 0) {
           row.cantidad = 1;
         } else {
           row.cantidad = val;
@@ -628,18 +616,22 @@ export default {
           codigoBarra: row.codigoBarra,
           set: true,
         };
-        const items = await rqts
-          .putjson(`ventas/${idVenta.value}`, req_args)
-          .catch((e) => {
-            console.log(e);
-          });
-        const idx = verExistencia(items.producto.codigoBarra);
-        if (val == 0) {
-          this.removeRow(idx);
+        const response = await rqts.putjson(
+          `ventas/${idVenta.value}`,
+          req_args
+        );
+        console.log("respuesta actualizar", response);
+        if (!response.hasOwnProperty("producto")) {
+          this.actualizar(row, 1);
         } else {
-          rows.value.splice(idx, 1, items.producto);
+          const idx = verExistencia(response.producto.codigoBarra);
+          if (val == 0) {
+            this.removeRow(idx);
+          } else {
+            rows.value.splice(idx, 1, response.producto);
+          }
+          total.value = response.venta.total;
         }
-        total.value = items.venta.total;
       },
 
       removeRow(index) {
@@ -667,7 +659,7 @@ export default {
           operation: "pay",
           nombre: currentUser.value,
           medioDePago: medio.value,
-          tipoDocumento: documento.value
+          tipoDocumento: documento.value,
         };
 
         const respuesta = await rqts
@@ -695,69 +687,69 @@ export default {
 
 <style lang="sass">
 label
-    width: 100%
+  width: 100%
 
 .first-container
-    display: grid
-    grid-template-columns: 50% 50%!important
+  display: grid
+  grid-template-columns: 50% 50%!important
 
     /* justify-content: space-between; */
 
 .operations-container
-    display: flex
-    justify-content: flex-end
+  display: flex
+  justify-content: flex-end
 
 .f-container
-    display: grid
-    grid-template-columns: 68% 32%
-    grid-gap: 20px
+  display: grid
+  grid-template-columns: 68% 32%
+  grid-gap: 20px
 
 .grid-child-element
-    margin: 10px
+  margin: 10px
 
 h4
-    margin: 0
-    margin-bottom: 50px
-    padding: 0
+  margin: 0
+  margin-bottom: 50px
+  padding: 0
 
 .grid-child-element
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
-    border-radius: 6px
-    padding: 20px
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
+  border-radius: 6px
+  padding: 20px
 
 .btns-finalizar
-    display: flex
-    flex-direction: column
+  display: flex
+  flex-direction: column
 
 .full-table
-    width: 100%
+  width: 100%
 
 .full-table > td
-    width: 50%
+  width: 50%
 
 .full-table td
-    text-align: left
+  text-align: left
 
 .vuelto-container
-    margin-top: 20px
+  margin-top: 20px
 
 .label
-    color: $negative
-    font-weight: bold
+  color: $negative
+  font-weight: bold
 
 .selector-documento
-    margin-top: 10px
+  margin-top: 10px
 
 form.q-form.formulario-finalizar-venta
-    padding: 0
-    padding-bottom: 10px
+  padding: 0
+  padding-bottom: 10px
 .btn-finalizar-venta
-    width: 100%
-    padding: 10px
+  width: 100%
+  padding: 10px
 
 .vuelto h4
-    font-size: 20px
+  font-size: 20px
 
 .formulario-cancelar
-    margin-right: 10px
+  margin-right: 10px
 </style>
