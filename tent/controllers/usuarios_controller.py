@@ -4,6 +4,7 @@ from tent import db
 from tent.models.usuario import ADMIN, Usuario, UsuarioSchema
 from tent.models.venta import Venta, EN_CURSO
 from flask_restful import Resource, reqparse, abort
+from flask_login import login_user, current_user, login_required, logout_user
 from tent.utils.parsers import pagination_arg_parser
 
 usuario_schema = UsuarioSchema()
@@ -116,6 +117,24 @@ class UserLoginManager(Resource):
         nombre = args['nombre']
         contrasena = args['contraseña']
         user = abort_if_bad_login(nombre, contrasena)
+        login_user(user, remember=True)
         user_info = usuario_schema.dump(user)
         user_info.pop('contraseña')
+        user_info['message'] = 'logeao de pana'
         return user_info
+
+    def get(self):
+        return "Login required"
+
+
+class UserLogout(Resource):
+
+    @login_required
+    def get(self):
+        logout_user()
+        return "xao"
+
+    @login_required
+    def post(self):
+        logout_user()
+        return "xao"

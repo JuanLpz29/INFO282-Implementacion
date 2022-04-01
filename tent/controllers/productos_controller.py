@@ -4,6 +4,7 @@ from sqlalchemy.sql.expression import text
 from tent.models.producto import Producto, ProductSchema
 # from tent.models.producto_compra import ProductoCompra
 from tent import db
+from flask_login import login_required
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import func
 import json
@@ -14,6 +15,7 @@ product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 
 
+# hacer codigoBarra unique?
 def query_producto_by(_key: str, _value: str) -> Producto:
     query_funcs = {
 
@@ -60,17 +62,16 @@ def productos_from_json_list(lista_productos: list[dict]) -> list[Producto]:
 
 # manejar lo del stock negativo
 # que pasa si no se encuentra un producto con ese barcode?
+
+
 def actualizar_stock(producto=None, barcode='', cantidad=1) -> Producto:
     if producto is None:
         producto = Producto.query.filter(
             Producto.codigoBarra == barcode).first()
-    if producto is not None:
-        if producto.stock > cantidad:
+    else:
+        if producto.stock >= cantidad:
             producto.stock = producto.stock - cantidad
-        else:
-            producto.stock = 1
-        return producto
-    return None
+    return producto
 
 # asumir que le codigo de barra sera unique key?
 # creo que todo funciona bajo el supuesto de que no
@@ -109,6 +110,7 @@ class ProductoManager(Resource):
 
 
 class ProductoListManager(Resource):
+    @login_required
     def get(self):
         args = pagination_arg_parser.parse_args()
 

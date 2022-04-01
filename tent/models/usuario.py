@@ -18,6 +18,8 @@ class Usuario(db.Model):
     rol = db.Column(db.String(15))
     contraseña = db.Column(db.String(15))
     ventas = relationship("Venta", back_populates="usuario")
+    _is_authenticated = True
+    _is_active = True
 
     def __init__(self, nombre, rol, contraseña):
         self.nombre = nombre
@@ -26,6 +28,22 @@ class Usuario(db.Model):
 
     def get_id(self):
         return self.idUsuario
+
+    @property
+    def is_authenticated(self):
+        return self._is_authenticated
+
+    @is_authenticated.setter
+    def is_authenticated(self, value):
+        self._is_authenticated = value
+
+    @property
+    def is_active(self):
+        return self._is_active
+
+    @is_active.setter
+    def is_active(self, value):
+        self._active = value
 
     @classmethod
     def from_dict(cls, datos):
