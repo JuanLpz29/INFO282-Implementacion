@@ -1,785 +1,318 @@
-<!doctype html>
-<html lang="en" dir="ltr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="referrer" content="no-referrer">
-  <meta name="robots" content="noindex,nofollow">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <style id="cfs-style">html{display: none;}</style>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-      <link rel="stylesheet" type="text/css" href="./themes/pmahomme/jquery/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="js/vendor/codemirror/lib/codemirror.css?v=5.1.3">
-    <link rel="stylesheet" type="text/css" href="js/vendor/codemirror/addon/hint/show-hint.css?v=5.1.3">
-    <link rel="stylesheet" type="text/css" href="js/vendor/codemirror/addon/lint/lint.css?v=5.1.3">
-    <link rel="stylesheet" type="text/css" href="./themes/pmahomme/css/theme.css?v=5.1.3&nocache=3496374892ltr&server=1">
-    <link rel="stylesheet" type="text/css" href="./themes/pmahomme/css/printview.css?v=5.1.3" media="print" id="printcss">
-    <title>127.0.0.1 / 127.0.0.1 | phpMyAdmin 5.1.3</title>
-    <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery.min.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery-migrate.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/sprintf.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/ajax.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/keyhandler.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/bootstrap/bootstrap.bundle.min.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery-ui.min.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/js.cookie.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery.mousewheel.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery.validate.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery-ui-timepicker-addon.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery.ba-hashchange-2.0.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/jquery/jquery.debounce-1.0.6.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/menu_resizer.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/cross_framing_protection.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/rte.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/messages.php?l=en&v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/config.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/doclinks.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/functions.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/navigation.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/indexes.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/common.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/page_settings.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/export_output.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/codemirror/lib/codemirror.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/codemirror/mode/sql/sql.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/codemirror/addon/runmode/runmode.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/codemirror/addon/hint/show-hint.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/codemirror/addon/hint/sql-hint.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/codemirror/addon/lint/lint.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/codemirror/addon/lint/sql-lint.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/vendor/tracekit.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/error_report.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/drag_drop_import.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/shortcuts_handler.js?v=5.1.3"></script>
-  <script data-cfasync="false" type="text/javascript" src="js/dist/console.js?v=5.1.3"></script>
+-- MariaDB dump 10.19  Distrib 10.7.3-MariaDB, for Linux (x86_64)
+--
+-- Host: localhost    Database: taller
+-- ------------------------------------------------------
+-- Server version	10.7.3-MariaDB
 
-<script data-cfasync="false" type="text/javascript">
-// <![CDATA[
-CommonParams.setAll({common_query:"",opendb_url:"index.php?route=/database/structure",lang:"en",server:"1",table:"",db:"",token:"4b4e27614722655f3c786d4265214f5a",text_dir:"ltr",show_databases_navigation_as_tree:true,pma_text_default_tab:"Browse",pma_text_left_default_tab:"Structure",pma_text_left_default_tab2:false,LimitChars:"50",pftext:"",confirm:true,LoginCookieValidity:"1440",session_gc_maxlifetime:"1440",logged_in:true,is_https:false,rootPath:"/phpmyadmin/",arg_separator:"&",PMA_VERSION:"5.1.3",auth_type:"cookie",user:"root"});
-var firstDayOfCalendar = '0';
-var themeImagePath = '.\/themes\/pmahomme\/img\/';
-var mysqlDocTemplate = '.\/url.php\u003Furl\u003Dhttps\u00253A\u00252F\u00252Fdev.mysql.com\u00252Fdoc\u00252Frefman\u00252F8.0\u00252Fen\u00252F\u002525s.html';
-var maxInputVars = 1000;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-if ($.datepicker) {
-  $.datepicker.regional[''].closeText = 'Done';
-  $.datepicker.regional[''].prevText = 'Prev';
-  $.datepicker.regional[''].nextText = 'Next';
-  $.datepicker.regional[''].currentText = 'Today';
-  $.datepicker.regional[''].monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  $.datepicker.regional[''].monthNamesShort = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  $.datepicker.regional[''].dayNames = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
-  $.datepicker.regional[''].dayNamesShort = [
-    'Sun',
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-  ];
-  $.datepicker.regional[''].dayNamesMin = [
-    'Su',
-    'Mo',
-    'Tu',
-    'We',
-    'Th',
-    'Fr',
-    'Sa',
-  ];
-  $.datepicker.regional[''].weekHeader = 'Wk';
-  $.datepicker.regional[''].showMonthAfterYear = false;
-  $.datepicker.regional[''].yearSuffix = '';
-  $.extend($.datepicker._defaults, $.datepicker.regional['']);
-}
+--
+-- Table structure for table `Compra`
+--
 
-if ($.timepicker) {
-  $.timepicker.regional[''].timeText = 'Time';
-  $.timepicker.regional[''].hourText = 'Hour';
-  $.timepicker.regional[''].minuteText = 'Minute';
-  $.timepicker.regional[''].secondText = 'Second';
-  $.extend($.timepicker._defaults, $.timepicker.regional['']);
-}
+DROP TABLE IF EXISTS `Compra`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Compra` (
+  `idCompra` int(11) NOT NULL AUTO_INCREMENT,
+  `idProveedor` int(11) NOT NULL,
+  `montoTotal` int(11) DEFAULT NULL,
+  `montoNeto` int(11) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `tipoDocumento` varchar(64) DEFAULT NULL,
+  `folio` int(11) NOT NULL,
+  PRIMARY KEY (`idCompra`),
+  KEY `idProveedor` (`idProveedor`),
+  CONSTRAINT `Compra_ibfk_1` FOREIGN KEY (`idProveedor`) REFERENCES `Proveedor` (`idProveedor`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-function extendingValidatorMessages () {
-  $.extend($.validator.messages, {
-    required: 'This\u0020field\u0020is\u0020required',
-    remote: 'Please\u0020fix\u0020this\u0020field',
-    email: 'Please\u0020enter\u0020a\u0020valid\u0020email\u0020address',
-    url: 'Please\u0020enter\u0020a\u0020valid\u0020URL',
-    date: 'Please\u0020enter\u0020a\u0020valid\u0020date',
-    dateISO: 'Please\u0020enter\u0020a\u0020valid\u0020date\u0020\u0028\u0020ISO\u0020\u0029',
-    number: 'Please\u0020enter\u0020a\u0020valid\u0020number',
-    creditcard: 'Please\u0020enter\u0020a\u0020valid\u0020credit\u0020card\u0020number',
-    digits: 'Please\u0020enter\u0020only\u0020digits',
-    equalTo: 'Please\u0020enter\u0020the\u0020same\u0020value\u0020again',
-    maxlength: $.validator.format('Please\u0020enter\u0020no\u0020more\u0020than\u0020\u007B0\u007D\u0020characters'),
-    minlength: $.validator.format('Please\u0020enter\u0020at\u0020least\u0020\u007B0\u007D\u0020characters'),
-    rangelength: $.validator.format('Please\u0020enter\u0020a\u0020value\u0020between\u0020\u007B0\u007D\u0020and\u0020\u007B1\u007D\u0020characters\u0020long'),
-    range: $.validator.format('Please\u0020enter\u0020a\u0020value\u0020between\u0020\u007B0\u007D\u0020and\u0020\u007B1\u007D'),
-    max: $.validator.format('Please\u0020enter\u0020a\u0020value\u0020less\u0020than\u0020or\u0020equal\u0020to\u0020\u007B0\u007D'),
-    min: $.validator.format('Please\u0020enter\u0020a\u0020value\u0020greater\u0020than\u0020or\u0020equal\u0020to\u0020\u007B0\u007D'),
-    validationFunctionForDateTime: $.validator.format('Please\u0020enter\u0020a\u0020valid\u0020date\u0020or\u0020time'),
-    validationFunctionForHex: $.validator.format('Please\u0020enter\u0020a\u0020valid\u0020HEX\u0020input'),
-    validationFunctionForMd5: $.validator.format('This\u0020column\u0020can\u0020not\u0020contain\u0020a\u002032\u0020chars\u0020value'),
-    validationFunctionForAesDesEncrypt: $.validator.format('These\u0020functions\u0020are\u0020meant\u0020to\u0020return\u0020a\u0020binary\u0020result\u003B\u0020to\u0020avoid\u0020inconsistent\u0020results\u0020you\u0020should\u0020store\u0020it\u0020in\u0020a\u0020BINARY,\u0020VARBINARY,\u0020or\u0020BLOB\u0020column.')
-  });
-}
+--
+-- Dumping data for table `Compra`
+--
 
-ConsoleEnterExecutes=false
+LOCK TABLES `Compra` WRITE;
+/*!40000 ALTER TABLE `Compra` DISABLE KEYS */;
+INSERT INTO `Compra` VALUES
+(2,2,115448,84363,'2021-10-01','FACTURA ELECTRÓNICA',124072235),
+(3,3,1284738,1068554,'2021-10-05','FACTURA ELECTRÓNICA',10694282);
+/*!40000 ALTER TABLE `Compra` ENABLE KEYS */;
+UNLOCK TABLES;
 
-AJAX.scriptHandler
-  .add('vendor/jquery/jquery.min.js', 0)
-  .add('vendor/jquery/jquery-migrate.js', 0)
-  .add('vendor/sprintf.js', 1)
-  .add('ajax.js', 0)
-  .add('keyhandler.js', 1)
-  .add('vendor/bootstrap/bootstrap.bundle.min.js', 1)
-  .add('vendor/jquery/jquery-ui.min.js', 0)
-  .add('vendor/js.cookie.js', 1)
-  .add('vendor/jquery/jquery.mousewheel.js', 0)
-  .add('vendor/jquery/jquery.validate.js', 0)
-  .add('vendor/jquery/jquery-ui-timepicker-addon.js', 0)
-  .add('vendor/jquery/jquery.ba-hashchange-2.0.js', 0)
-  .add('vendor/jquery/jquery.debounce-1.0.6.js', 0)
-  .add('menu_resizer.js', 1)
-  .add('cross_framing_protection.js', 0)
-  .add('rte.js', 1)
-  .add('messages.php', 0)
-  .add('config.js', 1)
-  .add('doclinks.js', 1)
-  .add('functions.js', 1)
-  .add('navigation.js', 1)
-  .add('indexes.js', 1)
-  .add('common.js', 1)
-  .add('page_settings.js', 1)
-  .add('export_output.js', 1)
-  .add('vendor/codemirror/lib/codemirror.js', 0)
-  .add('vendor/codemirror/mode/sql/sql.js', 0)
-  .add('vendor/codemirror/addon/runmode/runmode.js', 0)
-  .add('vendor/codemirror/addon/hint/show-hint.js', 0)
-  .add('vendor/codemirror/addon/hint/sql-hint.js', 0)
-  .add('vendor/codemirror/addon/lint/lint.js', 0)
-  .add('codemirror/addon/lint/sql-lint.js', 0)
-  .add('vendor/tracekit.js', 1)
-  .add('error_report.js', 1)
-  .add('drag_drop_import.js', 1)
-  .add('shortcuts_handler.js', 1)
-  .add('console.js', 1)
-;
-$(function() {
-        AJAX.fireOnload('vendor/sprintf.js');
-        AJAX.fireOnload('keyhandler.js');
-      AJAX.fireOnload('vendor/bootstrap/bootstrap.bundle.min.js');
-        AJAX.fireOnload('vendor/js.cookie.js');
-                AJAX.fireOnload('menu_resizer.js');
-        AJAX.fireOnload('rte.js');
-        AJAX.fireOnload('config.js');
-      AJAX.fireOnload('doclinks.js');
-      AJAX.fireOnload('functions.js');
-      AJAX.fireOnload('navigation.js');
-      AJAX.fireOnload('indexes.js');
-      AJAX.fireOnload('common.js');
-      AJAX.fireOnload('page_settings.js');
-      AJAX.fireOnload('export_output.js');
-                    AJAX.fireOnload('vendor/tracekit.js');
-      AJAX.fireOnload('error_report.js');
-      AJAX.fireOnload('drag_drop_import.js');
-      AJAX.fireOnload('shortcuts_handler.js');
-      AJAX.fireOnload('console.js');
-  });
-// ]]>
-</script>
+--
+-- Table structure for table `Producto`
+--
 
-  <noscript><style>html{display:block}</style></noscript>
-</head>
-<body>
-    <div id="pma_navigation" data-config-navigation-width="240">
-    <div id="pma_navigation_resizer"></div>
-    <div id="pma_navigation_collapser"></div>
-    <div id="pma_navigation_content">
-      <div id="pma_navigation_header">
+DROP TABLE IF EXISTS `Producto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Producto` (
+  `idProducto` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL,
+  `cantidadRiesgo` int(11) DEFAULT NULL,
+  `codigoBarra` varchar(16) DEFAULT NULL,
+  `valorItem` int(11) DEFAULT NULL,
+  `precioUnitario` int(11) DEFAULT NULL,
+  `precioVenta` int(11) DEFAULT NULL,
+  `descripcion` varchar(100) DEFAULT NULL,
+  `categoria` varchar(25) DEFAULT NULL,
+  `formato` varchar(25) DEFAULT NULL,
+  `foto` blob DEFAULT NULL,
+  `oculto` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`idProducto`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-                  <div id="pmalogo">
-                          <a href="index.php">
-                                      <img id="imgpmalogo" src="./themes/pmahomme/img/logo_left.png" alt="phpMyAdmin">
-                                      </a>
-                      </div>
-        
-        <div id="navipanellinks">
-          <a href="index.php?route=/" title="Home"><img src="themes/dot.gif" title="Home" alt="Home" class="icon ic_b_home"></a>
+--
+-- Dumping data for table `Producto`
+--
 
-                      <a class="logout disableAjax" href="index.php?route=/logout" title="Log out"><img src="themes/dot.gif" title="Log out" alt="Log out" class="icon ic_s_loggoff"></a>
-          
-          <a href="./doc/html/index.html" title="phpMyAdmin documentation" target="_blank" rel="noopener noreferrer"><img src="themes/dot.gif" title="phpMyAdmin documentation" alt="phpMyAdmin documentation" class="icon ic_b_docs"></a>
+LOCK TABLES `Producto` WRITE;
+/*!40000 ALTER TABLE `Producto` DISABLE KEYS */;
+INSERT INTO `Producto` VALUES
+(7,'Nescafe Moka 18g',6,NULL,'7613033458507',NULL,300,450,'Café Mixes Moka 18g Nescafé (1 sobre)',NULL,NULL,NULL,0),
+(8,'asdfasfd',12,0,NULL,NULL,300,400,NULL,NULL,NULL,NULL,0),
+(9,'Vino Gato Cabernet Sauvignon 1/2 Lt Tetra',1,NULL,'7804300122140',9031,9031,11740,'GATO-NVO-CS-CB8-500CCX12-TR',NULL,'CJ',NULL,0),
+(10,'Vino Gato 1000 Cc Blanco',1,NULL,'7804300004019',18579,18579,24150,'GATO-NVO-B-CF8-1000CCX12-TR',NULL,'CJ',NULL,0),
+(11,'Vino Gato 1000 Cc Cabernet Sauvignon',1,NULL,'7804300004002',18579,18579,24150,'GATO-NVO-CS-CF8-1000CCX12-TR',NULL,'CJ',NULL,0),
+(12,'Vino Gato 2000 Cc Merlot Tetrax',2,NULL,'7804300131692',41570,20785,27020,'GATO-NVO-ME-CB4-2000CCX8-TR',NULL,'CJ',NULL,0),
+(13,'Gato_Dulce-Dc-Vnr750Ccx12-Co',0,NULL,'700808',17160,17160,22310,'GATO_DULCE-DC-VNR750CCX12-CO',NULL,'CJ',NULL,0),
+(14,'Flete De Mercaderias',1,NULL,'9999',10920,10920,14200,'Flete de Mercaderias',NULL,NULL,NULL,0),
+(15,'Kent Belmont - Rc10',3,NULL,'10070892',94362,31454,40890,'1020 Kent Belmont - RC10',NULL,NULL,NULL,0),
+(16,'Kent Belmont - Hl20',6,NULL,'10070700',188724,31454,40890,'0627 Kent Belmont - HL20',NULL,NULL,NULL,0),
+(17,'Kent Neo Ikon Mix Ds90',1,NULL,'10107101',27522,27522,35780,'Kent Neo Ikon Mix DS90',NULL,NULL,NULL,0),
+(18,'Pall Mall Azul Hl20S',2,NULL,'10111410',50582,25291,32880,'Pall Mall Azul HL20s',NULL,NULL,NULL,0),
+(19,'Pall Mall Boost - Hl10',2,NULL,'10102304',63228,31614,41100,'9065 Pall Mall Boost - HL10',NULL,NULL,NULL,0),
+(20,'Pall Mall Boost Xl - Hl20',4,NULL,'10091121',110648,27662,35960,'5059 Pall Mall Boost XL - HL20',NULL,NULL,NULL,0),
+(21,'Pall Clonb 10/200 Kre Sq Chi F&S',2,NULL,'10119670',63228,31614,41100,'9041 PALL CLONB 10/200 KRE SQ CHI F&S',NULL,NULL,NULL,0),
+(22,'Pall Clonb 20/200 Kre Sq Chi F&S',5,NULL,'10119688',138310,27662,35960,'8884 PALL CLONB 20/200 KRE SQ CHI F&S',NULL,NULL,NULL,0),
+(23,'Pall Mall Azul Sc20S',12,NULL,'10111132',265560,22130,28770,'Pall Mall Azul SC20s',NULL,NULL,NULL,0),
+(24,'Pall Mall Rojo - Sc20',3,NULL,'10111094',66390,22130,28770,'Pall Mall Rojo - SC20',NULL,NULL,NULL,0);
+/*!40000 ALTER TABLE `Producto` ENABLE KEYS */;
+UNLOCK TABLES;
 
-          <a href="./url.php?url=https%3A%2F%2Fmariadb.com%2Fkb%2Fen%2Fdocumentation%2F" title="MariaDB Documentation" target="_blank" rel="noopener noreferrer"><img src="themes/dot.gif" title="MariaDB Documentation" alt="MariaDB Documentation" class="icon ic_b_sqlhelp"></a>
+--
+-- Table structure for table `ProductoCompra`
+--
 
-          <a id="pma_navigation_settings_icon" href="#" title="Navigation panel settings"><img src="themes/dot.gif" title="Navigation panel settings" alt="Navigation panel settings" class="icon ic_s_cog"></a>
+DROP TABLE IF EXISTS `ProductoCompra`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ProductoCompra` (
+  `idProducto` int(11) NOT NULL,
+  `idCompra` int(11) NOT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `precio` int(11) NOT NULL,
+  KEY `idCompra` (`idCompra`),
+  KEY `idProducto` (`idProducto`),
+  CONSTRAINT `ProductoCompra_ibfk_1` FOREIGN KEY (`idCompra`) REFERENCES `Compra` (`idCompra`),
+  CONSTRAINT `ProductoCompra_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `Producto` (`idProducto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-          <a id="pma_navigation_reload" href="#" title="Reload navigation panel"><img src="themes/dot.gif" title="Reload navigation panel" alt="Reload navigation panel" class="icon ic_s_reload"></a>
-        </div>
+--
+-- Dumping data for table `ProductoCompra`
+--
 
-        
-        <img src="themes/dot.gif" title="Loading…" alt="Loading…" style="visibility: hidden; display:none" class="icon ic_ajax_clock_small throbber">
-      </div>
-      <div id="pma_navigation_tree" class="list_container synced highlight autoexpand">
+LOCK TABLES `ProductoCompra` WRITE;
+/*!40000 ALTER TABLE `ProductoCompra` DISABLE KEYS */;
+INSERT INTO `ProductoCompra` VALUES
+(9,2,1,9031),
+(10,2,1,18579),
+(11,2,1,18579),
+(12,2,2,20785),
+(13,2,1,17160),
+(14,2,1,10920),
+(15,3,3,31454),
+(16,3,6,31454),
+(17,3,1,27522),
+(18,3,2,25291),
+(19,3,2,31614),
+(20,3,4,27662),
+(21,3,2,31614),
+(22,3,5,27662),
+(23,3,12,22130),
+(24,3,3,22130);
+/*!40000 ALTER TABLE `ProductoCompra` ENABLE KEYS */;
+UNLOCK TABLES;
 
-  <div class="pma_quick_warp"><div class="drop_list"><button title="Recent tables" class="drop_button btn">Recent</button><ul id="pma_recent_list"><li class="warp_link">There are no recent tables.</li></ul></div><div class="drop_list"><button title="Favorite tables" class="drop_button btn">Favorites</button><ul id="pma_favorite_list"><li class="warp_link">There are no favorite tables.</li></ul></div><div class="clearfloat"></div></div>
+--
+-- Table structure for table `ProductoVenta`
+--
 
-<div class="clearfloat"></div>
+DROP TABLE IF EXISTS `ProductoVenta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ProductoVenta` (
+  `idProducto` int(11) NOT NULL,
+  `idVenta` int(11) NOT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `precio` int(11) NOT NULL,
+  KEY `idProducto` (`idProducto`),
+  KEY `idVenta` (`idVenta`),
+  CONSTRAINT `ProductoVenta_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `Producto` (`idProducto`),
+  CONSTRAINT `ProductoVenta_ibfk_2` FOREIGN KEY (`idVenta`) REFERENCES `Venta` (`idVenta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-<ul>
-  
-  <!-- CONTROLS START --><li id="navigation_controls_outer"><div id="navigation_controls"><a href="#" id="pma_navigation_collapse" title="Collapse all"><img src="themes/dot.gif" title="Collapse all" alt="Collapse all" class="icon ic_s_collapseall"></a><a href="#" id="pma_navigation_sync" title="Unlink from main panel"><img src="themes/dot.gif" title="Unlink from main panel" alt="Unlink from main panel" class="icon ic_s_link"></a></div></li><!-- CONTROLS ENDS -->
-</ul>
+--
+-- Dumping data for table `ProductoVenta`
+--
 
+LOCK TABLES `ProductoVenta` WRITE;
+/*!40000 ALTER TABLE `ProductoVenta` DISABLE KEYS */;
+INSERT INTO `ProductoVenta` VALUES
+(7,12,1,450),
+(7,13,1,450),
+(7,14,1,450),
+(7,15,1,450),
+(7,16,1,450),
+(7,17,1,450),
+(7,18,1,450),
+(7,19,4,450),
+(7,20,1,450),
+(7,21,6,450),
+(7,22,5,450),
+(7,23,1,450),
+(7,24,1,450),
+(7,25,9,450),
+(7,26,1,450),
+(7,27,1,450),
+(7,29,2,450),
+(7,30,7,450),
+(7,31,2,450),
+(7,32,1,450),
+(13,32,1,22310);
+/*!40000 ALTER TABLE `ProductoVenta` ENABLE KEYS */;
+UNLOCK TABLES;
 
+--
+-- Table structure for table `Proveedor`
+--
 
-<div id='pma_navigation_tree_content'>
-  <ul>
-    <li class="first new_database italics"><div class='block'><i class='first'></i></div><div class="block second"><a href='index.php?route=/server/databases&server=1'><img src="themes/dot.gif" title="" alt="" class="icon ic_b_newdb"></a></div><a class='hover_show_full' href='index.php?route=/server/databases&server=1' title='New'>New</a><div class="clearfloat"></div></li><li class="database"><div class='block'><i></i><b></b><a class="expander" href='#'><span class="hide paths_nav" data-apath="cm9vdA==.aW5mb3JtYXRpb25fc2NoZW1h" data-vpath="cm9vdA==.aW5mb3JtYXRpb25fc2NoZW1h" data-pos="0"></span><img src="themes/dot.gif" title="Expand/Collapse" alt="Expand/Collapse" class="icon ic_b_plus"></a></div><div class="block second"><a href='index.php?route=/database/operations&amp;server=1&amp;db=information_schema&amp;'><img src="themes/dot.gif" title="Database operations" alt="Database operations" class="icon ic_s_db"></a></div><a class='hover_show_full' href='index.php?route=/database/structure&server=1&amp;db=information_schema' title='Structure'>information_schema</a><div class="clearfloat"></div></li><li class="database"><div class='block'><i></i><b></b><a class="expander" href='#'><span class="hide paths_nav" data-apath="cm9vdA==.bXlzcWw=" data-vpath="cm9vdA==.bXlzcWw=" data-pos="0"></span><img src="themes/dot.gif" title="Expand/Collapse" alt="Expand/Collapse" class="icon ic_b_plus"></a></div><div class="block second"><a href='index.php?route=/database/operations&amp;server=1&amp;db=mysql&amp;'><img src="themes/dot.gif" title="Database operations" alt="Database operations" class="icon ic_s_db"></a></div><a class='hover_show_full' href='index.php?route=/database/structure&server=1&amp;db=mysql' title='Structure'>mysql</a><div class="clearfloat"></div></li><li class="database"><div class='block'><i></i><b></b><a class="expander" href='#'><span class="hide paths_nav" data-apath="cm9vdA==.cGVyZm9ybWFuY2Vfc2NoZW1h" data-vpath="cm9vdA==.cGVyZm9ybWFuY2Vfc2NoZW1h" data-pos="0"></span><img src="themes/dot.gif" title="Expand/Collapse" alt="Expand/Collapse" class="icon ic_b_plus"></a></div><div class="block second"><a href='index.php?route=/database/operations&amp;server=1&amp;db=performance_schema&amp;'><img src="themes/dot.gif" title="Database operations" alt="Database operations" class="icon ic_s_db"></a></div><a class='hover_show_full' href='index.php?route=/database/structure&server=1&amp;db=performance_schema' title='Structure'>performance_schema</a><div class="clearfloat"></div></li><li class="database"><div class='block'><i></i><b></b><a class="expander" href='#'><span class="hide paths_nav" data-apath="cm9vdA==.c3lz" data-vpath="cm9vdA==.c3lz" data-pos="0"></span><img src="themes/dot.gif" title="Expand/Collapse" alt="Expand/Collapse" class="icon ic_b_plus"></a></div><div class="block second"><a href='index.php?route=/database/operations&amp;server=1&amp;db=sys&amp;'><img src="themes/dot.gif" title="Database operations" alt="Database operations" class="icon ic_s_db"></a></div><a class='hover_show_full' href='index.php?route=/database/structure&server=1&amp;db=sys' title='Structure'>sys</a><div class="clearfloat"></div></li><li class="database"><div class='block'><i></i><b></b><a class="expander" href='#'><span class="hide paths_nav" data-apath="cm9vdA==.dGFsbGVy" data-vpath="cm9vdA==.dGFsbGVy" data-pos="0"></span><img src="themes/dot.gif" title="Expand/Collapse" alt="Expand/Collapse" class="icon ic_b_plus"></a></div><div class="block second"><a href='index.php?route=/database/operations&amp;server=1&amp;db=taller&amp;'><img src="themes/dot.gif" title="Database operations" alt="Database operations" class="icon ic_s_db"></a></div><a class='hover_show_full' href='index.php?route=/database/structure&server=1&amp;db=taller' title='Structure'>taller</a><div class="clearfloat"></div></li><li class="last database"><div class='block'><i></i><a class="expander" href='#'><span class="hide paths_nav" data-apath="cm9vdA==.dGVzdA==" data-vpath="cm9vdA==.dGVzdA==" data-pos="0"></span><img src="themes/dot.gif" title="Expand/Collapse" alt="Expand/Collapse" class="icon ic_b_plus"></a></div><div class="block second"><a href='index.php?route=/database/operations&amp;server=1&amp;db=test&amp;'><img src="themes/dot.gif" title="Database operations" alt="Database operations" class="icon ic_s_db"></a></div><a class='hover_show_full' href='index.php?route=/database/structure&server=1&amp;db=test' title='Structure'>test</a><div class="clearfloat"></div></li>
-  </ul>
-</div>
+DROP TABLE IF EXISTS `Proveedor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Proveedor` (
+  `idProveedor` int(11) NOT NULL AUTO_INCREMENT,
+  `razonSocial` varchar(50) DEFAULT NULL,
+  `rut` varchar(15) DEFAULT NULL,
+  `comuna` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`idProveedor`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `Proveedor`
+--
 
-      </div>
+LOCK TABLES `Proveedor` WRITE;
+/*!40000 ALTER TABLE `Proveedor` DISABLE KEYS */;
+INSERT INTO `Proveedor` VALUES
+(2,'COMERCIAL CCU S.A.','99554560-8','OSORNO'),
+(3,'BAT Chile S.A','88502900-0','Valdivia');
+/*!40000 ALTER TABLE `Proveedor` ENABLE KEYS */;
+UNLOCK TABLES;
 
-      <div id="pma_navi_settings_container">
-                  <div id="pma_navigation_settings"><div class="page_settings"><form method="post" action="index.php&#x3F;route&#x3D;&#x25;2Fexport&amp;server&#x3D;1" class="config-form disableAjax">
-  <input type="hidden" name="tab_hash" value="">
-      <input type="hidden" name="check_page_refresh" id="check_page_refresh" value="">
-    <input type="hidden" name="token" value="4b4e27614722655f3c786d4265214f5a">
-  <input type="hidden" name="submit_save" value="Navi">
-<ul class="tabs responsivetable row">
-      <li><a href="#Navi_panel">Navigation panel</a></li>
-      <li><a href="#Navi_tree">Navigation tree</a></li>
-      <li><a href="#Navi_servers">Servers</a></li>
-      <li><a href="#Navi_databases">Databases</a></li>
-      <li><a href="#Navi_tables">Tables</a></li>
-  </ul>
-<div class="tabs_contents col">
-<fieldset class="optbox" id="Navi_panel">
-<legend>Navigation panel</legend>
-    <p>Customize appearance of the navigation panel.</p>
-<table class="pma-table" width="100%" cellspacing="0">
-<tr><th><label for="ShowDatabasesNavigationAsTree">Show databases navigation as tree</label><span class="doc"><a href="./doc/html/config.html#cfg_ShowDatabasesNavigationAsTree" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>In the navigation panel, replaces the database tree with a selector</small></th><td><span class="checkbox"><input type="checkbox" name="ShowDatabasesNavigationAsTree" id="ShowDatabasesNavigationAsTree" checked="checked"></span><a class="restore-default hide" href="#ShowDatabasesNavigationAsTree" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationLinkWithMainPanel">Link with main panel</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationLinkWithMainPanel" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Link with main panel by highlighting the current database or table.</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationLinkWithMainPanel" id="NavigationLinkWithMainPanel" checked="checked"></span><a class="restore-default hide" href="#NavigationLinkWithMainPanel" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationDisplayLogo">Display logo</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationDisplayLogo" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Show logo in navigation panel.</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationDisplayLogo" id="NavigationDisplayLogo" checked="checked"></span><a class="restore-default hide" href="#NavigationDisplayLogo" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationLogoLink">Logo link URL</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationLogoLink" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>URL where logo in the navigation panel will point to.</small></th><td><input type="text" class="w-75" name="NavigationLogoLink" id="NavigationLogoLink" value="index.php"><a class="restore-default hide" href="#NavigationLogoLink" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationLogoLinkWindow">Logo link target</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationLogoLinkWindow" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Open the linked page in the main window (<code>main</code>) or in a new one (<code>new</code>).</small></th><td><select class="w-75" name="NavigationLogoLinkWindow" id="NavigationLogoLinkWindow"><option value="main" selected="selected">main</option><option value="new">new</option></select><a class="restore-default hide" href="#NavigationLogoLinkWindow" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreePointerEnable">Enable highlighting</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreePointerEnable" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Highlight server under the mouse cursor.</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreePointerEnable" id="NavigationTreePointerEnable" checked="checked"></span><a class="restore-default hide" href="#NavigationTreePointerEnable" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="FirstLevelNavigationItems">Maximum items on first level</label><span class="doc"><a href="./doc/html/config.html#cfg_FirstLevelNavigationItems" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>The number of items that can be displayed on each page on the first level of the navigation tree.</small></th><td><input type="number" name="FirstLevelNavigationItems" id="FirstLevelNavigationItems" value="100"><a class="restore-default hide" href="#FirstLevelNavigationItems" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeDisplayItemFilterMinimum">Minimum number of items to display the filter box</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeDisplayItemFilterMinimum" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Defines the minimum number of items (tables, views, routines and events) to display a filter box.</small></th><td><input type="number" name="NavigationTreeDisplayItemFilterMinimum" id="NavigationTreeDisplayItemFilterMinimum" value="30"><a class="restore-default hide" href="#NavigationTreeDisplayItemFilterMinimum" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NumRecentTables">Recently used tables</label><span class="doc"><a href="./doc/html/config.html#cfg_NumRecentTables" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Maximum number of recently used tables; set 0 to disable.</small></th><td><input type="number" name="NumRecentTables" id="NumRecentTables" value="10"><a class="restore-default hide" href="#NumRecentTables" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NumFavoriteTables">Favorite tables</label><span class="doc"><a href="./doc/html/config.html#cfg_NumFavoriteTables" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Maximum number of favorite tables; set 0 to disable.</small></th><td><input type="number" name="NumFavoriteTables" id="NumFavoriteTables" value="10"><a class="restore-default hide" href="#NumFavoriteTables" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationWidth">Navigation panel width</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationWidth" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Set to 0 to collapse navigation panel.</small></th><td><input type="number" name="NavigationWidth" id="NavigationWidth" value="240"><a class="restore-default hide" href="#NavigationWidth" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr></table>
-</fieldset>
-<fieldset class="optbox" id="Navi_tree">
-<legend>Navigation tree</legend>
-    <p>Customize the navigation tree.</p>
-<table class="pma-table" width="100%" cellspacing="0">
-<tr><th><label for="MaxNavigationItems">Maximum items in branch</label><span class="doc"><a href="./doc/html/config.html#cfg_MaxNavigationItems" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>The number of items that can be displayed on each page of the navigation tree.</small></th><td><input type="number" name="MaxNavigationItems" id="MaxNavigationItems" value="50"><a class="restore-default hide" href="#MaxNavigationItems" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeEnableGrouping">Group items in the tree</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeEnableGrouping" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Group items in the navigation tree (determined by the separator defined in the Databases and Tables tabs above).</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeEnableGrouping" id="NavigationTreeEnableGrouping" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeEnableGrouping" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeEnableExpansion">Enable navigation tree expansion</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeEnableExpansion" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to offer the possibility of tree expansion in the navigation panel.</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeEnableExpansion" id="NavigationTreeEnableExpansion" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeEnableExpansion" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeShowTables">Show tables in tree</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeShowTables" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to show tables under database in the navigation tree</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeShowTables" id="NavigationTreeShowTables" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeShowTables" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeShowViews">Show views in tree</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeShowViews" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to show views under database in the navigation tree</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeShowViews" id="NavigationTreeShowViews" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeShowViews" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeShowFunctions">Show functions in tree</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeShowFunctions" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to show functions under database in the navigation tree</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeShowFunctions" id="NavigationTreeShowFunctions" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeShowFunctions" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeShowProcedures">Show procedures in tree</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeShowProcedures" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to show procedures under database in the navigation tree</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeShowProcedures" id="NavigationTreeShowProcedures" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeShowProcedures" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeShowEvents">Show events in tree</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeShowEvents" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to show events under database in the navigation tree</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeShowEvents" id="NavigationTreeShowEvents" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeShowEvents" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeAutoexpandSingleDb">Expand single database</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeAutoexpandSingleDb" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Whether to expand single database in the navigation tree automatically.</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationTreeAutoexpandSingleDb" id="NavigationTreeAutoexpandSingleDb" checked="checked"></span><a class="restore-default hide" href="#NavigationTreeAutoexpandSingleDb" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr></table>
-</fieldset>
-<fieldset class="optbox" id="Navi_servers">
-<legend>Servers</legend>
-    <p>Servers display options.</p>
-<table class="pma-table" width="100%" cellspacing="0">
-<tr><th><label for="NavigationDisplayServers">Display servers selection</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationDisplayServers" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Display server choice at the top of the navigation panel.</small></th><td><span class="checkbox"><input type="checkbox" name="NavigationDisplayServers" id="NavigationDisplayServers" checked="checked"></span><a class="restore-default hide" href="#NavigationDisplayServers" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="DisplayServersList">Display servers as a list</label><span class="doc"><a href="./doc/html/config.html#cfg_DisplayServersList" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>Show server listing as a list instead of a drop down.</small></th><td><span class="checkbox"><input type="checkbox" name="DisplayServersList" id="DisplayServersList"></span><a class="restore-default hide" href="#DisplayServersList" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr></table>
-</fieldset>
-<fieldset class="optbox" id="Navi_databases">
-<legend>Databases</legend>
-    <p>Databases display options.</p>
-<table class="pma-table" width="100%" cellspacing="0">
-<tr><th><label for="NavigationTreeDisplayDbFilterMinimum">Minimum number of databases to display the database filter box</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeDisplayDbFilterMinimum" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span></th><td><input type="number" name="NavigationTreeDisplayDbFilterMinimum" id="NavigationTreeDisplayDbFilterMinimum" value="30"><a class="restore-default hide" href="#NavigationTreeDisplayDbFilterMinimum" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeDbSeparator">Database tree separator</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeDbSeparator" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>String that separates databases into different tree levels.</small></th><td><input type="text" size="25" name="NavigationTreeDbSeparator" id="NavigationTreeDbSeparator" value="_"><a class="restore-default hide" href="#NavigationTreeDbSeparator" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr></table>
-</fieldset>
-<fieldset class="optbox" id="Navi_tables">
-<legend>Tables</legend>
-    <p>Tables display options.</p>
-<table class="pma-table" width="100%" cellspacing="0">
-<tr><th><label for="NavigationTreeDefaultTabTable">Target for quick access icon</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeDefaultTabTable" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span></th><td><select class="w-75" name="NavigationTreeDefaultTabTable" id="NavigationTreeDefaultTabTable"><option value="structure" selected="selected">Structure</option><option value="sql">SQL</option><option value="search">Search</option><option value="insert">Insert</option><option value="browse">Browse</option></select><a class="restore-default hide" href="#NavigationTreeDefaultTabTable" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeDefaultTabTable2">Target for second quick access icon</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeDefaultTabTable2" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span></th><td><select class="w-75" name="NavigationTreeDefaultTabTable2" id="NavigationTreeDefaultTabTable2"><option value="" selected="selected"></option><option value="structure">Structure</option><option value="sql">SQL</option><option value="search">Search</option><option value="insert">Insert</option><option value="browse">Browse</option></select><a class="restore-default hide" href="#NavigationTreeDefaultTabTable2" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeTableSeparator">Table tree separator</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeTableSeparator" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span><small>String that separates tables into different tree levels.</small></th><td><input type="text" size="25" name="NavigationTreeTableSeparator" id="NavigationTreeTableSeparator" value="__"><a class="restore-default hide" href="#NavigationTreeTableSeparator" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr><tr><th><label for="NavigationTreeTableLevel">Maximum table tree depth</label><span class="doc"><a href="./doc/html/config.html#cfg_NavigationTreeTableLevel" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a>
-</span></th><td><input type="number" name="NavigationTreeTableLevel" id="NavigationTreeTableLevel" value="1"><a class="restore-default hide" href="#NavigationTreeTableLevel" title="Restore default value"><img src="themes/dot.gif" title="" alt="" class="icon ic_s_reload"></a></td></tr></table>
-</fieldset>
-</div>
-</form>
-<script type="text/javascript">
-    if (typeof configInlineParams === 'undefined' || !Array.isArray(configInlineParams)) {
-        configInlineParams = [];
-    }
-    configInlineParams.push(function () {
-        registerFieldValidator('FirstLevelNavigationItems', 'validatePositiveNumber', true);
-registerFieldValidator('NavigationTreeDisplayItemFilterMinimum', 'validatePositiveNumber', true);
-registerFieldValidator('NumRecentTables', 'validateNonNegativeNumber', true);
-registerFieldValidator('NumFavoriteTables', 'validateNonNegativeNumber', true);
-registerFieldValidator('NavigationWidth', 'validateNonNegativeNumber', true);
-registerFieldValidator('MaxNavigationItems', 'validatePositiveNumber', true);
-registerFieldValidator('NavigationTreeTableLevel', 'validatePositiveNumber', true);
-$.extend(Messages, {
-	'error_nan_p': 'Not a positive number!',
-	'error_nan_nneg': 'Not a non-negative number!',
-	'error_incorrect_port': 'Not a valid port number!',
-	'error_invalid_value': 'Incorrect value!',
-	'error_value_lte': 'Value must be less than or equal to %s!'});
-$.extend(defaultValues, {
-	'ShowDatabasesNavigationAsTree': true,
-	'NavigationLinkWithMainPanel': true,
-	'NavigationDisplayLogo': true,
-	'NavigationLogoLink': 'index.php',
-	'NavigationLogoLinkWindow': ['main'],
-	'NavigationTreePointerEnable': true,
-	'FirstLevelNavigationItems': '100',
-	'NavigationTreeDisplayItemFilterMinimum': '30',
-	'NumRecentTables': '10',
-	'NumFavoriteTables': '10',
-	'NavigationWidth': '240',
-	'MaxNavigationItems': '50',
-	'NavigationTreeEnableGrouping': true,
-	'NavigationTreeEnableExpansion': true,
-	'NavigationTreeShowTables': true,
-	'NavigationTreeShowViews': true,
-	'NavigationTreeShowFunctions': true,
-	'NavigationTreeShowProcedures': true,
-	'NavigationTreeShowEvents': true,
-	'NavigationTreeAutoexpandSingleDb': true,
-	'NavigationDisplayServers': true,
-	'DisplayServersList': false,
-	'NavigationTreeDisplayDbFilterMinimum': '30',
-	'NavigationTreeDbSeparator': '_',
-	'NavigationTreeDefaultTabTable': ['structure'],
-	'NavigationTreeDefaultTabTable2': [''],
-	'NavigationTreeTableSeparator': '__',
-	'NavigationTreeTableLevel': '1'});
-    });
-    if (typeof configScriptLoaded !== 'undefined' && configInlineParams) {
-        loadInlineConfig();
-    }
-</script>
-</div></div>
-              </div>
-    </div>
+--
+-- Table structure for table `Usuario`
+--
 
-          <div class="pma_drop_handler">
-        Drop files here      </div>
-      <div class="pma_sql_import_status">
-        <h2>
-          SQL upload          ( <span class="pma_import_count">0</span> )
-          <span class="close">x</span>
-          <span class="minimize">-</span>
-        </h2>
-        <div></div>
-      </div>
-      </div>
+DROP TABLE IF EXISTS `Usuario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Usuario` (
+  `idUsuario` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(60) NOT NULL,
+  `rol` varchar(20) NOT NULL,
+  `contraseña` varchar(255) NOT NULL,
+  PRIMARY KEY (`idUsuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  
-  <div id="prefs_autoload" class="alert alert-primary print_ignore hide" role="alert">
-    <form action="index.php?route=/preferences/manage" method="post" class="disableAjax">
-        <input type="hidden" name="token" value="4b4e27614722655f3c786d4265214f5a">
-        <input type="hidden" name="json" value="">
-        <input type="hidden" name="submit_import" value="1">
-        <input type="hidden" name="return_url" value="index.php?route=%2Fexport">
-        Your browser has phpMyAdmin configuration for this domain. Would you like to import it for current session?        <br>
-        <a href="#yes">Yes</a>
-        / <a href="#no">No</a>
-        / <a href="#delete">Delete settings</a>
-    </form>
-</div>
+--
+-- Dumping data for table `Usuario`
+--
 
+LOCK TABLES `Usuario` WRITE;
+/*!40000 ALTER TABLE `Usuario` DISABLE KEYS */;
+INSERT INTO `Usuario` VALUES
+(3,'matias','admin','123'),
+(4,'joselo','vendedor','hiaw');
+/*!40000 ALTER TABLE `Usuario` ENABLE KEYS */;
+UNLOCK TABLES;
 
-  
-      <noscript>
-      <div class="alert alert-danger" role="alert">
-  <img src="themes/dot.gif" title="" alt="" class="icon ic_s_error"> Javascript must be enabled past this point!
-</div>
+--
+-- Table structure for table `Venta`
+--
 
-    </noscript>
-  
-      <div id="floating_menubar"></div>
-<nav id="server-breadcrumb" aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <img src="themes/dot.gif" title="" alt="" class="icon ic_s_host">
-      <a href="index.php?route=/" data-raw-text="127.0.0.1">
-        Server:        127.0.0.1
-      </a>
-    </li>
+DROP TABLE IF EXISTS `Venta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Venta` (
+  `idVenta` int(11) NOT NULL AUTO_INCREMENT,
+  `idUsuario` int(11) NOT NULL,
+  `medioDePago` varchar(15) DEFAULT NULL,
+  `tipoDocumento` set('Boleta','Factura','Guía de despacho') DEFAULT NULL,
+  `estado` set('En Curso','Confirmada','Pagada','Anulada','No Finalizada') NOT NULL,
+  `fecha` datetime DEFAULT NULL,
+  `montoNeto` int(11) DEFAULT NULL,
+  `IVA` int(11) DEFAULT NULL,
+  `total` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`idVenta`),
+  KEY `idUsuario` (`idUsuario`),
+  CONSTRAINT `Venta_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `Usuario` (`idUsuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-      </ol>
-</nav>
-<div id="topmenucontainer" class="menucontainer">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-label="Toggle navigation" aria-controls="navbarNav" aria-expanded="false">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul id="topmenu" class="navbar-nav">
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/databases">
-              <img src="themes/dot.gif" title="Databases" alt="Databases" class="icon ic_s_db">&nbsp;Databases
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/sql">
-              <img src="themes/dot.gif" title="SQL" alt="SQL" class="icon ic_b_sql">&nbsp;SQL
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/status">
-              <img src="themes/dot.gif" title="Status" alt="Status" class="icon ic_s_status">&nbsp;Status
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/privileges&viewing_mode=server">
-              <img src="themes/dot.gif" title="User accounts" alt="User accounts" class="icon ic_s_rights">&nbsp;User accounts
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/export">
-              <img src="themes/dot.gif" title="Export" alt="Export" class="icon ic_b_export">&nbsp;Export
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/import">
-              <img src="themes/dot.gif" title="Import" alt="Import" class="icon ic_b_import">&nbsp;Import
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/preferences/manage">
-              <img src="themes/dot.gif" title="Settings" alt="Settings" class="icon ic_b_tblops">&nbsp;Settings
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/replication">
-              <img src="themes/dot.gif" title="Replication" alt="Replication" class="icon ic_s_replication">&nbsp;Replication
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/variables">
-              <img src="themes/dot.gif" title="Variables" alt="Variables" class="icon ic_s_vars">&nbsp;Variables
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/collations">
-              <img src="themes/dot.gif" title="Charsets" alt="Charsets" class="icon ic_s_asci">&nbsp;Charsets
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/engines">
-              <img src="themes/dot.gif" title="Engines" alt="Engines" class="icon ic_b_engine">&nbsp;Engines
-                          </a>
-          </li>
-                  <li class="nav-item">
-            <a class="nav-link text-nowrap" href="index.php?route=/server/plugins">
-              <img src="themes/dot.gif" title="Plugins" alt="Plugins" class="icon ic_b_plugin">&nbsp;Plugins
-                          </a>
-          </li>
-              </ul>
-    </div>
-  </nav>
-</div>
+--
+-- Dumping data for table `Venta`
+--
 
-    <span id="page_nav_icons">
-      <span id="lock_page_icon"></span>
-      <span id="page_settings_icon">
-        <img src="themes/dot.gif" title="Page-related settings" alt="Page-related settings" class="icon ic_s_cog">
-      </span>
-      <a id="goto_pagetop" href="#"><img src="themes/dot.gif" title="Click on the bar to scroll to top of page" alt="Click on the bar to scroll to top of page" class="icon ic_s_top"></a>
-    </span>
-  
-  <div id="pma_console_container">
-    <div id="pma_console">
-                <div class="toolbar collapsed">
-                    <div class="switch_button console_switch">
-            <img src="themes/dot.gif" title="SQL Query Console" alt="SQL Query Console" class="icon ic_console">
-            <span>Console</span>
-        </div>
-                            <div class="button clear">
-            
-            <span>Clear</span>
-        </div>
-                            <div class="button history">
-            
-            <span>History</span>
-        </div>
-                            <div class="button options">
-            
-            <span>Options</span>
-        </div>
-                            <div class="button bookmarks">
-            
-            <span>Bookmarks</span>
-        </div>
-                            <div class="button debug hide">
-            
-            <span>Debug SQL</span>
-        </div>
-            </div>
-                <div class="content">
-            <div class="console_message_container">
-                <div class="message welcome">
-                    <span id="instructions-0">
-                        Press Ctrl+Enter to execute query                    </span>
-                    <span class="hide" id="instructions-1">
-                        Press Enter to execute query                    </span>
-                </div>
-                            </div><!-- console_message_container -->
-            <div class="query_input">
-                <span class="console_query_input"></span>
-            </div>
-        </div><!-- message end -->
-                <div class="mid_layer"></div>
-                <div class="card" id="debug_console">
-            <div class="toolbar ">
-                    <div class="button order order_asc">
-            
-            <span>ascending</span>
-        </div>
-                            <div class="button order order_desc">
-            
-            <span>descending</span>
-        </div>
-                            <div class="text">
-            
-            <span>Order:</span>
-        </div>
-                            <div class="switch_button">
-            
-            <span>Debug SQL</span>
-        </div>
-                            <div class="button order_by sort_count">
-            
-            <span>Count</span>
-        </div>
-                            <div class="button order_by sort_exec">
-            
-            <span>Execution order</span>
-        </div>
-                            <div class="button order_by sort_time">
-            
-            <span>Time taken</span>
-        </div>
-                            <div class="text">
-            
-            <span>Order by:</span>
-        </div>
-                            <div class="button group_queries">
-            
-            <span>Group queries</span>
-        </div>
-                            <div class="button ungroup_queries">
-            
-            <span>Ungroup queries</span>
-        </div>
-            </div>
-            <div class="content debug">
-                <div class="message welcome"></div>
-                <div class="debugLog"></div>
-            </div> <!-- Content -->
-            <div class="templates">
-                <div class="debug_query action_content">
-                    <span class="action collapse">
-            Collapse
-                    </span>
-                            <span class="action expand">
-            Expand
-                    </span>
-                            <span class="action dbg_show_trace">
-            Show trace
-                    </span>
-                            <span class="action dbg_hide_trace">
-            Hide trace
-                    </span>
-                            <span class="text count hide">
-            Count
-                    </span>
-                            <span class="text time">
-            Time taken
-                    </span>
-            </div>
-            </div> <!-- Template -->
-        </div> <!-- Debug SQL card -->
-                        <div class="card" id="pma_console_options">
-            <div class="toolbar ">
-                    <div class="switch_button">
-            
-            <span>Options</span>
-        </div>
-                            <div class="button default">
-            
-            <span>Set default</span>
-        </div>
-            </div>
-            <div class="content">
-                <label>
-                    <input type="checkbox" name="always_expand">Always expand query messages                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name="start_history">Show query history at start                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name="current_query">Show current browsing query                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name="enter_executes">
-                        Execute queries on Enter and insert new line with Shift + Enter. To make this permanent, view settings.                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name="dark_theme">Switch to dark theme                </label>
-                <br>
-            </div>
-        </div> <!-- Options card -->
-        <div class="templates">
-                        <div class="query_actions">
-                    <span class="action collapse">
-            Collapse
-                    </span>
-                            <span class="action expand">
-            Expand
-                    </span>
-                            <span class="action requery">
-            Requery
-                    </span>
-                            <span class="action edit">
-            Edit
-                    </span>
-                            <span class="action explain">
-            Explain
-                    </span>
-                            <span class="action profiling">
-            Profiling
-                    </span>
-                            <span class="action bookmark">
-            Bookmark
-                    </span>
-                            <span class="text failed">
-            Query failed
-                    </span>
-                            <span class="text targetdb">
-            Database
-                            : <span></span>
-                    </span>
-                            <span class="text query_time">
-            Queried time
-                            : <span></span>
-                    </span>
-            </div>
-        </div>
-    </div> <!-- #console end -->
-</div> <!-- #console_container end -->
+LOCK TABLES `Venta` WRITE;
+/*!40000 ALTER TABLE `Venta` DISABLE KEYS */;
+INSERT INTO `Venta` VALUES
+(12,4,NULL,NULL,'No Finalizada','2022-01-05 18:04:02',NULL,NULL,450),
+(13,4,NULL,NULL,'No Finalizada','2022-01-05 18:04:16',NULL,NULL,450),
+(14,4,NULL,NULL,'No Finalizada','2022-01-05 18:05:40',NULL,NULL,450),
+(15,4,NULL,NULL,'No Finalizada','2022-01-05 18:07:42',NULL,NULL,450),
+(16,4,'Efectivo',NULL,'Pagada','2022-01-05 18:08:55',365,85,450),
+(17,4,NULL,NULL,'No Finalizada','2022-01-05 18:14:20',NULL,NULL,450),
+(18,4,NULL,NULL,'No Finalizada','2022-01-05 18:18:35',NULL,NULL,450),
+(19,4,NULL,NULL,'No Finalizada','2022-01-05 18:24:36',NULL,NULL,1800),
+(20,4,NULL,NULL,'No Finalizada','2022-01-05 18:26:03',NULL,NULL,450),
+(21,4,NULL,NULL,'No Finalizada','2022-01-05 18:27:10',NULL,NULL,2700),
+(22,4,NULL,NULL,'No Finalizada','2022-01-05 18:28:18',NULL,NULL,2250),
+(23,4,NULL,NULL,'No Finalizada','2022-01-05 18:29:26',NULL,NULL,450),
+(24,4,NULL,NULL,'No Finalizada','2022-01-05 18:30:37',NULL,NULL,450),
+(25,4,NULL,NULL,'No Finalizada','2022-01-05 18:34:02',NULL,NULL,4050),
+(26,4,NULL,NULL,'No Finalizada','2022-01-05 18:34:18',NULL,NULL,450),
+(27,4,NULL,NULL,'No Finalizada','2022-01-05 18:34:33',NULL,NULL,450),
+(28,4,NULL,NULL,'No Finalizada','2022-01-05 18:38:25',NULL,NULL,0),
+(29,4,'Efectivo',NULL,'Pagada','2022-01-05 18:38:44',729,171,900),
+(30,4,NULL,NULL,'No Finalizada','2022-01-12 18:56:41',NULL,NULL,3150),
+(31,4,NULL,NULL,'No Finalizada','2022-03-30 16:05:07',NULL,NULL,900),
+(32,4,'Efectivo',NULL,'Pagada','2022-03-31 22:45:10',18436,4324,22760);
+/*!40000 ALTER TABLE `Venta` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-  <div id="page_content">
-    
-
-    
-<!DOCTYPE HTML>
-<html lang="en" dir="ltr">
-<head>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <title>phpMyAdmin</title>
-    <meta charset="utf-8">
-    <style type="text/css">
-        html {
-            padding: 0;
-            margin: 0;
-        }
-        body  {
-            font-family: sans-serif;
-            font-size: small;
-            color: #000000;
-            background-color: #F5F5F5;
-            margin: 1em;
-        }
-        h1 {
-            margin: 0;
-            padding: 0.3em;
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #ffffff;
-            background-color: #ff0000;
-        }
-        p {
-            margin: 0;
-            padding: 0.5em;
-            border: 0.1em solid red;
-            background-color: #ffeeee;
-        }
-    </style>
-</head>
-<body>
-<h1>phpMyAdmin - Error</h1>
-<p>index.php: Missing parameter: what<a href="./doc/html/faq.html#faqmissingparameters" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a><br>index.php: Missing parameter: export_type<a href="./doc/html/faq.html#faqmissingparameters" target="documentation"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help"></a><br></p>
-</body>
-</html>
-  </div>
-  <div id="selflink" class="print_ignore"><a href="index.php?route=%2Fexport&amp;server=1" title="Open new phpMyAdmin window" target="_blank" rel="noopener noreferrer"><img src="themes/dot.gif" title="Open new phpMyAdmin window" alt="Open new phpMyAdmin window" class="icon ic_window-new"></a></div>
-
-  <div class="clearfloat" id="pma_errors">
-    
-  </div>
-
-  
-<script data-cfasync="false" type="text/javascript">
-// <![CDATA[
-var debugSQLInfo = 'null';
-
-// ]]>
-</script>
-
-
-  
-  
-  </body>
-</html>
+-- Dump completed on 2022-03-31 22:52:47
