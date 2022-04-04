@@ -15,15 +15,25 @@ Tiene también el Jenkinsfile y archivos de configuración para CI/CD
 https://hiawvp.pythonanywhere.com/
 
 
-# Instalación
+# Instalación y config
 
-Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda
+### Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda
 
-```bash
+```
 $ mysql --version
 > mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu))
 ```
-clonar repo e ir al directorio raiz
+
+- Crear la base de datos y cargar la informacion desde el archivo `taller.sql`
+
+```
+$ mysql -u root -p -e "create database taller;"
+$ mysql -u root -p taller < taller.sql
+```
+
+  Los ambientes de desarrollo y testing por defecto utilizan el user:pass de mysql `root:root`. Esto es configurable en el Connection URL `DB_URL` en los archivos .cfg de la carpeta `instance`)
+
+- clonar repo e ir al directorio raiz
 
 ```bash
 $ conda create --name taller pip
@@ -36,7 +46,7 @@ $ flask run
 
 ```
 
-## Pytest
+- Pytest
 
 ```bash
 $ pytest -v -W ignore::DeprecationWarning
@@ -44,9 +54,75 @@ $ pytest -v -W ignore::DeprecationWarning
 
 # Documentación
 
+### Login no requerido (deshabilitado temporalmente)
+
+**Ver un Producto**
+----
+  Retorna la información en JSON de un producto en particular
+
+* **URL**
+
+  /productos/:id
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+   **Required:**
+ 
+   `id=[integer]`
+
+* **Data Params**
+
+  None
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+  * **Content:** 
+
+```
+idProducto : Integer
+nombre : String
+descripcion : String
+stock : Integer
+categoria : String
+formato : String
+codigoBarra : String
+cantidadRiesgo : Integer
+precioVenta : Integer
+precioUnitario : Integer
+valorItem : Integer
+
+```
+ 
+* **Error Response:**
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{ error : "no se encontro producto" }`
+
+  OR
+
+* **Error Response:**
+
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{ error : "Login required" }`
+
+
+* **Sample Call:**
+ 
+  ```shell
+  curl --location --request GET 'http:(ip):(port)/productos/'
+  ```
+
+
 **Ver Productos**
 ----
-  Retorna un arreglo de JSON con (los primeros) 10 productos
+  Retorna un JSON con
+  - items: array de 10 Producto
+  - rowsNumber: cantidad total de productos que satisfacen los criterios de busqueda (para efectos de paginacion)
   
 * **URL**
 
@@ -75,8 +151,15 @@ $ pytest -v -W ignore::DeprecationWarning
   * **Code:** 200 <br />
   * **Content:**
     
-`[{"formato":"botella","codigoBarra":"1234342", ..., "idProducto":90},..., {"formato":null,"codigoBarra":null,..., "idProducto":120}]`
- 
+```json    	
+"items": 
+  [
+  {"formato":"botella","codigoBarra":"1234342", ..., "idProducto":90},
+  ...,
+  {"formato":null,"codigoBarra":null,..., "idProducto":120}
+  ],
+ "rowsNumber": 18
+ ```
 * **Error Response:**
 
   * **Code:** 401 UNAUTHORIZED <br />
@@ -85,54 +168,12 @@ $ pytest -v -W ignore::DeprecationWarning
 * **Sample Call:**
 
   ```shell
-  curl --location --request GET 'http:(ip):(port)/productos/'
+  curl --location --request GET 'http://127.0.0.1:5000/productos/'
   ```
-    
-    
-**Ver un Producto**
-----
-  Retorna la información en JSON de un solo producto
-
-* **URL**
-
-  /productos/:id
-
-* **Method:**
-
-  `GET`
   
-*  **URL Params**
-
-   **Required:**
- 
-   `id=[integer]`
-
-* **Data Params**
-
-  None
-
-* **Success Response:**
-
-  * **Code:** 200 <br />
-  * **Content:** 
-    
-`{"formato":null,"codigoBarra":null,"categoria":null,"descripcion":null,"precioVenta":null,"valorItem":24680,"stock":1,"precioCompra":null,"nombre":"AUSTRAL LAGER 4PKX6 VNR330","cantidadRiesgo":null,"precioUnitario":24680,"idProducto":102}`
- 
-* **Error Response:**
-
-  * **Code:** 404 NOT FOUND <br />
-    **Content:** `{ error : "no se encontro producto" }`
-
-  OR
-
-* **Error Response:**
-
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "Login required" }`
-
-
-* **Sample Call:**
- 
-  ```shell
-  curl --location --request GET 'http:(ip):(port)/productos/'
+    ```shell
+  curl --location --request GET 'https://hiawvp.pythonanywhere.com/productos/'
   ```
+    
+    
+
