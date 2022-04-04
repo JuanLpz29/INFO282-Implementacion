@@ -15,9 +15,26 @@ Tiene también el Jenkinsfile y archivos de configuración para CI/CD
 https://hiawvp.pythonanywhere.com/
 
 
+# Instalación
+
+Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda
+
 ```
-export FLASK_APP=main.py
-flask run
+bash
+$ mysql --version
+mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu))
+```
+clonar repo e ir al directorio raiz
+
+```
+bash
+$ conda create --name taller pip
+$ conda activate taller
+$ pip install -r requirements.py
+
+$ export FLASK_APP=main.py
+$ export FLASK_ENV=development
+$ flask run
 
 ```
 
