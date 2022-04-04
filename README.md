@@ -21,7 +21,7 @@ Para replicar el ambiente de desarrollo localmente se necesita una instalación 
 
 ```bash
 $ mysql --version
-mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu))
+> mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu))
 ```
 clonar repo e ir al directorio raiz
 
@@ -34,6 +34,12 @@ $ export FLASK_APP=main.py
 $ export FLASK_ENV=development
 $ flask run
 
+```
+
+## Pytest
+
+```bash
+$ pytest -v -W ignore::DeprecationWarning
 ```
 
 # Documentación
