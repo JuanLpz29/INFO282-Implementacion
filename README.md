@@ -19,15 +19,13 @@ https://hiawvp.pythonanywhere.com/
 
 Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda
 
-```
-bash
+```bash
 $ mysql --version
 mysql  Ver 8.0.28-0ubuntu0.20.04.3 for Linux on x86_64 ((Ubuntu))
 ```
 clonar repo e ir al directorio raiz
 
-```
-bash
+```bash
 $ conda create --name taller pip
 $ conda activate taller
 $ pip install -r requirements.py
