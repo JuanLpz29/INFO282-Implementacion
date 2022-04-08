@@ -1,5 +1,10 @@
 # Proyecto de la asignatura INFO282-Taller de Ingeniería de Software
 
+## Pruebas automatizadas
+
+Las pruebas automatizadas del proyecto se encuentran disponibles en https://github.com/fernando479/casosPruebaAutomatizados
+
+
 ## Ramas del proyecto:
 
 * **Front:** Vuejs + Quasar 
