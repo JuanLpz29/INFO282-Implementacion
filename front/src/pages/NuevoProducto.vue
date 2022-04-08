@@ -111,8 +111,6 @@
         </div>
         <div class="row">
           <q-input
-            filled
-            readonly
             v-model="codigo"
             hint="Codigo de barras del producto"
             :bg-color="codigo ? 'green-2' : ''"
@@ -239,19 +237,17 @@ export default {
 @import '../quasar-variables.sass'
 .q-field__messages,
 .q-field__bottom_row
-  color: #1d2237
-  font-weight: 500
+    color: #1d2237
+    font-weight: 500
 
 .q-form
-  border-radius: 12px
-    // background-color: $fondo
-  // background-color: $fondo-tabla
-  padding: 1px 15px 15px 0px
+    border-radius: 12px
+    padding: 1px 15px 15px 0px
 
 .btn-container
-  text-align: left
-  margin-top: 20px
+    text-align: left
+    margin-top: 20px
 
 title
-  width: 100%
+    width: 100%
 </style>
