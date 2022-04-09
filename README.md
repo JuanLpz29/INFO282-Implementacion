@@ -33,26 +33,71 @@ $ mysql -u root -p taller < taller.sql
 
   Los ambientes de desarrollo y testing por defecto utilizan el user:pass de mysql `root:root`. Esto es configurable en el Connection URL `DB_URL` en los archivos .cfg de la carpeta `instance`)
 
-- clonar repo e ir al directorio raiz
+
+- clonar repo y seleccionar la brach `backend`
+
+```
+$ git clone git@github.com:matiasbarram/INFO282-Implementacion.git
+$ cd INFO282-Implementacion/
+$ git checkout backend
+```
+
+- Instalar dependencias
 
 ```bash
 $ conda create --name taller pip
 $ conda activate taller
-$ pip install -r requirements.py
+$ pip install -r requirements.txt
 
 $ export FLASK_APP=main.py
 $ export FLASK_ENV=development
 $ flask run
+```
+
+- si aparece el error `Error: While importing 'main', an ImportError was raised.`  recargar el ambiente
 
 ```
+$ conda deactivate && conda activate taller
+```
+
+# Ejecutando los tests
 
 - Pytest
 
 ```bash
-$ pytest -v -W ignore::DeprecationWarning
+$ pytest tests -v -W ignore::DeprecationWarning
 ```
 
-# Documentación
+- Locust
+
+```
+$ cd tests
+$ locust
+```
+ir a la interfaz grafica que se encuentra en `http://0.0.0.0:8089` 
+
+ingresar los valores:
+
+![alt text](tests/locust_config.png)
+
+y en host usar `http://hiawvp.pythonanywhere.com/productos/16` o `http://http://127.0.0.1:5000/productos/16` si es local
+
+- Venta multiple
+
+usar la variable segun el tipo de test que este realizando (local o al servicio desplegado en la web)
+
+```
+python
+# url = 'http://127.0.0.1:5000/ventas/?nombre=tester'
+url = 'https://hiawvp.pythonanywhere.com/ventas/?nombre=tester'
+```
+
+desde la carpeta raiz del repositorio
+
+
+`$ python /tests/venta_multple.py`
+
+# Documentación API
 
 ### Login no requerido (deshabilitado temporalmente)
 
