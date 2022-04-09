@@ -34,8 +34,7 @@ $ mysql -u root -p taller < taller.sql
   Los ambientes de desarrollo y testing por defecto utilizan el user:pass de mysql `root:root`. Esto es configurable en el Connection URL `DB_URL` en los archivos .cfg de la carpeta `instance`)
 ```
 
-# Para ejecutar los tests no es necesario instalar y configurar la base de datos ( si es que estos se hacen sobre 
-https://hiawvp.pythonanywhere.com/ )
+# Para ejecutar los tests no es necesario instalar y configurar la base de datos, se pueden hacer sobre la version en pythonanywhere tras instalar las dependencias python
 
 
 - clonar repo y seleccionar la brach `backend`
