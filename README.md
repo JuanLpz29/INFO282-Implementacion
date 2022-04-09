@@ -14,11 +14,14 @@ Tiene también el Jenkinsfile y archivos de configuración para CI/CD
 
 https://hiawvp.pythonanywhere.com/
 
-## Los TESTS se pueden realizar directamente sobre la version pythonanywhere 
-
 # Instalación y config
 
-### Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda 
+### se recomienda usar linux + conda 
+
+# Para ejecutar los tests no es necesario instalar y configurar la base de datos, ya que se pueden hacer sobre la version en pythonanywhere tras instalar las dependencias python
+
+<--- opcional
+### Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y
 
 ```
 $ mysql --version
@@ -33,8 +36,7 @@ $ mysql -u root -p taller < taller.sql
 
   Los ambientes de desarrollo y testing por defecto utilizan el user:pass de mysql `root:root`. Esto es configurable en el Connection URL `DB_URL` en los archivos .cfg de la carpeta `instance`)
 ```
-
-# Para ejecutar los tests no es necesario instalar y configurar la base de datos, se pueden hacer sobre la version en pythonanywhere tras instalar las dependencias python
+---> opcional
 
 
 - clonar repo y seleccionar la brach `backend`
