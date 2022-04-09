@@ -55,13 +55,14 @@ $ conda activate tent
 $ pip install -r requirements.txt
 ```
 
-
+<--- opcional, necesario para correr el servidor de manera loal
 
 ```
 $ export FLASK_APP=main.py
 $ export FLASK_ENV=development
 $ flask run
 ```
+---> opcional
 
 - si aparece el error `Error: While importing 'main', an ImportError was raised.`  recargar el ambiente
 
