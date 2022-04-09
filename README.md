@@ -14,10 +14,11 @@ Tiene también el Jenkinsfile y archivos de configuración para CI/CD
 
 https://hiawvp.pythonanywhere.com/
 
+## Los TESTS se pueden realizar directamente sobre la version pythonanywhere 
 
 # Instalación y config
 
-### Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda
+### Para replicar el ambiente de desarrollo localmente se necesita una instalación de mysql / mariadb y se recomienda usar linux + conda 
 
 ```
 $ mysql --version
@@ -29,9 +30,12 @@ $ mysql --version
 ```
 $ mysql -u root -p -e "create database taller;"
 $ mysql -u root -p taller < taller.sql
-```
 
   Los ambientes de desarrollo y testing por defecto utilizan el user:pass de mysql `root:root`. Esto es configurable en el Connection URL `DB_URL` en los archivos .cfg de la carpeta `instance`)
+```
+
+# Para ejecutar los tests no es necesario instalar y configurar la base de datos ( si es que estos se hacen sobre 
+https://hiawvp.pythonanywhere.com/ )
 
 
 - clonar repo y seleccionar la brach `backend`
@@ -45,10 +49,14 @@ $ git checkout backend
 - Instalar dependencias
 
 ```bash
-$ conda create --name taller pip
-$ conda activate taller
+$ conda create --name tent pip
+$ conda activate tent
 $ pip install -r requirements.txt
+```
 
+
+
+```
 $ export FLASK_APP=main.py
 $ export FLASK_ENV=development
 $ flask run
@@ -57,7 +65,7 @@ $ flask run
 - si aparece el error `Error: While importing 'main', an ImportError was raised.`  recargar el ambiente
 
 ```
-$ conda deactivate && conda activate taller
+$ conda deactivate && conda activate tent
 ```
 
 # Ejecutando los tests
@@ -94,8 +102,9 @@ url = 'https://hiawvp.pythonanywhere.com/ventas/?nombre=tester'
 
 desde la carpeta raiz del repositorio
 
-
 `$ python /tests/venta_multple.py`
+
+
 
 # Documentación API
 
