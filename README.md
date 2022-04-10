@@ -5,6 +5,15 @@
 Las pruebas automatizadas del proyecto se encuentran disponibles en https://github.com/fernando479/casosPruebaAutomatizados
 
 
+
+## Donde probar
+
+El proyecto está disponible en: https://tent74.netlify.app/# sin la necesidad de correrlo de manera local.
+**Se pude por favor que no vendan productos a no ser que sea estricamente necesario**
+
+
+
+
 ## Ramas del proyecto:
 
 * **Front:** Vuejs + Quasar 
