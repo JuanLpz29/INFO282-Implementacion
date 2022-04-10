@@ -6,9 +6,9 @@ Las pruebas automatizadas del proyecto se encuentran disponibles en https://gith
 
 
 
-## Donde probar
+## Disponible en
 
-El proyecto está disponible en: https://tent74.netlify.app/# sin la necesidad de correrlo de manera local.
+https://tent74.netlify.app/# sin la necesidad de correrlo de manera local.
 **Se pude por favor que no vendan productos a no ser que sea estricamente necesario**
 
 
