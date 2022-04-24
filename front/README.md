@@ -1,3 +1,17 @@
+# Proyecto de la asignatura INFO282-Taller de Ingeniería de Software
+
+## Pruebas automatizadas
+
+Las pruebas automatizadas del proyecto se encuentran disponibles en https://github.com/fernando479/casosPruebaAutomatizados
+
+
+
+## Disponible en
+
+https://tent74.netlify.app/# sin la necesidad de correrlo de manera local.
+**Por favor no vendan productos a no ser que sea estricamente necesario**
+
+
 # Vue 3 + Vite
 
 This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
