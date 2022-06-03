@@ -1,15 +1,30 @@
 from flask import request, jsonify
+from flask_restful import Resource, reqparse, abort
 from sqlalchemy.sql.expression import and_, text
-from tent.models.venta import Venta, VentaSchema
-from tent.models.venta import EN_CURSO, CONFIRMADA, ANULADA, PAGADA, NO_FINALIZADA
+
 from tent import db
+from tent.models.venta import Venta, VentaSchema
+from tent.models.venta import (
+    EN_CURSO,
+    CONFIRMADA,
+    ANULADA,
+    PAGADA,
+    NO_FINALIZADA
+)
 from tent.controllers.productos_controller import query_many_productos_by
-from tent.controllers.productos_controller import actualizar_stock, abort_if_no_producto_found
-from tent.controllers.usuarios_controller import query_user_by, abort_if_no_usuario, abort_if_not_authorized, query_venta_en_curso_usuario
+from tent.controllers.productos_controller import (
+    actualizar_stock,
+    abort_if_no_producto_found
+)
+from tent.controllers.usuarios_controller import (
+    query_user_by,
+    abort_if_no_usuario,
+    abort_if_not_authorized,
+    query_venta_en_curso_usuario
+)
 from tent.models.producto import Producto, ProductSchema
 from tent.models.usuario import Usuario, UsuarioSchema, ADMIN, VENDEDOR
 from tent.models.productoventa import ProductoVenta
-from flask_restful import Resource, reqparse, abort
 from tent.utils.parsers import pagination_arg_parser
 
 
@@ -43,28 +58,30 @@ def abort_if_no_venta_found(idVenta: int) -> Venta:
 def abort_if_has_venta_en_curso(idUsuario: int) -> Venta:
     venta = query_venta_en_curso_usuario(idUsuario)
     if venta is not None:
-        abort(
-            409, message=f"idUsuario {idUsuario} ya tiene una venta en curso idVenta:{venta.idVenta}")
+        msg = f"idUsuario {idUsuario} ya tiene una venta en curso"
+        + " idVenta:{venta.idVenta}"
+        abort(409, message=msg)
 
 
 def abort_if_no_identifier(idProducto: int, codigoBarra: str):
     if idProducto:
         return ('idProducto', idProducto)
     if codigoBarra:
-        return ('codigoBarra', codigoBarra)
-    abort(400, message=f"La solicitud debe incluir un codigoBarra o idProducto")
+        return ('codigoBarra',codigoBarra)
+    msg = "La solicitud debe incluir un codigoBarra o idProducto"
+    abort(400, message=msg)
 
 
-def abort_if_insufficient_stock(prod: Producto, cantidad: int):
-    if cantidad > prod.stock:
-        abort(
-            403, message=f"El producto {prod.nombre} no tiene suficiente stock ({prod.stock})")
+def abort_if_insufficient_stock(prod:Producto,cantidad:int):
+    if cantidad> prod.stock:
+        msg=f"El producto {prod.nombre} no tiene suficiente stock ({prod.stock})"
+        abort(403, message=msg)
 
 
-def abort_if_invalid_status(venta: Venta, valid_status=EN_CURSO) -> None:
-    if venta.estado != valid_status:
-        abort(
-            400, message=f"Venta con id: {venta.idVenta} no se encuentra {valid_status}")
+def abort_if_invalid_status(venta:Venta,valid_status=EN_CURSO) -> None:
+    if venta.estado!=valid_status:
+        msg=f"Venta con id: {venta.idVenta} no se encuentra {valid_status}"
+        abort(400,message=msg)
 
 
 class VentaManager(Resource):
@@ -259,7 +276,8 @@ class VentaManager(Resource):
         self.payment_parser.add_argument('tipoDocumento', type=str,
                                          location=self.args_loc,
                                          choices=['Boleta',
-                                                  'Factura', 'Guía de despacho'],
+                                                  'Factura',
+                                                  'Guía de despacho'],
                                          required=True)
 
 
@@ -282,7 +300,10 @@ class VentaListManager(Resource):
 
     def get(self):
         args = self.pagination_parser.parse_args()
-        _order_by = f"{args['sortby']} {args['order']}" if args['sortby'] else ""
+        if args['sortby']:
+            _order_by = f"{args['sortby']} {args['order']}"
+        else:
+            _order_by = ""
         filtered_query = Venta.query.order_by(text(_order_by))
         rowsNumber = filtered_query.count()
         all_ventas = filtered_query.paginate(
